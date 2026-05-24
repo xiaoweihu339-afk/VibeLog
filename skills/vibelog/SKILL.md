@@ -18,6 +18,7 @@ Use this skill when the user wants to:
 - Capture a one-line vibe idea.
 - Expand scattered thoughts into a structured product idea.
 - Record idea changes, pivots, additions, or removals.
+- Record human-in-the-loop judgment points: direction, taste, tradeoffs, approvals, rejections, risks, scope, naming, and prioritization.
 - Start or update a `vibe-log.md`.
 - Call the skill in the middle of an existing vibe product and reconstruct prior context.
 - Record current implementation status for handoff to another agent.
@@ -88,11 +89,27 @@ Every update should preserve the idea history:
 - Update `Current Idea` when the user's latest direction changes the product.
 - Append to `Idea Evolution` for meaningful changes.
 - Record firm choices in `Decisions`.
+- Record human judgment points in `Human-in-the-Loop`.
 - Keep unresolved items in `Open Questions`.
 
 Do not delete old idea history unless the user explicitly asks to redact it.
 
-### 4. Maintain The Implementation Layer
+### 4. Record Human-In-The-Loop Judgment
+
+Use `Human-in-the-Loop` when the human shaped the product in a way future agents should understand.
+
+Record:
+
+- type: `direction`, `scope`, `taste`, `tradeoff`, `approval`, `rejection`, `risk`, `naming`, or `prioritization`
+- human input
+- agent proposal, if relevant
+- final decision
+- why it mattered
+- impact on idea, design, implementation, or next steps
+
+Use this section for human judgment, not routine mechanical updates. The point is to preserve where the human steered the vibe.
+
+### 5. Maintain The Implementation Layer
 
 Keep `Implementation Status` useful for handoff:
 
@@ -106,7 +123,7 @@ Keep `Implementation Status` useful for handoff:
 
 If there is code, keep `Project Context` current with important files and run/test commands.
 
-### 5. Record Development Work
+### 6. Record Development Work
 
 Use `Development Log` for normal project development events that a future agent may need to understand.
 
@@ -131,7 +148,7 @@ For bug fixes, capture as much of this as is known:
 
 Do not pretend to know a root cause. If it is not known, write `unknown` and describe the evidence.
 
-### 6. Record Execution Prompts
+### 7. Record Execution Prompts
 
 Use `Execution Prompts` for prompts that directly guided vibecoding execution.
 
@@ -147,7 +164,7 @@ Record:
 
 Never record secrets, API keys, tokens, private credentials, or private personal data in prompt text. If a prompt contains sensitive details, record a safe summary and set prompt visibility to `summary` or `hidden`.
 
-### 7. Append Progress Chronologically
+### 8. Append Progress Chronologically
 
 Use `Vibe Progress` for chronological updates. Each meaningful session should include:
 
@@ -159,7 +176,7 @@ Use `Vibe Progress` for chronological updates. Each meaningful session should in
 
 Keep progress concise. The log should be readable, not a transcript dump.
 
-### 8. Export JSON
+### 9. Export JSON
 
 When asked to export or prepare upload data, generate `vibe-log.json` from `vibe-log.md` using the schema in `assets/vibe-log.schema.json`.
 
@@ -185,6 +202,7 @@ Before ending a work session, make sure the next agent can answer:
 - What is this vibe product?
 - What is the current idea?
 - What has already changed in the idea?
+- Where did the human steer, approve, reject, or choose tradeoffs?
 - What is implemented?
 - What is completed, in progress, pending, or blocked?
 - What development work was recently completed, especially bug fixes?

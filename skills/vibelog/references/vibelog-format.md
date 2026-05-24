@@ -16,6 +16,7 @@ Required sections:
 ## Idea Expansion
 ## Idea Evolution
 ## Decisions
+## Human-in-the-Loop
 ## Open Questions
 ## Implementation Status
 ## Project Context
@@ -105,6 +106,20 @@ refinement
 removal
 ```
 
+`human_in_the_loop.type`:
+
+```txt
+direction
+scope
+taste
+tradeoff
+approval
+rejection
+risk
+naming
+prioritization
+```
+
 `execution_prompts.prompt_type`:
 
 ```txt
@@ -132,7 +147,7 @@ config
 
 ## Mid-Project Reconstruction
 
-If a log is created after work has already begun, add reconstructed entries to `Idea Evolution`, `Decisions`, `Implementation Status`, `Execution Prompts`, `Development Log`, and `Vibe Progress` as needed.
+If a log is created after work has already begun, add reconstructed entries to `Idea Evolution`, `Decisions`, `Human-in-the-Loop`, `Implementation Status`, `Execution Prompts`, `Development Log`, and `Vibe Progress` as needed.
 
 Use this metadata inside reconstructed entries:
 

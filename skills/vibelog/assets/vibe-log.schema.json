@@ -110,6 +110,37 @@
         "additionalProperties": false
       }
     },
+    "human_in_the_loop": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "timestamp": { "type": "string" },
+          "type": {
+            "enum": [
+              "direction",
+              "scope",
+              "taste",
+              "tradeoff",
+              "approval",
+              "rejection",
+              "risk",
+              "naming",
+              "prioritization"
+            ]
+          },
+          "human_input": { "type": "string" },
+          "agent_proposal": { "type": "string" },
+          "final_decision": { "type": "string" },
+          "why_it_mattered": { "type": "string" },
+          "impact": { "type": "string" },
+          "source": { "type": "string" },
+          "confidence": { "enum": ["high", "medium", "low"] }
+        },
+        "required": ["timestamp", "type", "human_input", "final_decision"],
+        "additionalProperties": false
+      }
+    },
     "open_questions": {
       "type": "array",
       "items": {
