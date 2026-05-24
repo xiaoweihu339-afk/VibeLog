@@ -1,0 +1,210 @@
+{
+  "schema": "vibelog@0.1",
+  "title": "VibeLog",
+  "one_line_vibe": "I want to create a Markdown-first skill that records messy vibe product ideas, idea evolution, implementation status, and execution prompts so any agent can continue the work.",
+  "stage": "prototype",
+  "visibility": "private",
+  "code_visibility": "hidden",
+  "prompt_visibility": "summary",
+  "collaboration_status": "closed",
+  "tools": ["Codex"],
+  "tags": ["vibelog", "agent-skill", "vibe-coding"],
+  "created_at": "2026-05-25",
+  "updated_at": "2026-05-25",
+  "current_idea": "VibeLog is an independent agent skill and logging standard. It records a vibe product's one-line idea, expanded idea, direction changes, implementation status, handoff context, and vibecoding execution prompts in a human-readable Markdown file that can later be exported to JSON.",
+  "idea_expansion": {
+    "problem": "Vibe builders often have scattered ideas, midstream pivots, and AI execution prompts that disappear across chats, tools, and agents.",
+    "target_users": ["AI-assisted builders", "vibe coders", "non-technical product creators", "agent users"],
+    "why_it_matters": "A structured log lets people preserve idea evolution, resume work later, hand off to another agent, and optionally publish progress in the future.",
+    "core_features": [
+      "one-line idea",
+      "idea expansion",
+      "idea evolution",
+      "implementation status",
+      "project context",
+      "execution prompts",
+      "vibe progress",
+      "JSON export"
+    ],
+    "use_cases": [
+      "starting a new vibe product",
+      "joining a product midstream",
+      "reconstructing prior thinking",
+      "recording implementation state",
+      "preparing future upload content"
+    ]
+  },
+  "idea_evolution": [
+    {
+      "timestamp": "2026-05-24",
+      "type": "initial",
+      "before": "none",
+      "after": "A website where vibe coding people can share their vibe-built works.",
+      "reason": "The initial desire was to create a place for vibe coding creators to show what they made.",
+      "source": "reconstructed from conversation",
+      "confidence": "high"
+    },
+    {
+      "timestamp": "2026-05-24",
+      "type": "expansion",
+      "before": "A vibe coding product showcase website.",
+      "after": "A broader platform where both completed vibe products and early ideas can be shared, discussed, and used for collaboration.",
+      "reason": "Existing showcase sites cover product discovery, but the stronger opportunity is idea sharing and co-creation.",
+      "source": "reconstructed from conversation",
+      "confidence": "high"
+    },
+    {
+      "timestamp": "2026-05-25",
+      "type": "refinement",
+      "before": "Public idea sharing might require approval before others can work from an idea.",
+      "after": "Private ideas stay private; once an idea is published to Public Idea Space, others may create their own vibe branches from it.",
+      "reason": "Public-by-choice keeps private ideas protected while keeping public collaboration fluid.",
+      "source": "reconstructed from conversation",
+      "confidence": "high"
+    },
+    {
+      "timestamp": "2026-05-25",
+      "type": "pivot",
+      "before": "Build the website first.",
+      "after": "Build the VibeLog skill first, independent of the website.",
+      "reason": "The skill validates the core behavior before community cold start.",
+      "source": "reconstructed from conversation",
+      "confidence": "high"
+    },
+    {
+      "timestamp": "2026-05-25",
+      "type": "expansion",
+      "before": "VibeLog records one-line ideas, idea expansion, changes, and progress.",
+      "after": "VibeLog also supports mid-project invocation, historical reconstruction, implementation handoff state, and execution prompt logging.",
+      "reason": "A vibe product may switch agents midstream; the next agent needs historical context, current status, and key prompt directions.",
+      "source": "user request",
+      "confidence": "high"
+    }
+  ],
+  "decisions": [
+    {
+      "timestamp": "2026-05-25",
+      "decision": "Make Markdown the source of truth and JSON the export format.",
+      "why": "Markdown is easy for humans and agents to read; JSON is better for future upload and integration."
+    },
+    {
+      "timestamp": "2026-05-25",
+      "decision": "Build the standalone VibeLog skill before building the website.",
+      "why": "The skill can be useful without the site and can create future upload-ready content."
+    },
+    {
+      "timestamp": "2026-05-25",
+      "decision": "Record execution prompts separately from general progress.",
+      "why": "Vibecoding prompts are operational context for future agents, but they need visibility controls."
+    }
+  ],
+  "open_questions": [
+    "Should a future exporter script generate vibe-log.json deterministically from Markdown?",
+    "Should the skill be installed immediately into the user's Codex skill directory or kept as a distributable repo package first?",
+    "Which agent ecosystem should get the next adapter after Codex: Claude Code, Cursor rules, or AGENTS.md?"
+  ],
+  "implementation_status": {
+    "current_state": "The VibeLog v0.1 design exists, and the first standalone skills/vibelog package has been created in the repository.",
+    "completed": [
+      "Created the VibeLog v0.1 design document.",
+      "Added mid-project reconstruction and execution prompt logging to the standard.",
+      "Created skills/vibelog/SKILL.md.",
+      "Created skills/vibelog/references/vibelog-format.md.",
+      "Created skills/vibelog/assets/vibe-log-template.md.",
+      "Created skills/vibelog/assets/vibe-log.schema.json.",
+      "Created skills/vibelog/agents/openai.yaml.",
+      "Created project-level vibe-log.md and vibe-log.json."
+    ],
+    "in_progress": ["Validating that the skill package is coherent and usable."],
+    "pending": [
+      "Decide whether to install the skill into the local Codex skills directory.",
+      "Add a deterministic JSON exporter if needed.",
+      "Create adapters for other agent environments."
+    ],
+    "blocked": [
+      "skill-creator quick validation could not run because the current Python environment is missing the yaml package."
+    ],
+    "next_actions": [
+      "Run lightweight manual validation on skill metadata and schema.",
+      "Review the skill wording for trigger clarity and token efficiency.",
+      "Ask the user whether to install the skill locally after the repo version is accepted."
+    ],
+    "important_context_for_next_agent": [
+      "The current priority is the standalone VibeLog skill, not the website.",
+      "Markdown must remain the source of truth.",
+      "Execution prompts should default to summaries, not full prompt dumps.",
+      "Public visibility changes require explicit user confirmation."
+    ]
+  },
+  "project_context": {
+    "repo_url": "",
+    "workspace_path": "C:\\Users\\HXW\\Documents\\vibecoding",
+    "important_files": [
+      "docs/superpowers/specs/2026-05-25-vibelog-v0.1-design.md",
+      "skills/vibelog/SKILL.md",
+      "skills/vibelog/references/vibelog-format.md",
+      "skills/vibelog/assets/vibe-log-template.md",
+      "skills/vibelog/assets/vibe-log.schema.json",
+      "skills/vibelog/agents/openai.yaml",
+      "vibe-log.md",
+      "vibe-log.json"
+    ],
+    "run_commands": [],
+    "test_commands": [
+      "node -e \"const fs=require('fs'); JSON.parse(fs.readFileSync('skills/vibelog/assets/vibe-log.schema.json','utf8')); console.log('schema json ok')\"",
+      "rg -n \"[^\\\\x00-\\\\x7F]\" docs skills vibe-log.md vibe-log.json"
+    ],
+    "known_issues": [
+      "quick_validate.py from skill-creator needs PyYAML, which is not available in the current Python environment."
+    ],
+    "do_not_change": [
+      "Do not shift focus back to the website before the standalone skill is usable.",
+      "Do not make public upload behavior required for v0.1."
+    ]
+  },
+  "execution_prompts": [
+    {
+      "timestamp": "2026-05-25",
+      "agent_or_tool": "Codex",
+      "prompt_type": "design",
+      "prompt_visibility": "summary",
+      "prompt_summary": "User asked to define VibeLog v0.1 as a Markdown-first standard with JSON export for future website upload.",
+      "prompt_text": "hidden",
+      "result": "Created and committed the VibeLog v0.1 design document.",
+      "reuse_notes": "Use this direction when aligning future skill and website schema work."
+    },
+    {
+      "timestamp": "2026-05-25",
+      "agent_or_tool": "Codex",
+      "prompt_type": "build",
+      "prompt_visibility": "summary",
+      "prompt_summary": "User asked to detach from the website and build the skill first, adding mid-project invocation, historical reconstruction, and vibecoding execution prompt logging.",
+      "prompt_text": "hidden",
+      "result": "Created the first VibeLog skill package and reconstructed project log.",
+      "reuse_notes": "Future agents should continue from the standalone skill package and keep website work secondary."
+    }
+  ],
+  "vibe_progress": [
+    {
+      "timestamp": "2026-05-25",
+      "stage": "brief",
+      "what_happened": "Defined VibeLog v0.1 as a Markdown-first standard with JSON export.",
+      "tools_used": ["Codex"],
+      "problems": ["Needed to keep the standard independent from the future website."],
+      "next": ["Build the standalone skill."],
+      "source": "reconstructed from conversation",
+      "confidence": "high"
+    },
+    {
+      "timestamp": "2026-05-25",
+      "stage": "prototype",
+      "what_happened": "Created the standalone skills/vibelog package and added mid-project reconstruction plus execution prompt logging.",
+      "tools_used": ["Codex"],
+      "problems": ["quick_validate.py could not run because PyYAML is missing."],
+      "next": ["Validate manually, review with the user, then decide whether to install locally."],
+      "source": "current work session",
+      "confidence": "high"
+    }
+  ],
+  "public_summary": "VibeLog is a Markdown-first skill and standard for recording vibe product ideas, idea evolution, implementation status, handoff context, and vibecoding execution prompts. It is designed to work independently before any website exists, while keeping a future JSON upload path open."
+}

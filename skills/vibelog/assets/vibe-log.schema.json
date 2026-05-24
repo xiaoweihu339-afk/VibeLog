@@ -1,0 +1,187 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vibelog.local/schemas/vibelog-0.1.json",
+  "title": "VibeLog",
+  "type": "object",
+  "required": [
+    "schema",
+    "title",
+    "one_line_vibe",
+    "stage",
+    "visibility",
+    "current_idea",
+    "implementation_status",
+    "vibe_progress"
+  ],
+  "properties": {
+    "schema": {
+      "const": "vibelog@0.1"
+    },
+    "title": {
+      "type": "string"
+    },
+    "one_line_vibe": {
+      "type": "string"
+    },
+    "stage": {
+      "enum": ["idea", "brief", "prototype", "mvp", "beta", "shipped", "paused", "abandoned"]
+    },
+    "visibility": {
+      "enum": ["private", "public_idea", "public_progress", "public_product"]
+    },
+    "code_visibility": {
+      "enum": ["hidden", "open_source", "team_only", "not_applicable"]
+    },
+    "prompt_visibility": {
+      "enum": ["hidden", "summary", "full"]
+    },
+    "collaboration_status": {
+      "enum": [
+        "closed",
+        "open_to_feedback",
+        "looking_for_builder",
+        "looking_for_designer",
+        "looking_for_partner",
+        "looking_for_users",
+        "looking_for_investment"
+      ]
+    },
+    "tools": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "created_at": {
+      "type": "string"
+    },
+    "updated_at": {
+      "type": "string"
+    },
+    "current_idea": {
+      "type": "string"
+    },
+    "idea_expansion": {
+      "type": "object",
+      "properties": {
+        "problem": { "type": "string" },
+        "target_users": { "type": "array", "items": { "type": "string" } },
+        "why_it_matters": { "type": "string" },
+        "core_features": { "type": "array", "items": { "type": "string" } },
+        "use_cases": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": false
+    },
+    "idea_evolution": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "timestamp": { "type": "string" },
+          "type": { "enum": ["initial", "expansion", "pivot", "refinement", "removal"] },
+          "before": { "type": "string" },
+          "after": { "type": "string" },
+          "reason": { "type": "string" },
+          "source": { "type": "string" },
+          "confidence": { "enum": ["high", "medium", "low"] }
+        },
+        "required": ["timestamp", "type", "after"],
+        "additionalProperties": false
+      }
+    },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "timestamp": { "type": "string" },
+          "decision": { "type": "string" },
+          "why": { "type": "string" },
+          "source": { "type": "string" },
+          "confidence": { "enum": ["high", "medium", "low"] }
+        },
+        "required": ["timestamp", "decision"],
+        "additionalProperties": false
+      }
+    },
+    "open_questions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "implementation_status": {
+      "type": "object",
+      "required": ["current_state", "completed", "in_progress", "pending", "blocked", "next_actions"],
+      "properties": {
+        "current_state": { "type": "string" },
+        "completed": { "type": "array", "items": { "type": "string" } },
+        "in_progress": { "type": "array", "items": { "type": "string" } },
+        "pending": { "type": "array", "items": { "type": "string" } },
+        "blocked": { "type": "array", "items": { "type": "string" } },
+        "next_actions": { "type": "array", "items": { "type": "string" } },
+        "important_context_for_next_agent": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": false
+    },
+    "project_context": {
+      "type": "object",
+      "properties": {
+        "repo_url": { "type": "string" },
+        "workspace_path": { "type": "string" },
+        "important_files": { "type": "array", "items": { "type": "string" } },
+        "run_commands": { "type": "array", "items": { "type": "string" } },
+        "test_commands": { "type": "array", "items": { "type": "string" } },
+        "known_issues": { "type": "array", "items": { "type": "string" } },
+        "do_not_change": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": false
+    },
+    "execution_prompts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "timestamp": { "type": "string" },
+          "agent_or_tool": { "type": "string" },
+          "prompt_type": { "enum": ["build", "refactor", "debug", "test", "design", "deploy", "research"] },
+          "prompt_visibility": { "enum": ["hidden", "summary", "full"] },
+          "prompt_summary": { "type": "string" },
+          "prompt_text": { "type": "string" },
+          "result": { "type": "string" },
+          "reuse_notes": { "type": "string" }
+        },
+        "required": ["timestamp", "agent_or_tool", "prompt_type", "prompt_visibility", "prompt_summary"],
+        "additionalProperties": false
+      }
+    },
+    "vibe_progress": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "timestamp": { "type": "string" },
+          "stage": { "enum": ["idea", "brief", "prototype", "mvp", "beta", "shipped", "paused", "abandoned"] },
+          "what_happened": { "type": "string" },
+          "tools_used": { "type": "array", "items": { "type": "string" } },
+          "problems": { "type": "array", "items": { "type": "string" } },
+          "next": { "type": "array", "items": { "type": "string" } },
+          "source": { "type": "string" },
+          "confidence": { "enum": ["high", "medium", "low"] }
+        },
+        "required": ["timestamp", "stage", "what_happened"],
+        "additionalProperties": false
+      }
+    },
+    "public_summary": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

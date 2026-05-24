@@ -1,0 +1,3 @@
+display_name: VibeLog
+short_description: Record vibe ideas, progress, handoff state, and execution prompts.
+default_prompt: Create or update a VibeLog for this vibe product.
