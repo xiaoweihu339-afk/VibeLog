@@ -100,6 +100,15 @@
       "reason": "In vibe coding, the human often creates value by steering the AI: choosing direction, taste, scope, risk, and acceptance. Future agents should know where the human intentionally shaped the product.",
       "source": "user request",
       "confidence": "high"
+    },
+    {
+      "timestamp": "2026-05-25",
+      "type": "refinement",
+      "before": "Execution prompts could be recorded as summaries, while idea chat and execution instructions were not sharply separated.",
+      "after": "Engineering execution prompts must be strictly recorded in Execution Prompts, preferably with exact text. Chat-like idea exploration should only be distilled into idea changes, human-in-the-loop records, decisions, or open questions.",
+      "reason": "VibeLog should preserve prompts that actually drive engineering execution without turning ordinary product conversation into a transcript dump.",
+      "source": "user request",
+      "confidence": "high"
     }
   ],
   "decisions": [
@@ -140,6 +149,17 @@
       "impact": "Updated the standard, skill workflow, reference docs, template, schema, and project log to record human steering events explicitly.",
       "source": "user request",
       "confidence": "high"
+    },
+    {
+      "timestamp": "2026-05-25",
+      "type": "scope",
+      "human_input": "The user clarified that all engineering execution prompts in vibecoding must be strictly recorded, while chat-like idea discussion should only contribute extracted idea changes.",
+      "agent_proposal": "The agent had been recording prompt summaries and sometimes hiding prompt text.",
+      "final_decision": "Add strict prompt ledger rules for engineering execution prompts and a separate distillation rule for idea chat.",
+      "why_it_mattered": "This keeps VibeLog useful for agent handoff and auditability without making it a noisy chat transcript.",
+      "impact": "Updated Execution Prompts rules, schema fields, template, and project log entries.",
+      "source": "user request",
+      "confidence": "high"
     }
   ],
   "open_questions": [
@@ -148,7 +168,7 @@
     "Which agent ecosystem should get the next adapter after Codex: Claude Code, Cursor rules, or AGENTS.md?"
   ],
   "implementation_status": {
-    "current_state": "The VibeLog v0.1 design exists, and the first standalone skills/vibelog package has been created in the repository. The standard now includes first-class records for human-in-the-loop judgment, normal project work, and bug fixes.",
+    "current_state": "The VibeLog v0.1 design exists, and the first standalone skills/vibelog package has been created in the repository. The standard now includes first-class records for human-in-the-loop judgment, normal project work, bug fixes, and strict engineering execution prompt capture.",
     "completed": [
       "Created the VibeLog v0.1 design document.",
       "Added mid-project reconstruction and execution prompt logging to the standard.",
@@ -159,7 +179,8 @@
       "Created skills/vibelog/agents/openai.yaml.",
       "Created project-level vibe-log.md and vibe-log.json.",
       "Added Development Log support to the standard, skill, template, schema, and project example.",
-      "Added Human-in-the-Loop support to the standard, skill, template, schema, and project example."
+      "Added Human-in-the-Loop support to the standard, skill, template, schema, and project example.",
+      "Strengthened execution prompt logging so engineering execution prompts are recorded strictly, while idea chat is distilled into idea changes and human judgment records."
     ],
     "in_progress": ["Validating that the skill package is coherent and usable."],
     "pending": [
@@ -214,6 +235,7 @@
       "agent_or_tool": "Codex",
       "prompt_type": "design",
       "prompt_visibility": "summary",
+      "recording_mode": "summary_only",
       "prompt_summary": "User asked to define VibeLog v0.1 as a Markdown-first standard with JSON export for future website upload.",
       "prompt_text": "hidden",
       "result": "Created and committed the VibeLog v0.1 design document.",
@@ -224,6 +246,7 @@
       "agent_or_tool": "Codex",
       "prompt_type": "build",
       "prompt_visibility": "summary",
+      "recording_mode": "summary_only",
       "prompt_summary": "User asked to detach from the website and build the skill first, adding mid-project invocation, historical reconstruction, and vibecoding execution prompt logging.",
       "prompt_text": "hidden",
       "result": "Created the first VibeLog skill package and reconstructed project log.",
@@ -234,6 +257,7 @@
       "agent_or_tool": "Codex",
       "prompt_type": "design",
       "prompt_visibility": "summary",
+      "recording_mode": "summary_only",
       "prompt_summary": "User asked to add bug fix logging and make VibeLog able to contain normal project development logs.",
       "prompt_text": "hidden",
       "result": "Added Development Log as a first-class section covering features, bug fixes, refactors, tests, docs, chores, releases, and config changes.",
@@ -244,10 +268,22 @@
       "agent_or_tool": "Codex",
       "prompt_type": "design",
       "prompt_visibility": "summary",
+      "recording_mode": "summary_only",
       "prompt_summary": "User asked to record human-in-the-loop decisions, meaning the moments where human judgment steered the vibe process.",
       "prompt_text": "hidden",
       "result": "Added Human-in-the-Loop as a first-class section and schema field.",
       "reuse_notes": "Future agents should record human steering separately from routine decisions."
+    },
+    {
+      "timestamp": "2026-05-25",
+      "agent_or_tool": "Codex",
+      "prompt_type": "design",
+      "prompt_visibility": "summary",
+      "recording_mode": "exact",
+      "prompt_summary": "User clarified that engineering execution prompts must be strictly recorded, while chat-like idea discussion should only be distilled into idea changes.",
+      "prompt_text": "记住，所有vibecoding中agent下达的工程执行的提示词需要严格记录，类似于聊天的想法只用抽取出idea变化就行",
+      "result": "Strengthened the Execution Prompts rules and separated engineering execution prompt logging from chat idea distillation.",
+      "reuse_notes": "Future agents must treat engineering prompts as a strict ledger and treat ordinary idea chat as distilled product context."
     }
   ],
   "development_log": [
@@ -294,6 +330,28 @@
       "follow_up": ["Consider whether public website views should display human-in-the-loop moments as a distinct timeline layer."],
       "source": "current work session",
       "confidence": "high"
+    },
+    {
+      "timestamp": "2026-05-25",
+      "type": "feature",
+      "summary": "Strengthened execution prompt logging rules.",
+      "files_changed": [
+        "docs/superpowers/specs/2026-05-25-vibelog-v0.1-design.md",
+        "skills/vibelog/SKILL.md",
+        "skills/vibelog/references/vibelog-format.md",
+        "skills/vibelog/assets/vibe-log-template.md",
+        "skills/vibelog/assets/vibe-log.schema.json",
+        "vibe-log.md",
+        "vibe-log.json"
+      ],
+      "details": "Required engineering execution prompts to be recorded in Execution Prompts with exact text by default, while ordinary chat-like idea discussion is distilled into idea evolution, human-in-the-loop, decisions, or open questions.",
+      "bug_symptom": "not applicable",
+      "root_cause": "not applicable",
+      "fix": "not applicable",
+      "verification": "Pending final JSON/schema and content scans.",
+      "follow_up": ["Consider adding an exporter that validates every execution prompt has recording_mode and prompt_text."],
+      "source": "current work session",
+      "confidence": "high"
     }
   ],
   "vibe_progress": [
@@ -334,6 +392,16 @@
       "tools_used": ["Codex"],
       "problems": ["Needed to distinguish human steering from generic decisions."],
       "next": ["Verify schema, example JSON, and scans, then commit the update."],
+      "source": "current work session",
+      "confidence": "high"
+    },
+    {
+      "timestamp": "2026-05-25",
+      "stage": "prototype",
+      "what_happened": "Strengthened prompt logging rules so engineering execution prompts are strictly recorded and chat-like idea discussion is only distilled.",
+      "tools_used": ["Codex"],
+      "problems": ["Needed to preserve exact execution prompts without turning VibeLog into a general chat transcript."],
+      "next": ["Verify JSON/schema checks, ensure all execution prompt entries include recording mode and prompt text, then commit."],
       "source": "current work session",
       "confidence": "high"
     }

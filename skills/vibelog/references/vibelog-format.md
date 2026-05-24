@@ -132,6 +132,17 @@ deploy
 research
 ```
 
+`execution_prompts.recording_mode`:
+
+```txt
+exact
+redacted
+reconstructed
+summary_only
+```
+
+Engineering execution prompts belong in `Execution Prompts` with exact text unless sensitive content must be redacted. Ordinary idea chat does not belong there; distill it into `Idea Evolution`, `Human-in-the-Loop`, `Decisions`, or `Open Questions`.
+
 `development_log.type`:
 
 ```txt

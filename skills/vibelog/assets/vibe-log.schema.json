@@ -183,12 +183,13 @@
           "agent_or_tool": { "type": "string" },
           "prompt_type": { "enum": ["build", "refactor", "debug", "test", "design", "deploy", "research"] },
           "prompt_visibility": { "enum": ["hidden", "summary", "full"] },
+          "recording_mode": { "enum": ["exact", "redacted", "reconstructed", "summary_only"] },
           "prompt_summary": { "type": "string" },
           "prompt_text": { "type": "string" },
           "result": { "type": "string" },
           "reuse_notes": { "type": "string" }
         },
-        "required": ["timestamp", "agent_or_tool", "prompt_type", "prompt_visibility", "prompt_summary"],
+        "required": ["timestamp", "agent_or_tool", "prompt_type", "prompt_visibility", "recording_mode", "prompt_summary", "prompt_text"],
         "additionalProperties": false
       }
     },

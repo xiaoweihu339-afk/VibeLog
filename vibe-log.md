@@ -105,6 +105,19 @@ The long-term product may become a website for private idea libraries, public id
 **Confidence:** high
 
 ### 2026-05-25
+**Type:** refinement
+
+**Before:** Execution prompts could be recorded as summaries, while idea chat and execution instructions were not sharply separated.
+
+**After:** Engineering execution prompts must be strictly recorded in `Execution Prompts`, preferably with exact text. Chat-like idea exploration should only be distilled into idea changes, human-in-the-loop records, decisions, or open questions.
+
+**Reason:** VibeLog should preserve prompts that actually drive engineering execution without turning ordinary product conversation into a transcript dump.
+
+**Source:** user request
+
+**Confidence:** high
+
+### 2026-05-25
 **Type:** expansion
 
 **Before:** VibeLog records decisions but does not explicitly separate human judgment from general decisions.
@@ -176,6 +189,23 @@ The long-term product may become a website for private idea libraries, public id
 
 **Confidence:** high
 
+### 2026-05-25
+**Type:** scope
+
+**Human Input:** The user clarified that all engineering execution prompts in vibecoding must be strictly recorded, while chat-like idea discussion should only contribute extracted idea changes.
+
+**Agent Proposal:** The agent had been recording prompt summaries and sometimes hiding prompt text.
+
+**Final Decision:** Add strict prompt ledger rules for engineering execution prompts and a separate distillation rule for idea chat.
+
+**Why It Mattered:** This keeps VibeLog useful for agent handoff and auditability without making it a noisy chat transcript.
+
+**Impact:** Updated Execution Prompts rules, schema fields, template, and project log entries.
+
+**Source:** user request
+
+**Confidence:** high
+
 ## Open Questions
 
 - Should a future exporter script generate `vibe-log.json` deterministically from Markdown?
@@ -186,7 +216,7 @@ The long-term product may become a website for private idea libraries, public id
 
 ### Current State
 
-The VibeLog v0.1 design exists, and the first standalone `skills/vibelog` skill package has been created in the repository. The standard now includes first-class records for human-in-the-loop judgment, normal project work, and bug fixes.
+The VibeLog v0.1 design exists, and the first standalone `skills/vibelog` skill package has been created in the repository. The standard now includes first-class records for human-in-the-loop judgment, normal project work, bug fixes, and strict engineering execution prompt capture.
 
 ### Completed
 
@@ -200,6 +230,7 @@ The VibeLog v0.1 design exists, and the first standalone `skills/vibelog` skill 
 - Created this project-level `vibe-log.md` by reconstructing prior conversation context.
 - Added `Development Log` support to the standard, skill, template, schema, and project example.
 - Added `Human-in-the-Loop` support to the standard, skill, template, schema, and project example.
+- Strengthened execution prompt logging so engineering execution prompts are recorded strictly, while idea chat is distilled into idea changes and human judgment records.
 
 ### In Progress
 
@@ -269,6 +300,8 @@ The VibeLog v0.1 design exists, and the first standalone `skills/vibelog` skill 
 
 **Prompt Visibility:** summary
 
+**Recording Mode:** summary_only
+
 **Prompt Summary:** User asked to define VibeLog v0.1 as a Markdown-first standard with JSON export for future website upload.
 
 **Prompt Text:** hidden
@@ -283,6 +316,8 @@ The VibeLog v0.1 design exists, and the first standalone `skills/vibelog` skill 
 **Prompt Type:** build
 
 **Prompt Visibility:** summary
+
+**Recording Mode:** summary_only
 
 **Prompt Summary:** User asked to detach from the website and build the skill first, adding mid-project invocation, historical reconstruction, and vibecoding execution prompt logging.
 
@@ -299,6 +334,8 @@ The VibeLog v0.1 design exists, and the first standalone `skills/vibelog` skill 
 
 **Prompt Visibility:** summary
 
+**Recording Mode:** summary_only
+
 **Prompt Summary:** User asked to add bug fix logging and make VibeLog able to contain normal project development logs.
 
 **Prompt Text:** hidden
@@ -314,6 +351,8 @@ The VibeLog v0.1 design exists, and the first standalone `skills/vibelog` skill 
 
 **Prompt Visibility:** summary
 
+**Recording Mode:** summary_only
+
 **Prompt Summary:** User asked to record human-in-the-loop decisions, meaning the moments where human judgment steered the vibe process.
 
 **Prompt Text:** hidden
@@ -321,6 +360,23 @@ The VibeLog v0.1 design exists, and the first standalone `skills/vibelog` skill 
 **Result:** Added `Human-in-the-Loop` as a first-class section and schema field.
 
 **Reuse Notes:** Future agents should record human steering separately from routine decisions.
+
+### 2026-05-25
+**Agent / Tool:** Codex
+
+**Prompt Type:** design
+
+**Prompt Visibility:** summary
+
+**Recording Mode:** exact
+
+**Prompt Summary:** User clarified that engineering execution prompts must be strictly recorded, while chat-like idea discussion should only be distilled into idea changes.
+
+**Prompt Text:** 记住，所有vibecoding中agent下达的工程执行的提示词需要严格记录，类似于聊天的想法只用抽取出idea变化就行
+
+**Result:** Strengthened the Execution Prompts rules and separated engineering execution prompt logging from chat idea distillation.
+
+**Reuse Notes:** Future agents must treat engineering prompts as a strict ledger and treat ordinary idea chat as distilled product context.
 
 ## Development Log
 
@@ -361,6 +417,25 @@ The VibeLog v0.1 design exists, and the first standalone `skills/vibelog` skill 
 **Verification:** Pending final JSON/schema and content scans.
 
 **Follow-up:** Consider whether public website views should display human-in-the-loop moments as a distinct timeline layer.
+
+### 2026-05-25
+**Type:** feature
+
+**Summary:** Strengthened execution prompt logging rules.
+
+**Files Changed:** `docs/superpowers/specs/2026-05-25-vibelog-v0.1-design.md`, `skills/vibelog/SKILL.md`, `skills/vibelog/references/vibelog-format.md`, `skills/vibelog/assets/vibe-log-template.md`, `skills/vibelog/assets/vibe-log.schema.json`, `vibe-log.md`, `vibe-log.json`
+
+**Details:** Required engineering execution prompts to be recorded in `Execution Prompts` with exact text by default, while ordinary chat-like idea discussion is distilled into idea evolution, human-in-the-loop, decisions, or open questions.
+
+**Bug Symptom:** not applicable
+
+**Root Cause:** not applicable
+
+**Fix:** not applicable
+
+**Verification:** Pending final JSON/schema and content scans.
+
+**Follow-up:** Consider adding an exporter that validates every execution prompt has `recording_mode` and `prompt_text`.
 
 ## Vibe Progress
 
@@ -404,6 +479,21 @@ The VibeLog v0.1 design exists, and the first standalone `skills/vibelog` skill 
 **Problems:** Needed to distinguish human steering from generic decisions.
 
 **Next:** Verify schema, example JSON, and scans, then commit the update.
+
+**Source:** current work session
+
+**Confidence:** high
+
+### 2026-05-25
+**Stage:** prototype
+
+**What Happened:** Strengthened prompt logging rules so engineering execution prompts are strictly recorded and chat-like idea discussion is only distilled.
+
+**Tools Used:** Codex
+
+**Problems:** Needed to preserve exact execution prompts without turning VibeLog into a general chat transcript.
+
+**Next:** Verify JSON/schema checks, ensure all execution prompt entries include recording mode and prompt text, then commit.
 
 **Source:** current work session
 

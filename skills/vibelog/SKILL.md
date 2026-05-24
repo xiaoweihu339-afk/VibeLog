@@ -23,7 +23,7 @@ Use this skill when the user wants to:
 - Call the skill in the middle of an existing vibe product and reconstruct prior context.
 - Record current implementation status for handoff to another agent.
 - Record normal project development work, including features, bug fixes, refactors, tests, docs, chores, releases, and config changes.
-- Record vibecoding execution prompts used for building, debugging, testing, design, deployment, or research.
+- Strictly record vibecoding engineering execution prompts used for building, editing, debugging, testing, refactoring, implementation design, deployment, file inspection, command execution, or research.
 - Generate or refresh JSON suitable for future website upload.
 
 ## Core Files
@@ -150,19 +150,26 @@ Do not pretend to know a root cause. If it is not known, write `unknown` and des
 
 ### 7. Record Execution Prompts
 
-Use `Execution Prompts` for prompts that directly guided vibecoding execution.
+Use `Execution Prompts` as the engineering prompt ledger. This is mandatory for prompts that directly guided vibecoding execution.
 
 Record:
 
 - agent or tool used
 - prompt type: `build`, `refactor`, `debug`, `test`, `design`, `deploy`, or `research`
 - prompt visibility: `hidden`, `summary`, or `full`
+- recording mode: `exact`, `redacted`, `reconstructed`, or `summary_only`
 - safe prompt summary
-- full prompt only when the user allows it
+- exact prompt text for engineering execution prompts unless redacted for secrets or privacy
 - result
 - reuse notes for future agents
 
-Never record secrets, API keys, tokens, private credentials, or private personal data in prompt text. If a prompt contains sensitive details, record a safe summary and set prompt visibility to `summary` or `hidden`.
+Strict boundary:
+
+- If a prompt asks an agent to build, edit, debug, test, refactor, design implementation, deploy, inspect files, run commands, or perform engineering research, record it here.
+- Record exact prompt text by default for engineering execution prompts.
+- Never record secrets, API keys, tokens, private credentials, or private personal data in prompt text. Redact only the sensitive parts and set recording mode to `redacted`.
+- If an old prompt is reconstructed from memory, conversation, files, or git history, set recording mode to `reconstructed`.
+- Do not put ordinary idea-chat messages here. For chat-like idea exploration, extract only the idea changes, human judgments, decisions, and open questions into their own sections.
 
 ### 8. Append Progress Chronologically
 
@@ -194,6 +201,8 @@ Default to private:
 Ask before changing visibility from private to any public value.
 
 Do not expose full prompts by default. Prefer summaries unless the user explicitly wants full prompt logging.
+
+This visibility rule controls what can be published. It does not remove the local requirement to record engineering execution prompts in `Execution Prompts`.
 
 ## Handoff Rule
 

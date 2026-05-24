@@ -82,6 +82,23 @@ The current version of the idea.
 
 ## Execution Prompts
 
+### unknown
+**Agent / Tool:** 
+
+**Prompt Type:** build / refactor / debug / test / design / deploy / research
+
+**Prompt Visibility:** summary
+
+**Recording Mode:** exact
+
+**Prompt Summary:** 
+
+**Prompt Text:** 
+
+**Result:** 
+
+**Reuse Notes:** 
+
 ## Development Log
 
 ## Vibe Progress
