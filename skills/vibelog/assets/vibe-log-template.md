@@ -85,7 +85,7 @@ The current version of the idea.
 ### unknown
 **Agent / Tool:** 
 
-**Prompt Type:** build / refactor / debug / test / design / deploy / research
+**Prompt Type:** build / refactor / debug / test / design / docs / deploy / research
 
 **Prompt Visibility:** summary
 

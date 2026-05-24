@@ -216,7 +216,7 @@ The long-term product may become a website for private idea libraries, public id
 
 ### Current State
 
-The VibeLog v0.1 design exists, and the first standalone `skills/vibelog` skill package has been created in the repository. The standard now includes first-class records for human-in-the-loop judgment, normal project work, bug fixes, and strict engineering execution prompt capture.
+The VibeLog v0.1 design exists, and the first standalone `skills/vibelog` skill package has been created in the repository. The standard now includes first-class records for human-in-the-loop judgment, normal project work, bug fixes, and strict engineering execution prompt capture. The repository now has GitHub-ready project documentation.
 
 ### Completed
 
@@ -231,6 +231,7 @@ The VibeLog v0.1 design exists, and the first standalone `skills/vibelog` skill 
 - Added `Development Log` support to the standard, skill, template, schema, and project example.
 - Added `Human-in-the-Loop` support to the standard, skill, template, schema, and project example.
 - Strengthened execution prompt logging so engineering execution prompts are recorded strictly, while idea chat is distilled into idea changes and human judgment records.
+- Added a GitHub-ready `README.md`, `.gitignore`, and `.gitattributes`.
 
 ### In Progress
 
@@ -276,6 +277,9 @@ The VibeLog v0.1 design exists, and the first standalone `skills/vibelog` skill 
 - `skills/vibelog/assets/vibe-log.schema.json`: JSON export schema.
 - `skills/vibelog/agents/openai.yaml`: Codex UI metadata.
 - `vibe-log.md`: this project's own VibeLog.
+- `README.md`: GitHub-facing project overview and quick start.
+- `.gitignore`: common local file exclusions.
+- `.gitattributes`: normalized line ending rules for repository text files.
 
 ### Run / Test Commands
 
@@ -378,6 +382,23 @@ The VibeLog v0.1 design exists, and the first standalone `skills/vibelog` skill 
 
 **Reuse Notes:** Future agents must treat engineering prompts as a strict ledger and treat ordinary idea chat as distilled product context.
 
+### 2026-05-25
+**Agent / Tool:** Codex
+
+**Prompt Type:** docs
+
+**Prompt Visibility:** summary
+
+**Recording Mode:** exact
+
+**Prompt Summary:** User asked to prepare the repository for GitHub upload by filling in README and related files.
+
+**Prompt Text:** 我要上传github，你补齐readme等
+
+**Result:** Added `README.md`, `.gitignore`, and `.gitattributes`.
+
+**Reuse Notes:** Future agents should keep GitHub-facing docs aligned with the actual skill package and avoid adding a license without a user decision.
+
 ## Development Log
 
 ### 2026-05-25
@@ -437,6 +458,25 @@ The VibeLog v0.1 design exists, and the first standalone `skills/vibelog` skill 
 
 **Follow-up:** Consider adding an exporter that validates every execution prompt has `recording_mode` and `prompt_text`.
 
+### 2026-05-25
+**Type:** docs
+
+**Summary:** Added GitHub-ready repository documentation.
+
+**Files Changed:** `README.md`, `.gitignore`, `.gitattributes`, `vibe-log.md`, `vibe-log.json`
+
+**Details:** Added a GitHub-facing README explaining VibeLog's purpose, core records, repository structure, quick start, current status, and next steps. Added `.gitignore` for common local files and `.gitattributes` to normalize line endings.
+
+**Bug Symptom:** not applicable
+
+**Root Cause:** not applicable
+
+**Fix:** not applicable
+
+**Verification:** Pending final README review, JSON/schema checks, and git status.
+
+**Follow-up:** Decide on a license before broad public reuse.
+
 ## Vibe Progress
 
 ### 2026-05-25
@@ -464,6 +504,21 @@ The VibeLog v0.1 design exists, and the first standalone `skills/vibelog` skill 
 **Problems:** `quick_validate.py` could not run because PyYAML is missing.
 
 **Next:** Validate manually, review with the user, then decide whether to install locally.
+
+**Source:** current work session
+
+**Confidence:** high
+
+### 2026-05-25
+**Stage:** prototype
+
+**What Happened:** Prepared the VibeLog repository for GitHub upload with README and repository hygiene files.
+
+**Tools Used:** Codex
+
+**Problems:** No GitHub remote is configured yet, so this step only prepares local repository content.
+
+**Next:** Verify docs and JSON, commit the update, then configure a GitHub remote when the target repository exists.
 
 **Source:** current work session
 

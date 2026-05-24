@@ -23,7 +23,7 @@ Use this skill when the user wants to:
 - Call the skill in the middle of an existing vibe product and reconstruct prior context.
 - Record current implementation status for handoff to another agent.
 - Record normal project development work, including features, bug fixes, refactors, tests, docs, chores, releases, and config changes.
-- Strictly record vibecoding engineering execution prompts used for building, editing, debugging, testing, refactoring, implementation design, deployment, file inspection, command execution, or research.
+- Strictly record vibecoding engineering execution prompts used for building, editing, debugging, testing, refactoring, implementation design, documentation, deployment, file inspection, command execution, or research.
 - Generate or refresh JSON suitable for future website upload.
 
 ## Core Files
@@ -155,7 +155,7 @@ Use `Execution Prompts` as the engineering prompt ledger. This is mandatory for 
 Record:
 
 - agent or tool used
-- prompt type: `build`, `refactor`, `debug`, `test`, `design`, `deploy`, or `research`
+- prompt type: `build`, `refactor`, `debug`, `test`, `design`, `docs`, `deploy`, or `research`
 - prompt visibility: `hidden`, `summary`, or `full`
 - recording mode: `exact`, `redacted`, `reconstructed`, or `summary_only`
 - safe prompt summary
@@ -165,7 +165,7 @@ Record:
 
 Strict boundary:
 
-- If a prompt asks an agent to build, edit, debug, test, refactor, design implementation, deploy, inspect files, run commands, or perform engineering research, record it here.
+- If a prompt asks an agent to build, edit, debug, test, refactor, design implementation, write docs, deploy, inspect files, run commands, or perform engineering research, record it here.
 - Record exact prompt text by default for engineering execution prompts.
 - Never record secrets, API keys, tokens, private credentials, or private personal data in prompt text. Redact only the sensitive parts and set recording mode to `redacted`.
 - If an old prompt is reconstructed from memory, conversation, files, or git history, set recording mode to `reconstructed`.

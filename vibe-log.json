@@ -168,7 +168,7 @@
     "Which agent ecosystem should get the next adapter after Codex: Claude Code, Cursor rules, or AGENTS.md?"
   ],
   "implementation_status": {
-    "current_state": "The VibeLog v0.1 design exists, and the first standalone skills/vibelog package has been created in the repository. The standard now includes first-class records for human-in-the-loop judgment, normal project work, bug fixes, and strict engineering execution prompt capture.",
+    "current_state": "The VibeLog v0.1 design exists, and the first standalone skills/vibelog package has been created in the repository. The standard now includes first-class records for human-in-the-loop judgment, normal project work, bug fixes, and strict engineering execution prompt capture. The repository now has GitHub-ready project documentation.",
     "completed": [
       "Created the VibeLog v0.1 design document.",
       "Added mid-project reconstruction and execution prompt logging to the standard.",
@@ -180,7 +180,8 @@
       "Created project-level vibe-log.md and vibe-log.json.",
       "Added Development Log support to the standard, skill, template, schema, and project example.",
       "Added Human-in-the-Loop support to the standard, skill, template, schema, and project example.",
-      "Strengthened execution prompt logging so engineering execution prompts are recorded strictly, while idea chat is distilled into idea changes and human judgment records."
+      "Strengthened execution prompt logging so engineering execution prompts are recorded strictly, while idea chat is distilled into idea changes and human judgment records.",
+      "Added a GitHub-ready README.md, .gitignore, and .gitattributes."
     ],
     "in_progress": ["Validating that the skill package is coherent and usable."],
     "pending": [
@@ -214,7 +215,10 @@
       "skills/vibelog/assets/vibe-log.schema.json",
       "skills/vibelog/agents/openai.yaml",
       "vibe-log.md",
-      "vibe-log.json"
+      "vibe-log.json",
+      "README.md",
+      ".gitignore",
+      ".gitattributes"
     ],
     "run_commands": [],
     "test_commands": [
@@ -284,6 +288,17 @@
       "prompt_text": "记住，所有vibecoding中agent下达的工程执行的提示词需要严格记录，类似于聊天的想法只用抽取出idea变化就行",
       "result": "Strengthened the Execution Prompts rules and separated engineering execution prompt logging from chat idea distillation.",
       "reuse_notes": "Future agents must treat engineering prompts as a strict ledger and treat ordinary idea chat as distilled product context."
+    },
+    {
+      "timestamp": "2026-05-25",
+      "agent_or_tool": "Codex",
+      "prompt_type": "docs",
+      "prompt_visibility": "summary",
+      "recording_mode": "exact",
+      "prompt_summary": "User asked to prepare the repository for GitHub upload by filling in README and related files.",
+      "prompt_text": "我要上传github，你补齐readme等",
+      "result": "Added README.md, .gitignore, and .gitattributes.",
+      "reuse_notes": "Future agents should keep GitHub-facing docs aligned with the actual skill package and avoid adding a license without a user decision."
     }
   ],
   "development_log": [
@@ -352,6 +367,20 @@
       "follow_up": ["Consider adding an exporter that validates every execution prompt has recording_mode and prompt_text."],
       "source": "current work session",
       "confidence": "high"
+    },
+    {
+      "timestamp": "2026-05-25",
+      "type": "docs",
+      "summary": "Added GitHub-ready repository documentation.",
+      "files_changed": ["README.md", ".gitignore", ".gitattributes", "vibe-log.md", "vibe-log.json"],
+      "details": "Added a GitHub-facing README explaining VibeLog's purpose, core records, repository structure, quick start, current status, and next steps. Added .gitignore for common local files and .gitattributes to normalize line endings.",
+      "bug_symptom": "not applicable",
+      "root_cause": "not applicable",
+      "fix": "not applicable",
+      "verification": "Pending final README review, JSON/schema checks, and git status.",
+      "follow_up": ["Decide on a license before broad public reuse."],
+      "source": "current work session",
+      "confidence": "high"
     }
   ],
   "vibe_progress": [
@@ -402,6 +431,16 @@
       "tools_used": ["Codex"],
       "problems": ["Needed to preserve exact execution prompts without turning VibeLog into a general chat transcript."],
       "next": ["Verify JSON/schema checks, ensure all execution prompt entries include recording mode and prompt text, then commit."],
+      "source": "current work session",
+      "confidence": "high"
+    },
+    {
+      "timestamp": "2026-05-25",
+      "stage": "prototype",
+      "what_happened": "Prepared the VibeLog repository for GitHub upload with README and repository hygiene files.",
+      "tools_used": ["Codex"],
+      "problems": ["No GitHub remote is configured yet, so this step only prepares local repository content."],
+      "next": ["Verify docs and JSON, commit the update, then configure a GitHub remote when the target repository exists."],
       "source": "current work session",
       "confidence": "high"
     }

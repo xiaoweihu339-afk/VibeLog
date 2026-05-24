@@ -181,7 +181,7 @@
         "properties": {
           "timestamp": { "type": "string" },
           "agent_or_tool": { "type": "string" },
-          "prompt_type": { "enum": ["build", "refactor", "debug", "test", "design", "deploy", "research"] },
+          "prompt_type": { "enum": ["build", "refactor", "debug", "test", "design", "docs", "deploy", "research"] },
           "prompt_visibility": { "enum": ["hidden", "summary", "full"] },
           "recording_mode": { "enum": ["exact", "redacted", "reconstructed", "summary_only"] },
           "prompt_summary": { "type": "string" },

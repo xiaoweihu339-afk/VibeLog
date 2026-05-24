@@ -128,6 +128,7 @@ refactor
 debug
 test
 design
+docs
 deploy
 research
 ```
