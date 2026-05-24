@@ -20,6 +20,7 @@ Required sections:
 ## Implementation Status
 ## Project Context
 ## Execution Prompts
+## Development Log
 ## Vibe Progress
 ## Public Summary
 ```
@@ -116,9 +117,22 @@ deploy
 research
 ```
 
+`development_log.type`:
+
+```txt
+feature
+bugfix
+refactor
+test
+docs
+chore
+release
+config
+```
+
 ## Mid-Project Reconstruction
 
-If a log is created after work has already begun, add reconstructed entries to `Idea Evolution`, `Decisions`, `Implementation Status`, `Execution Prompts`, and `Vibe Progress` as needed.
+If a log is created after work has already begun, add reconstructed entries to `Idea Evolution`, `Decisions`, `Implementation Status`, `Execution Prompts`, `Development Log`, and `Vibe Progress` as needed.
 
 Use this metadata inside reconstructed entries:
 

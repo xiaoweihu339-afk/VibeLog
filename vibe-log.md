@@ -1,7 +1,7 @@
 ---
 schema: vibelog@0.1
 title: "VibeLog"
-one_line_vibe: "I want to create a Markdown-first skill that records messy vibe product ideas, idea evolution, implementation status, and execution prompts so any agent can continue the work."
+one_line_vibe: "I want to create a Markdown-first skill that records messy vibe product ideas, idea evolution, implementation status, development logs, and execution prompts so any agent can continue the work."
 stage: prototype
 visibility: private
 code_visibility: hidden
@@ -21,11 +21,11 @@ updated_at: "2026-05-25"
 
 ## One-Line Vibe
 
-I want to create a Markdown-first skill that records messy vibe product ideas, idea evolution, implementation status, and execution prompts so any agent can continue the work.
+I want to create a Markdown-first skill that records messy vibe product ideas, idea evolution, implementation status, development logs, and execution prompts so any agent can continue the work.
 
 ## Current Idea
 
-VibeLog is an independent agent skill and logging standard. It is useful before any website exists. It records a vibe product's one-line idea, expanded idea, direction changes, implementation status, handoff context, and vibecoding execution prompts in a human-readable Markdown file that can later be exported to JSON.
+VibeLog is an independent agent skill and logging standard. It is useful before any website exists. It records a vibe product's one-line idea, expanded idea, direction changes, implementation status, handoff context, normal development work, bug fixes, and vibecoding execution prompts in a human-readable Markdown file that can later be exported to JSON.
 
 The long-term product may become a website for private idea libraries, public idea spaces, vibe progress branches, and product showcases, but the current focus is to build the standalone skill first.
 
@@ -34,7 +34,7 @@ The long-term product may become a website for private idea libraries, public id
 - Problem: Vibe builders often have scattered ideas, midstream pivots, and AI execution prompts that disappear across chats, tools, and agents.
 - Target users: people using Codex, Claude Code, Cursor, Windsurf, Lovable, Bolt, Replit, or other AI tools to create vibe products.
 - Why it matters: a structured log lets people preserve idea evolution, resume work later, hand off to another agent, and optionally publish progress in the future.
-- Core features: one-line idea, idea expansion, idea evolution, decisions, open questions, implementation status, project context, execution prompts, vibe progress, JSON export.
+- Core features: one-line idea, idea expansion, idea evolution, decisions, open questions, implementation status, project context, execution prompts, development log, bug fix records, vibe progress, JSON export.
 - Use cases: starting a new vibe product, joining a product midstream, reconstructing prior thinking, recording implementation state, and preparing future upload content.
 
 ## Idea Evolution
@@ -104,6 +104,19 @@ The long-term product may become a website for private idea libraries, public id
 
 **Confidence:** high
 
+### 2026-05-25
+**Type:** expansion
+
+**Before:** VibeLog records vibe progress and implementation status, but normal project development events are not first-class entries.
+
+**After:** VibeLog includes a `Development Log` section for features, bug fixes, refactors, tests, docs, chores, releases, and config changes.
+
+**Reason:** Real vibe products still need normal development history. Bug fixes especially need symptom, root cause, fix, and verification so another agent can continue safely.
+
+**Source:** user request
+
+**Confidence:** high
+
 ## Decisions
 
 ### 2026-05-25
@@ -121,6 +134,11 @@ The long-term product may become a website for private idea libraries, public id
 
 **Why:** Vibecoding prompts are operational context for future agents, but they need visibility controls to avoid leaking sensitive details.
 
+### 2026-05-25
+**Decision:** Add `Development Log` as a first-class section rather than overloading `Vibe Progress`.
+
+**Why:** `Vibe Progress` captures product and creative movement, while `Development Log` captures concrete engineering events such as bug fixes, refactors, tests, docs, releases, and chores.
+
 ## Open Questions
 
 - Should a future exporter script generate `vibe-log.json` deterministically from Markdown?
@@ -131,7 +149,7 @@ The long-term product may become a website for private idea libraries, public id
 
 ### Current State
 
-The VibeLog v0.1 design exists, and the first standalone `skills/vibelog` skill package has been created in the repository.
+The VibeLog v0.1 design exists, and the first standalone `skills/vibelog` skill package has been created in the repository. The standard now includes a first-class development log for normal project work and bug fixes.
 
 ### Completed
 
@@ -143,6 +161,7 @@ The VibeLog v0.1 design exists, and the first standalone `skills/vibelog` skill 
 - Created `skills/vibelog/assets/vibe-log.schema.json`.
 - Created `skills/vibelog/agents/openai.yaml`.
 - Created this project-level `vibe-log.md` by reconstructing prior conversation context.
+- Added `Development Log` support to the standard, skill, template, schema, and project example.
 
 ### In Progress
 
@@ -235,6 +254,42 @@ The VibeLog v0.1 design exists, and the first standalone `skills/vibelog` skill 
 
 **Reuse Notes:** Future agents should continue from the standalone skill package and keep website work secondary.
 
+### 2026-05-25
+**Agent / Tool:** Codex
+
+**Prompt Type:** design
+
+**Prompt Visibility:** summary
+
+**Prompt Summary:** User asked to add bug fix logging and make VibeLog able to contain normal project development logs.
+
+**Prompt Text:** hidden
+
+**Result:** Added `Development Log` as a first-class section covering features, bug fixes, refactors, tests, docs, chores, releases, and config changes.
+
+**Reuse Notes:** Future agents should use `Development Log` for engineering history and reserve `Vibe Progress` for product-level timeline updates.
+
+## Development Log
+
+### 2026-05-25
+**Type:** feature
+
+**Summary:** Added first-class development logging to VibeLog.
+
+**Files Changed:** `docs/superpowers/specs/2026-05-25-vibelog-v0.1-design.md`, `skills/vibelog/SKILL.md`, `skills/vibelog/references/vibelog-format.md`, `skills/vibelog/assets/vibe-log-template.md`, `skills/vibelog/assets/vibe-log.schema.json`, `vibe-log.md`, `vibe-log.json`
+
+**Details:** Added a `Development Log` section for normal project development events. The section supports feature, bugfix, refactor, test, docs, chore, release, and config entries. Bugfix entries include fields for symptom, root cause, fix, verification, and follow-up.
+
+**Bug Symptom:** not applicable
+
+**Root Cause:** not applicable
+
+**Fix:** not applicable
+
+**Verification:** Pending final JSON/schema and content scans.
+
+**Follow-up:** Consider whether future exporter logic should derive `Development Log` entries from git commits.
+
 ## Vibe Progress
 
 ### 2026-05-25
@@ -267,6 +322,21 @@ The VibeLog v0.1 design exists, and the first standalone `skills/vibelog` skill 
 
 **Confidence:** high
 
+### 2026-05-25
+**Stage:** prototype
+
+**What Happened:** Extended VibeLog to include normal project development logs and bug fix records.
+
+**Tools Used:** Codex
+
+**Problems:** Needed to keep engineering logs distinct from product-level vibe progress.
+
+**Next:** Verify schema, example JSON, and scans, then commit the update.
+
+**Source:** current work session
+
+**Confidence:** high
+
 ## Public Summary
 
-VibeLog is a Markdown-first skill and standard for recording vibe product ideas, idea evolution, implementation status, handoff context, and vibecoding execution prompts. It is designed to work independently before any website exists, while keeping a future JSON upload path open.
+VibeLog is a Markdown-first skill and standard for recording vibe product ideas, idea evolution, implementation status, development logs, handoff context, and vibecoding execution prompts. It is designed to work independently before any website exists, while keeping a future JSON upload path open.

@@ -80,7 +80,8 @@ The current version of the idea.
 
 ## Execution Prompts
 
+## Development Log
+
 ## Vibe Progress
 
 ## Public Summary
-

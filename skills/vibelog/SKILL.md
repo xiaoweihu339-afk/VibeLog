@@ -21,6 +21,7 @@ Use this skill when the user wants to:
 - Start or update a `vibe-log.md`.
 - Call the skill in the middle of an existing vibe product and reconstruct prior context.
 - Record current implementation status for handoff to another agent.
+- Record normal project development work, including features, bug fixes, refactors, tests, docs, chores, releases, and config changes.
 - Record vibecoding execution prompts used for building, debugging, testing, design, deployment, or research.
 - Generate or refresh JSON suitable for future website upload.
 
@@ -105,7 +106,32 @@ Keep `Implementation Status` useful for handoff:
 
 If there is code, keep `Project Context` current with important files and run/test commands.
 
-### 5. Record Execution Prompts
+### 5. Record Development Work
+
+Use `Development Log` for normal project development events that a future agent may need to understand.
+
+Record the entry type:
+
+- `feature`
+- `bugfix`
+- `refactor`
+- `test`
+- `docs`
+- `chore`
+- `release`
+- `config`
+
+For bug fixes, capture as much of this as is known:
+
+- bug symptom
+- root cause
+- fix
+- verification
+- follow-up
+
+Do not pretend to know a root cause. If it is not known, write `unknown` and describe the evidence.
+
+### 6. Record Execution Prompts
 
 Use `Execution Prompts` for prompts that directly guided vibecoding execution.
 
@@ -121,7 +147,7 @@ Record:
 
 Never record secrets, API keys, tokens, private credentials, or private personal data in prompt text. If a prompt contains sensitive details, record a safe summary and set prompt visibility to `summary` or `hidden`.
 
-### 6. Append Progress Chronologically
+### 7. Append Progress Chronologically
 
 Use `Vibe Progress` for chronological updates. Each meaningful session should include:
 
@@ -133,7 +159,7 @@ Use `Vibe Progress` for chronological updates. Each meaningful session should in
 
 Keep progress concise. The log should be readable, not a transcript dump.
 
-### 7. Export JSON
+### 8. Export JSON
 
 When asked to export or prepare upload data, generate `vibe-log.json` from `vibe-log.md` using the schema in `assets/vibe-log.schema.json`.
 
@@ -161,6 +187,7 @@ Before ending a work session, make sure the next agent can answer:
 - What has already changed in the idea?
 - What is implemented?
 - What is completed, in progress, pending, or blocked?
+- What development work was recently completed, especially bug fixes?
 - What prompt directions were important?
 - What should happen next?
 

@@ -1,7 +1,7 @@
 {
   "schema": "vibelog@0.1",
   "title": "VibeLog",
-  "one_line_vibe": "I want to create a Markdown-first skill that records messy vibe product ideas, idea evolution, implementation status, and execution prompts so any agent can continue the work.",
+  "one_line_vibe": "I want to create a Markdown-first skill that records messy vibe product ideas, idea evolution, implementation status, development logs, and execution prompts so any agent can continue the work.",
   "stage": "prototype",
   "visibility": "private",
   "code_visibility": "hidden",
@@ -11,7 +11,7 @@
   "tags": ["vibelog", "agent-skill", "vibe-coding"],
   "created_at": "2026-05-25",
   "updated_at": "2026-05-25",
-  "current_idea": "VibeLog is an independent agent skill and logging standard. It records a vibe product's one-line idea, expanded idea, direction changes, implementation status, handoff context, and vibecoding execution prompts in a human-readable Markdown file that can later be exported to JSON.",
+  "current_idea": "VibeLog is an independent agent skill and logging standard. It records a vibe product's one-line idea, expanded idea, direction changes, implementation status, handoff context, normal development work, bug fixes, and vibecoding execution prompts in a human-readable Markdown file that can later be exported to JSON.",
   "idea_expansion": {
     "problem": "Vibe builders often have scattered ideas, midstream pivots, and AI execution prompts that disappear across chats, tools, and agents.",
     "target_users": ["AI-assisted builders", "vibe coders", "non-technical product creators", "agent users"],
@@ -23,6 +23,8 @@
       "implementation status",
       "project context",
       "execution prompts",
+      "development log",
+      "bug fix records",
       "vibe progress",
       "JSON export"
     ],
@@ -79,6 +81,15 @@
       "reason": "A vibe product may switch agents midstream; the next agent needs historical context, current status, and key prompt directions.",
       "source": "user request",
       "confidence": "high"
+    },
+    {
+      "timestamp": "2026-05-25",
+      "type": "expansion",
+      "before": "VibeLog records vibe progress and implementation status, but normal project development events are not first-class entries.",
+      "after": "VibeLog includes a Development Log section for features, bug fixes, refactors, tests, docs, chores, releases, and config changes.",
+      "reason": "Real vibe products still need normal development history. Bug fixes especially need symptom, root cause, fix, and verification so another agent can continue safely.",
+      "source": "user request",
+      "confidence": "high"
     }
   ],
   "decisions": [
@@ -96,6 +107,11 @@
       "timestamp": "2026-05-25",
       "decision": "Record execution prompts separately from general progress.",
       "why": "Vibecoding prompts are operational context for future agents, but they need visibility controls."
+    },
+    {
+      "timestamp": "2026-05-25",
+      "decision": "Add Development Log as a first-class section rather than overloading Vibe Progress.",
+      "why": "Vibe Progress captures product and creative movement, while Development Log captures concrete engineering events such as bug fixes, refactors, tests, docs, releases, and chores."
     }
   ],
   "open_questions": [
@@ -104,7 +120,7 @@
     "Which agent ecosystem should get the next adapter after Codex: Claude Code, Cursor rules, or AGENTS.md?"
   ],
   "implementation_status": {
-    "current_state": "The VibeLog v0.1 design exists, and the first standalone skills/vibelog package has been created in the repository.",
+    "current_state": "The VibeLog v0.1 design exists, and the first standalone skills/vibelog package has been created in the repository. The standard now includes a first-class development log for normal project work and bug fixes.",
     "completed": [
       "Created the VibeLog v0.1 design document.",
       "Added mid-project reconstruction and execution prompt logging to the standard.",
@@ -113,7 +129,8 @@
       "Created skills/vibelog/assets/vibe-log-template.md.",
       "Created skills/vibelog/assets/vibe-log.schema.json.",
       "Created skills/vibelog/agents/openai.yaml.",
-      "Created project-level vibe-log.md and vibe-log.json."
+      "Created project-level vibe-log.md and vibe-log.json.",
+      "Added Development Log support to the standard, skill, template, schema, and project example."
     ],
     "in_progress": ["Validating that the skill package is coherent and usable."],
     "pending": [
@@ -182,6 +199,40 @@
       "prompt_text": "hidden",
       "result": "Created the first VibeLog skill package and reconstructed project log.",
       "reuse_notes": "Future agents should continue from the standalone skill package and keep website work secondary."
+    },
+    {
+      "timestamp": "2026-05-25",
+      "agent_or_tool": "Codex",
+      "prompt_type": "design",
+      "prompt_visibility": "summary",
+      "prompt_summary": "User asked to add bug fix logging and make VibeLog able to contain normal project development logs.",
+      "prompt_text": "hidden",
+      "result": "Added Development Log as a first-class section covering features, bug fixes, refactors, tests, docs, chores, releases, and config changes.",
+      "reuse_notes": "Future agents should use Development Log for engineering history and reserve Vibe Progress for product-level timeline updates."
+    }
+  ],
+  "development_log": [
+    {
+      "timestamp": "2026-05-25",
+      "type": "feature",
+      "summary": "Added first-class development logging to VibeLog.",
+      "files_changed": [
+        "docs/superpowers/specs/2026-05-25-vibelog-v0.1-design.md",
+        "skills/vibelog/SKILL.md",
+        "skills/vibelog/references/vibelog-format.md",
+        "skills/vibelog/assets/vibe-log-template.md",
+        "skills/vibelog/assets/vibe-log.schema.json",
+        "vibe-log.md",
+        "vibe-log.json"
+      ],
+      "details": "Added a Development Log section for normal project development events. The section supports feature, bugfix, refactor, test, docs, chore, release, and config entries. Bugfix entries include fields for symptom, root cause, fix, verification, and follow-up.",
+      "bug_symptom": "not applicable",
+      "root_cause": "not applicable",
+      "fix": "not applicable",
+      "verification": "Pending final JSON/schema and content scans.",
+      "follow_up": ["Consider whether future exporter logic should derive Development Log entries from git commits."],
+      "source": "current work session",
+      "confidence": "high"
     }
   ],
   "vibe_progress": [
@@ -204,7 +255,17 @@
       "next": ["Validate manually, review with the user, then decide whether to install locally."],
       "source": "current work session",
       "confidence": "high"
+    },
+    {
+      "timestamp": "2026-05-25",
+      "stage": "prototype",
+      "what_happened": "Extended VibeLog to include normal project development logs and bug fix records.",
+      "tools_used": ["Codex"],
+      "problems": ["Needed to keep engineering logs distinct from product-level vibe progress."],
+      "next": ["Verify schema, example JSON, and scans, then commit the update."],
+      "source": "current work session",
+      "confidence": "high"
     }
   ],
-  "public_summary": "VibeLog is a Markdown-first skill and standard for recording vibe product ideas, idea evolution, implementation status, handoff context, and vibecoding execution prompts. It is designed to work independently before any website exists, while keeping a future JSON upload path open."
+  "public_summary": "VibeLog is a Markdown-first skill and standard for recording vibe product ideas, idea evolution, implementation status, development logs, handoff context, and vibecoding execution prompts. It is designed to work independently before any website exists, while keeping a future JSON upload path open."
 }

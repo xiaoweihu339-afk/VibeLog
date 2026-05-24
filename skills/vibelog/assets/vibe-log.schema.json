@@ -161,6 +161,28 @@
         "additionalProperties": false
       }
     },
+    "development_log": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "timestamp": { "type": "string" },
+          "type": { "enum": ["feature", "bugfix", "refactor", "test", "docs", "chore", "release", "config"] },
+          "summary": { "type": "string" },
+          "files_changed": { "type": "array", "items": { "type": "string" } },
+          "details": { "type": "string" },
+          "bug_symptom": { "type": "string" },
+          "root_cause": { "type": "string" },
+          "fix": { "type": "string" },
+          "verification": { "type": "string" },
+          "follow_up": { "type": "array", "items": { "type": "string" } },
+          "source": { "type": "string" },
+          "confidence": { "enum": ["high", "medium", "low"] }
+        },
+        "required": ["timestamp", "type", "summary"],
+        "additionalProperties": false
+      }
+    },
     "vibe_progress": {
       "type": "array",
       "items": {
