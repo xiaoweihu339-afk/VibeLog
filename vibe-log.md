@@ -206,6 +206,23 @@ The long-term product may become a website for private idea libraries, public id
 
 **Confidence:** high
 
+### 2026-05-25
+**Type:** direction
+
+**Human Input:** The user asked to write the first MVP requirements document for VibeLog Studio.
+
+**Agent Proposal:** The agent had recommended using GitHub's repository-first growth pattern as a model and starting with the Vibe Project object.
+
+**Final Decision:** Create a requirements document for a route-A simplified MVP: a local-first VibeLog Studio that can later grow into a community platform.
+
+**Why It Mattered:** This turns the product discussion into an implementation-ready product artifact while preserving the long-term architecture direction.
+
+**Impact:** Added a product requirements document under `docs/product/`.
+
+**Source:** user request
+
+**Confidence:** high
+
 ## Open Questions
 
 - Should a future exporter script generate `vibe-log.json` deterministically from Markdown?
@@ -216,7 +233,7 @@ The long-term product may become a website for private idea libraries, public id
 
 ### Current State
 
-The VibeLog v0.1 design exists, and the first standalone `skills/vibelog` skill package has been created in the repository. The standard now includes first-class records for human-in-the-loop judgment, normal project work, bug fixes, and strict engineering execution prompt capture. The repository now has GitHub-ready project documentation.
+The VibeLog v0.1 design exists, and the first standalone `skills/vibelog` skill package has been created in the repository. The standard now includes first-class records for human-in-the-loop judgment, normal project work, bug fixes, and strict engineering execution prompt capture. The repository now has GitHub-ready project documentation and a first MVP requirements document for VibeLog Studio.
 
 ### Completed
 
@@ -232,6 +249,7 @@ The VibeLog v0.1 design exists, and the first standalone `skills/vibelog` skill 
 - Added `Human-in-the-Loop` support to the standard, skill, template, schema, and project example.
 - Strengthened execution prompt logging so engineering execution prompts are recorded strictly, while idea chat is distilled into idea changes and human judgment records.
 - Added a GitHub-ready `README.md`, `.gitignore`, and `.gitattributes`.
+- Added the first VibeLog Studio MVP requirements document.
 
 ### In Progress
 
@@ -280,6 +298,7 @@ The VibeLog v0.1 design exists, and the first standalone `skills/vibelog` skill 
 - `README.md`: GitHub-facing project overview and quick start.
 - `.gitignore`: common local file exclusions.
 - `.gitattributes`: normalized line ending rules for repository text files.
+- `docs/product/vibelog-studio-mvp-requirements.md`: first product requirements document for the VibeLog Studio MVP.
 
 ### Run / Test Commands
 
@@ -399,6 +418,23 @@ The VibeLog v0.1 design exists, and the first standalone `skills/vibelog` skill 
 
 **Reuse Notes:** Future agents should keep GitHub-facing docs aligned with the actual skill package and avoid adding a license without a user decision.
 
+### 2026-05-25
+**Agent / Tool:** Codex
+
+**Prompt Type:** docs
+
+**Prompt Visibility:** summary
+
+**Recording Mode:** exact
+
+**Prompt Summary:** User asked to write the first MVP requirements document.
+
+**Prompt Text:** 好先写第一版mvp需求文档
+
+**Result:** Created `docs/product/vibelog-studio-mvp-requirements.md` with product thesis, GitHub-inspired model, MVP scope, user stories, screens, data model, architecture, tech stack, risks, success criteria, and open questions.
+
+**Reuse Notes:** Future implementation planning should use this requirements document as the product source of truth.
+
 ## Development Log
 
 ### 2026-05-25
@@ -476,6 +512,25 @@ The VibeLog v0.1 design exists, and the first standalone `skills/vibelog` skill 
 **Verification:** Pending final README review, JSON/schema checks, and git status.
 
 **Follow-up:** Decide on a license before broad public reuse.
+
+### 2026-05-25
+**Type:** docs
+
+**Summary:** Added first VibeLog Studio MVP requirements document.
+
+**Files Changed:** `docs/product/vibelog-studio-mvp-requirements.md`, `vibe-log.md`, `vibe-log.json`
+
+**Details:** Documented the VibeLog Studio MVP as a local-first workspace inspired by GitHub's repository-first growth model. The requirements cover goals, non-goals, target users, user stories, Vibe Project data model, screens, storage strategy, architecture, tech stack, future hooks, success criteria, risks, and open questions.
+
+**Bug Symptom:** not applicable
+
+**Root Cause:** not applicable
+
+**Fix:** not applicable
+
+**Verification:** Pending Markdown review, JSON/schema checks, and git status.
+
+**Follow-up:** Use this requirements document to create the implementation plan before building the app.
 
 ## Vibe Progress
 
@@ -564,6 +619,21 @@ The VibeLog v0.1 design exists, and the first standalone `skills/vibelog` skill 
 **Problems:** Needed to keep engineering logs distinct from product-level vibe progress.
 
 **Next:** Verify schema, example JSON, and scans, then commit the update.
+
+**Source:** current work session
+
+**Confidence:** high
+
+### 2026-05-25
+**Stage:** brief
+
+**What Happened:** Wrote the first VibeLog Studio MVP requirements document.
+
+**Tools Used:** Codex
+
+**Problems:** Needed to keep MVP simple while preserving long-term platform architecture.
+
+**Next:** Review the requirements document, then create an implementation plan if approved.
 
 **Source:** current work session
 
