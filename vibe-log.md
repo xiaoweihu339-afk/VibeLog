@@ -1,12 +1,14 @@
 ---
-schema: vibelog@0.1
+schema: vibelog@0.2-draft
 title: "VibeLog"
-one_line_vibe: "I want to create a Markdown-first skill that records messy vibe product ideas, human judgment, idea evolution, implementation status, development logs, and execution prompts so any agent can continue the work."
+one_line_vibe: "I want to create a Markdown-first, hook-friendly skill that automatically records vibe ideas, human and agent decisions, prompts, implementation progress, validation, artifacts, and handoff state so any agent can continue the work."
 stage: prototype
 visibility: private
 code_visibility: hidden
 prompt_visibility: summary
 collaboration_status: closed
+creation_mode: human_ai_co_created
+process_level: core
 tools:
   - Codex
 tags:
@@ -21,13 +23,19 @@ updated_at: "2026-05-25"
 
 ## One-Line Vibe
 
-I want to create a Markdown-first skill that records messy vibe product ideas, human judgment, idea evolution, implementation status, development logs, and execution prompts so any agent can continue the work.
+I want to create a Markdown-first, hook-friendly skill that automatically records vibe ideas, human and agent decisions, prompts, implementation progress, validation, artifacts, and handoff state so any agent can continue the work.
+
+## Creation Mode
+
+**Mode:** human_ai_co_created
+
+**Notes:** The human sets product direction and acceptance priorities; agents help structure the standard, update the skill package, and prepare implementation-ready artifacts.
 
 ## Current Idea
 
-VibeLog is an independent agent skill and logging standard. It is useful before any website exists. It records a vibe product's one-line idea, expanded idea, human judgment, direction changes, implementation status, handoff context, normal development work, bug fixes, and vibecoding execution prompts in a human-readable Markdown file that can later be exported to JSON.
+VibeLog is an independent agent skill and process record standard. It is useful before any website exists. It records a vibe product's one-line idea, expanded idea, human judgment, direction changes, implementation status, validation design, verification evidence, artifact references, handoff context, normal development work, bug fixes, and vibecoding execution prompts in a human-readable Markdown file that can later be exported to JSON.
 
-The long-term product may become a website for private idea libraries, public idea spaces, vibe progress branches, and product showcases, but the current focus is to build the standalone skill first.
+The long-term product may become VibeHub, a GitHub-like platform around Vibe Repos. The current focus is to make the standalone VibeLog skill strong enough to serve as the bottom-layer automatic process recorder, especially for a Claude Code hook adapter.
 
 ## Idea Expansion
 
@@ -143,6 +151,19 @@ The long-term product may become a website for private idea libraries, public id
 
 **Confidence:** high
 
+### 2026-05-25
+**Type:** expansion
+
+**Before:** VibeLog was a manual Markdown-first logging skill with idea, prompt, development, and handoff sections.
+
+**After:** VibeLog is a hook-friendly automatic process record skill for Vibe Repos, with creation mode, process level, validation design, verification evidence, artifact index, handoff state, and Claude Code adapter guidance.
+
+**Reason:** The user decided to use Claude Code for execution and wanted the needed skill updated first so hooks can automatically maintain VibeLog during normal vibe coding.
+
+**Source:** user request
+
+**Confidence:** high
+
 ## Decisions
 
 ### 2026-05-25
@@ -169,6 +190,16 @@ The long-term product may become a website for private idea libraries, public id
 **Decision:** Add `Human-in-the-Loop` as a first-class section rather than relying only on `Decisions`.
 
 **Why:** Some decisions are specifically valuable because a human made or corrected them. The log should preserve human steering, not just final outcomes.
+
+### 2026-05-25
+**Decision:** Upgrade the skill standard before building the Claude Code adapter.
+
+**Why:** The adapter should implement a stable VibeLog process record instead of inventing hook behavior ad hoc.
+
+### 2026-05-25
+**Decision:** Treat validation design, verification evidence, artifact index, and handoff state as first-class VibeLog sections.
+
+**Why:** Vibe coding can look complete without being verified or handoff-ready; future agents need process memory and product evidence.
 
 ## Human-in-the-Loop
 
@@ -223,6 +254,23 @@ The long-term product may become a website for private idea libraries, public id
 
 **Confidence:** high
 
+### 2026-05-25
+**Type:** direction
+
+**Human Input:** The user decided to use Claude Code for engineering execution and keep Codex as the product discussion and idea partner.
+
+**Agent Proposal:** Codex suggested Claude Code for hook-first implementation and Codex for product thinking, prompt design, and review.
+
+**Final Decision:** Update the needed VibeLog skill first, then let Claude Code build the adapter around the updated standard.
+
+**Why It Mattered:** It separates product thinking from hook-based execution while proving that VibeLog can coordinate multiple agents around one Vibe Repo.
+
+**Impact:** VibeLog skill now includes hook-friendly automatic recording rules and Claude Code adapter notes.
+
+**Source:** user request
+
+**Confidence:** high
+
 ## Open Questions
 
 - Should a future exporter script generate `vibe-log.json` deterministically from Markdown?
@@ -233,7 +281,7 @@ The long-term product may become a website for private idea libraries, public id
 
 ### Current State
 
-The VibeLog v0.1 design exists, and the first standalone `skills/vibelog` skill package has been created in the repository. The standard now includes first-class records for human-in-the-loop judgment, normal project work, bug fixes, and strict engineering execution prompt capture. The repository now has GitHub-ready project documentation and a first MVP requirements document for VibeLog Studio.
+The VibeLog skill has been upgraded into a v0.2 draft process record standard for Vibe Repos. It now treats creation mode, validation design, verification evidence, artifact index, handoff state, and Claude Code hook automation as first-class concerns, while preserving the original Markdown-first and JSON-exportable design.
 
 ### Completed
 
@@ -250,17 +298,22 @@ The VibeLog v0.1 design exists, and the first standalone `skills/vibelog` skill 
 - Strengthened execution prompt logging so engineering execution prompts are recorded strictly, while idea chat is distilled into idea changes and human judgment records.
 - Added a GitHub-ready `README.md`, `.gitignore`, and `.gitattributes`.
 - Added the first VibeLog Studio MVP requirements document.
+- Added a long-term VibeHub product document.
+- Upgraded `skills/vibelog/SKILL.md` for automatic hook-friendly process recording.
+- Added `creation_mode`, `process_level`, validation, verification, artifact, handoff, and remix fields to the template and schema.
+- Added Claude Code hook adapter notes.
+- Updated README and skill metadata to match the v0.2 draft direction.
 
 ### In Progress
 
-- Validating that the skill package is coherent and usable.
+- Validating that the v0.2 draft skill package is coherent and ready for Claude Code adapter work.
 
 ### Pending
 
-- Decide whether to install the skill into the local Codex skills directory.
+- Review the updated VibeLog v0.2 draft skill standard.
+- Ask Claude Code to design and implement the first hook adapter around the updated standard.
 - Add a deterministic JSON exporter if needed.
-- Add a sample `vibe-log.json` export for this project.
-- Create adapters for other agent environments.
+- Add richer example Vibe Repos after the adapter exists.
 
 ### Blocked
 
@@ -268,17 +321,82 @@ The VibeLog v0.1 design exists, and the first standalone `skills/vibelog` skill 
 
 ### Next Actions
 
-- Run lightweight manual validation on skill metadata and schema.
-- Review the skill wording for trigger clarity and token efficiency.
-- Ask the user whether to install the skill locally after the repo version is accepted.
+- Validate the updated schema and skill references.
+- Hand Claude Code a focused prompt to implement the hook adapter.
+- Use the adapter on this repository to test automatic VibeLog updates.
 
 ### Important Context for Next Agent
 
 - The current priority is the standalone VibeLog skill, not the website.
 - The website remains a long-term vision but should not drive the first implementation.
 - Markdown must remain the source of truth.
-- Execution prompts should default to summaries, not full prompt dumps.
+- Execution prompts should default to local exact recording with public summaries unless the user explicitly chooses full public prompt visibility.
 - Public visibility changes require explicit user confirmation.
+- VibeLog is now being shaped as a bottom-layer, hook-friendly process recorder for Vibe Repos.
+- Claude Code is the preferred first execution environment because its hooks can update VibeLog automatically during the vibe process.
+
+## Validation Design
+
+### Success Criteria
+
+- A future Claude Code adapter can use the skill docs to decide which hook events update which VibeLog sections.
+- A future agent can read the generated VibeLog and understand the current idea, decisions, prompts, implementation status, validation plan, artifacts, and next actions.
+- Markdown remains readable by a human, while JSON can represent the same process record for agents and VibeHub.
+
+### Core User Paths
+
+- User vibes naturally; hook scripts classify the event and update VibeLog.
+- User asks for engineering execution; the exact prompt is recorded locally with safe visibility rules.
+- Agent changes files or runs tests; development log and verification evidence are updated.
+- Turn ends; handoff state and JSON export are refreshed.
+
+### Manual Test Steps
+
+- Read `skills/vibelog/SKILL.md` and verify it explains automatic process recording.
+- Read `skills/vibelog/assets/vibe-log-template.md` and verify all first-class sections exist.
+- Parse `skills/vibelog/assets/vibe-log.schema.json` as JSON.
+- Ask Claude Code to create an implementation plan using the updated skill and check whether it targets the right hook events.
+
+### Automated Test Strategy
+
+No deterministic exporter exists yet. For now, validate JSON syntax and use manual review. Future work should add schema validation for exported `vibe-log.json`.
+
+### Edge Cases
+
+- User only discusses ideas, with no engineering execution.
+- User prompt contains secrets and must be redacted.
+- Hook runs after a failed command.
+- Hook runs during context compaction.
+- Existing VibeLog is partially outdated or still uses `vibelog@0.1`.
+
+### Regression Points
+
+- Do not turn ordinary chat into transcript dumps.
+- Do not expose full prompts publicly by default.
+- Do not claim verification without evidence.
+- Do not overwrite historical idea evolution.
+
+### Risks / Safety / Privacy Checks
+
+- Full engineering prompts may contain private details; public projection should default to summaries.
+- Hook scripts should not publish or upload anything without explicit user consent.
+
+## Verification Evidence
+
+### 2026-05-25
+**Type:** command_output
+
+**Summary:** Parsed `skills/vibelog/assets/vibe-log.schema.json` with Node.js successfully after the schema update.
+
+**Evidence Ref:** `node -e "JSON.parse(require('fs').readFileSync('skills/vibelog/assets/vibe-log.schema.json','utf8')); console.log('schema json ok')"`
+
+**Result:** passed
+
+**Residual Risk:** This checks JSON syntax only, not full schema correctness against sample exports.
+
+**Source:** current work session
+
+**Confidence:** high
 
 ## Project Context
 
@@ -291,6 +409,7 @@ The VibeLog v0.1 design exists, and the first standalone `skills/vibelog` skill 
 - `docs/superpowers/specs/2026-05-25-vibelog-v0.1-design.md`: VibeLog v0.1 standard design.
 - `skills/vibelog/SKILL.md`: main skill instructions.
 - `skills/vibelog/references/vibelog-format.md`: detailed format reference.
+- `skills/vibelog/references/claude-code-hooks-adapter.md`: Claude Code hook adapter guidance.
 - `skills/vibelog/assets/vibe-log-template.md`: starter Markdown template.
 - `skills/vibelog/assets/vibe-log.schema.json`: JSON export schema.
 - `skills/vibelog/agents/openai.yaml`: Codex UI metadata.
@@ -299,6 +418,8 @@ The VibeLog v0.1 design exists, and the first standalone `skills/vibelog` skill 
 - `.gitignore`: common local file exclusions.
 - `.gitattributes`: normalized line ending rules for repository text files.
 - `docs/product/vibelog-studio-mvp-requirements.md`: first product requirements document for the VibeLog Studio MVP.
+- `docs/product/vibehub-long-term-product-document.md`: long-term VibeHub product document.
+- `docs/releases/v0.2-draft.md`: release notes for the second draft version.
 
 ### Run / Test Commands
 
@@ -313,6 +434,48 @@ The VibeLog v0.1 design exists, and the first standalone `skills/vibelog` skill 
 
 - Do not shift focus back to the website before the standalone skill is usable.
 - Do not make public upload behavior required for v0.1.
+
+## Artifact Index
+
+### skills/vibelog
+
+**Type:** agent_config
+
+**Ref:** `skills/vibelog/`
+
+**Visibility:** private
+
+**Notes:** The distributable VibeLog skill package.
+
+### VibeLog schema
+
+**Type:** document
+
+**Ref:** `skills/vibelog/assets/vibe-log.schema.json`
+
+**Visibility:** private
+
+**Notes:** JSON schema for the v0.2 draft process record.
+
+### Claude Code adapter notes
+
+**Type:** document
+
+**Ref:** `skills/vibelog/references/claude-code-hooks-adapter.md`
+
+**Visibility:** private
+
+**Notes:** Guidance for implementing the first hook-based adapter.
+
+### VibeLog v0.2 draft release notes
+
+**Type:** document
+
+**Ref:** `docs/releases/v0.2-draft.md`
+
+**Visibility:** public
+
+**Notes:** Human-readable notes explaining the second version.
 
 ## Execution Prompts
 
@@ -435,6 +598,23 @@ The VibeLog v0.1 design exists, and the first standalone `skills/vibelog` skill 
 
 **Reuse Notes:** Future implementation planning should use this requirements document as the product source of truth.
 
+### 2026-05-25
+**Agent / Tool:** Codex
+
+**Prompt Type:** docs
+
+**Prompt Visibility:** summary
+
+**Recording Mode:** exact
+
+**Prompt Summary:** User asked to update the needed skill before asking Claude Code to execute the adapter work.
+
+**Prompt Text:** 在此之前，我们先更新我们需要的skill。
+
+**Result:** Upgraded VibeLog skill, template, schema, format reference, Claude Code adapter notes, README, and project VibeLog toward the v0.2 draft automatic process record standard.
+
+**Reuse Notes:** Future Claude Code work should use the updated VibeLog skill as the process source of truth.
+
 ## Development Log
 
 ### 2026-05-25
@@ -531,6 +711,86 @@ The VibeLog v0.1 design exists, and the first standalone `skills/vibelog` skill 
 **Verification:** Pending Markdown review, JSON/schema checks, and git status.
 
 **Follow-up:** Use this requirements document to create the implementation plan before building the app.
+
+### 2026-05-25
+**Type:** docs
+
+**Summary:** Upgraded VibeLog skill to the v0.2 draft automatic process record standard.
+
+**Files Changed:** `skills/vibelog/SKILL.md`, `skills/vibelog/assets/vibe-log-template.md`, `skills/vibelog/assets/vibe-log.schema.json`, `skills/vibelog/references/vibelog-format.md`, `skills/vibelog/references/claude-code-hooks-adapter.md`, `skills/vibelog/agents/openai.yaml`, `README.md`, `docs/releases/v0.2-draft.md`, `vibe-log.md`
+
+**Details:** Reframed VibeLog as a bottom-layer, hook-friendly process recorder for Vibe Repos. Added creation mode, process level, validation design, verification evidence, artifact index, handoff state, public/private projection, branch/remix readiness, and Claude Code hook adapter notes.
+
+**Bug Symptom:** not applicable
+
+**Root Cause:** not applicable
+
+**Fix:** not applicable
+
+**Verification:** Parsed `skills/vibelog/assets/vibe-log.schema.json` successfully with Node.js. Full exported sample validation is still pending because no deterministic Markdown-to-JSON exporter exists yet.
+
+**Follow-up:** Ask Claude Code to implement the first hook adapter using the updated skill as source of truth.
+
+## Bugfix / Incident Log
+
+No bugfix or incident entry for this update.
+
+## Handoff State
+
+### Current State
+
+VibeLog is now a v0.2 draft process record skill ready for Claude Code adapter planning. The repository has updated skill instructions, template, schema, format reference, Claude adapter notes, README, long-term product document, and self-recorded project log.
+
+### Completed
+
+- Updated the VibeLog skill for automatic hook-friendly process recording.
+- Added v0.2 draft template and schema fields.
+- Added Claude Code hook adapter notes.
+- Updated README and skill metadata.
+- Recorded the update in this VibeLog.
+
+### In Progress
+
+- Reviewing consistency between the updated skill, schema, and project log.
+
+### Pending
+
+- Claude Code adapter implementation plan.
+- Deterministic Markdown-to-JSON exporter.
+- Example Vibe Repo generated by the adapter.
+
+### Blockers
+
+- No deterministic exporter exists yet, so `vibe-log.json` must still be maintained manually or generated later.
+
+### Next Actions
+
+- Give Claude Code a focused prompt to implement the adapter.
+- Use the adapter on this repo.
+- Validate that another agent can continue from the generated VibeLog.
+
+### Context For Next Agent
+
+- Do not build the VibeHub website yet.
+- First prove the VibeLog skill and Claude Code hook adapter.
+- Keep `vibe-log.md` as source of truth and regenerate JSON after Markdown changes.
+
+## Public / Private Projection
+
+- Public summary: VibeLog is a Markdown-first, hook-friendly process record skill for vibe-built products.
+- Code visibility: hidden
+- Prompt visibility: summary
+- Collaboration status: closed
+- Remix permission: unknown
+- License / usage note: no license selected yet
+
+## Branch / Remix Readiness
+
+- Remix allowed: unknown
+- What can be reused: VibeLog ideas and public documentation after a license is selected.
+- What should not be reused: private prompts, private project context, or hidden code.
+- Suggested contribution areas: Claude Code adapter, deterministic exporter, sample Vibe Repos, schema validation.
+- Attribution requirements: pending license decision.
 
 ## Vibe Progress
 
@@ -639,6 +899,21 @@ The VibeLog v0.1 design exists, and the first standalone `skills/vibelog` skill 
 
 **Confidence:** high
 
+### 2026-05-25
+**Stage:** prototype
+
+**What Happened:** Upgraded VibeLog toward a v0.2 draft automatic process record standard and added Claude Code hook adapter guidance.
+
+**Tools Used:** Codex
+
+**Problems:** Needed to keep the update focused on the underlying skill and avoid starting the VibeHub website too early.
+
+**Next:** Use Claude Code to design and implement the first hook adapter.
+
+**Source:** current work session
+
+**Confidence:** high
+
 ## Public Summary
 
-VibeLog is a Markdown-first skill and standard for recording vibe product ideas, human judgment, idea evolution, implementation status, development logs, handoff context, and vibecoding execution prompts. It is designed to work independently before any website exists, while keeping a future JSON upload path open.
+VibeLog is a Markdown-first, hook-friendly skill and process record standard for vibe-built products. It records ideas, human and agent decisions, execution prompts, implementation status, validation design, verification evidence, artifacts, handoff state, and progress so future agents and VibeHub can continue from structured project memory.
