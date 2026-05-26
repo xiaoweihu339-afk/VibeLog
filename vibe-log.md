@@ -314,6 +314,23 @@ The long-term product may become VibeHub, a GitHub-like platform around Vibe Rep
 
 **Confidence:** high
 
+### 2026-05-26
+**Type:** direction
+
+**Human Input:** The user clarified that when verification can be done through vibe-style agent execution, it should not be done as manual human verification.
+
+**Agent Proposal:** The agent had described Slice 4 partly as local install and manual acceptance testing.
+
+**Final Decision:** Reframe Slice 4 as agent dogfood verification: the agent creates or simulates a small vibe project, records the process, exports JSON, validates it, and reports evidence for human review.
+
+**Why It Mattered:** This keeps VibeLog aligned with its core principle that the user can speak naturally while agents record and verify structurally.
+
+**Impact:** Slice 4 design now targets a repeatable agent-run verification protocol rather than a human checklist workflow.
+
+**Source:** user correction
+
+**Confidence:** high
+
 ## Open Questions
 
 - Should the next validator use the existing JSON Schema file directly or keep the lightweight validator as the default fast path?
@@ -324,7 +341,7 @@ The long-term product may become VibeHub, a GitHub-like platform around Vibe Rep
 
 ### Current State
 
-The VibeLog skill has a first deterministic Markdown-to-JSON exporter and lightweight validator for Slice 3. The repository remains skill-first: examples contain generated VibeLog records only, while scripts make `vibe-log.md` the source of truth and regenerate `vibe-log.json` for upload, search, handoff, or future VibeHub use.
+The VibeLog skill has a first deterministic Markdown-to-JSON exporter and lightweight validator. Slice 4 design is now focused on agent dogfood verification: if a VibeLog capability can be verified by an agent through a scratch vibe flow, the human should review the report instead of doing manual checklist labor.
 
 ### Completed
 
@@ -354,14 +371,16 @@ The VibeLog skill has a first deterministic Markdown-to-JSON exporter and lightw
 - Added `scripts/export-vibelog.mjs` for deterministic Markdown-to-JSON export.
 - Added `scripts/validate-vibelog.mjs` for practical JSON validation.
 - Added `docs/guides/export-json.md` and linked it from `README.md`.
+- Drafted the Slice 4 vibe-driven skill verification design.
 
 ### In Progress
 
-- No active implementation in Slice 3 after exporter and validator verification.
+- Slice 4 design is ready for user review before implementation planning.
 
 ### Pending
 
 - Review the updated VibeLog v0.2 draft skill standard.
+- Write the Slice 4 implementation plan after user review.
 - Ask Claude Code to design and implement the first hook adapter around the updated standard.
 - Add full JSON Schema validation.
 - Add richer example Vibe Repos after the adapter exists.
@@ -387,6 +406,7 @@ The VibeLog skill has a first deterministic Markdown-to-JSON exporter and lightw
 - Claude Code is the preferred first execution environment because its hooks can update VibeLog automatically during the vibe process.
 - Do not push to GitHub without separate explicit user approval.
 - `scripts/export-vibelog.mjs` supports the current strict Markdown subset and should stay conservative until more examples justify expansion.
+- Prefer agent dogfood verification over human manual verification when a repeatable vibe scenario can produce evidence.
 
 ## Validation Design
 
@@ -521,6 +541,21 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 **Result:** passed
 
 **Residual Risk:** The validator is intentionally lightweight and does not yet perform full JSON Schema validation.
+
+**Source:** current work session
+
+**Confidence:** high
+
+### 2026-05-26
+**Type:** review
+
+**Summary:** Verified the Slice 4 vibe-driven skill verification design.
+
+**Evidence Ref:** `rg -n "TBD|TODO|PLACEHOLDER|FIXME|\?\?" docs\superpowers\specs\2026-05-26-vibelog-vibe-verification-slice-4-design.md`; `node scripts/validate-vibelog.mjs vibe-log.json`; `node scripts/export-vibelog.mjs vibe-log.md --out vibe-log.json --check`; `node --test`; `node -e "for (const f of ['vibe-log.json','skills/vibelog/assets/vibe-log.schema.json']) { JSON.parse(require('fs').readFileSync(f,'utf8')); console.log('OK '+f); }"`; `git diff --check`
+
+**Result:** passed
+
+**Residual Risk:** This verifies the design and current repository checks only. Slice 4 implementation still needs a separate implementation plan and dogfood run.
 
 **Source:** current work session
 
@@ -757,6 +792,16 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 
 **Notes:** User-facing guide for exporting JSON, validating JSON, checking drift, and understanding current parser limits.
 
+### Slice 4 vibe verification design
+
+**Type:** document
+
+**Ref:** `docs/superpowers/specs/2026-05-26-vibelog-vibe-verification-slice-4-design.md`
+
+**Visibility:** private
+
+**Notes:** Design for replacing manual acceptance framing with agent-run dogfood verification.
+
 ## Execution Prompts
 
 ### 2026-05-25
@@ -979,6 +1024,23 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 **Result:** Started the strict-subset Markdown-to-JSON exporter and lightweight validator implementation with test-first coverage.
 
 **Reuse Notes:** Treat this as the execution authorization for Slice 3 implementation. Keep the scope conservative and do not push to GitHub without separate explicit approval.
+
+### 2026-05-26
+**Agent / Tool:** Codex
+
+**Prompt Type:** design
+
+**Prompt Visibility:** summary
+
+**Recording Mode:** exact
+
+**Prompt Summary:** User approved starting Slice 4.
+
+**Prompt Text:** 好开始slice4
+
+**Result:** Drafted the Slice 4 design around vibe-driven agent dogfood verification.
+
+**Reuse Notes:** Future agents should treat Slice 4 as agent-run verification first, not human manual checklist work.
 
 ## Development Log
 
@@ -1210,6 +1272,25 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 
 **Follow-up:** Add full JSON Schema validation after the lightweight validator proves useful.
 
+### 2026-05-26
+**Type:** docs
+
+**Summary:** Drafted the Slice 4 vibe-driven skill verification design.
+
+**Files Changed:** `docs/superpowers/specs/2026-05-26-vibelog-vibe-verification-slice-4-design.md`, `vibe-log.md`, `vibe-log.json`
+
+**Details:** Reframed Slice 4 around agent dogfood verification instead of manual human acceptance testing. The design defines goals, non-goals, considered approaches, deliverables, isolated and combined checks, human review criteria, error handling, and acceptance criteria.
+
+**Bug Symptom:** not applicable
+
+**Root Cause:** not applicable
+
+**Fix:** not applicable
+
+**Verification:** Passed. Placeholder scan returned no matches; `node --test` ran 9 tests successfully; root VibeLog JSON validated and matched Markdown; root JSON and schema parsed; `git diff --check` returned no output.
+
+**Follow-up:** Ask the user to review the Slice 4 design before writing the implementation plan.
+
 ## Bugfix / Incident Log
 
 No bugfix or incident entry for this update.
@@ -1218,7 +1299,7 @@ No bugfix or incident entry for this update.
 
 ### Current State
 
-VibeLog is a v0.2 draft process record skill. Slice 1.5, Slice 2, and the BillMate Lite dogfood example are committed locally. Slice 3 now adds a deterministic Markdown-to-JSON exporter and lightweight validator so Markdown can remain the source of truth while JSON can be regenerated for tools, handoff, and future upload.
+VibeLog is a v0.2 draft process record skill. Slice 1.5, Slice 2, the BillMate Lite dogfood example, and Slice 3 exporter are committed locally. Slice 4 design is now drafted around vibe-driven agent dogfood verification.
 
 ### Completed
 
@@ -1244,13 +1325,15 @@ VibeLog is a v0.2 draft process record skill. Slice 1.5, Slice 2, and the BillMa
 - Added exporter and validator tests under `test/`.
 - Added `docs/guides/export-json.md`.
 - Linked export usage from `README.md`.
+- Drafted the Slice 4 vibe-driven skill verification design.
 
 ### In Progress
 
-- No active implementation in Slice 3 after exporter and validator verification.
+- Slice 4 design is ready for user review.
 
 ### Pending
 
+- Write Slice 4 implementation plan after design review.
 - Full JSON Schema validation.
 - Example Vibe Repo generated by the adapter.
 - Any GitHub push requires a separate explicit user request.
@@ -1262,18 +1345,20 @@ VibeLog is a v0.2 draft process record skill. Slice 1.5, Slice 2, and the BillMa
 ### Next Actions
 
 - Use the exporter in the future Claude Code or Codex hook adapter.
+- Implement Slice 4 guides and a new agent-generated example if the design is approved.
 - Add full JSON Schema validation.
 - Decide whether to install the skill locally or keep iterating inside the repository first.
 
 ### Context For Next Agent
 
 - Do not build the VibeHub website yet.
-- First prove the VibeLog skill can be used and tested manually without a website.
+- First prove the VibeLog skill can be used and vibe-verified without a website.
 - Keep `vibe-log.md` as source of truth and regenerate JSON after Markdown changes.
 - Do not include VibeLog Studio application source code in this skill repo unless the user explicitly changes repository strategy.
 - Examples should contain generated VibeLog records, not app source.
 - Do not push to GitHub without separate explicit user approval.
-- Use `docs/guides/manual-test-guide.md` and `docs/guides/validation-checklist.md` for the next usability test.
+- Slice 4 should prefer agent dogfood verification over human manual verification.
+- Use `docs/superpowers/specs/2026-05-26-vibelog-vibe-verification-slice-4-design.md` as the source for the next implementation plan.
 - `examples/billmate-lite/` should contain generated logs only, not scratch source code.
 - Markdown is the source of truth; regenerate JSON with `scripts/export-vibelog.mjs`.
 - Validate generated JSON with `scripts/validate-vibelog.mjs`.
@@ -1502,6 +1587,21 @@ VibeLog is a v0.2 draft process record skill. Slice 1.5, Slice 2, and the BillMa
 **Problems:** Needed to keep parser scope conservative while still supporting the current root VibeLog and BillMate Lite example.
 
 **Next:** Verify tests and CLI commands, regenerate `vibe-log.json`, commit locally, then use the exporter as the foundation for hook automation.
+
+**Source:** current work session
+
+**Confidence:** high
+
+### 2026-05-26
+**Stage:** prototype
+
+**What Happened:** Drafted the Slice 4 design for vibe-driven skill verification.
+
+**Tools Used:** Codex, VibeLog
+
+**Problems:** Needed to avoid turning VibeLog verification into manual human checklist labor when an agent can create a scratch vibe flow and produce evidence.
+
+**Next:** Review the Slice 4 design, then write the implementation plan if approved.
 
 **Source:** current work session
 
