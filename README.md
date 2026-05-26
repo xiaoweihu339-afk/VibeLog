@@ -181,6 +181,9 @@ Human-readable version notes.
 
 Generated VibeLog examples from real or dogfood sessions. These examples show process records, not app source code.
 
+- `examples/vibelog-studio/`: generated log from the earlier VibeLog Studio dogfood session.
+- `examples/billmate-lite/`: generated log from an agent-simulated billing project dogfood test.
+
 ## Current Status
 
 This repository contains the VibeLog v0.2 draft prototype:

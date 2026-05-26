@@ -444,6 +444,17 @@
       "prompt_text": "确认，可以执行",
       "result": "Implemented the Slice 2 guide pack: quickstart, manual test guide, example scenario, validation checklist, agent usage guide, README links, implementation plan, and VibeLog updates.",
       "reuse_notes": "Future agents should use these guides to test VibeLog manually before building website or automation features."
+    },
+    {
+      "timestamp": "2026-05-26",
+      "agent_or_tool": "Codex",
+      "prompt_type": "build",
+      "prompt_visibility": "summary",
+      "recording_mode": "exact",
+      "prompt_summary": "User asked whether the agent could simulate a small billing project instead of requiring the user to manually test VibeLog.",
+      "prompt_text": "必须得我手动吗？你不可以模拟一个小项目，做一个账单啥的小项目去测试吗？",
+      "result": "Created a local scratch BillMate Lite project, followed a test-first flow, generated VibeLog files, and copied only the generated logs into examples/billmate-lite/.",
+      "reuse_notes": "Agent-simulated scratch projects are a good way to dogfood VibeLog before asking the user to provide real unfinished work."
     }
   ],
   "development_log": [
@@ -678,6 +689,32 @@
       ],
       "source": "current work session",
       "confidence": "high"
+    },
+    {
+      "timestamp": "2026-05-26",
+      "type": "test",
+      "summary": "Ran an agent-simulated BillMate Lite dogfood test.",
+      "files_changed": [
+        "examples/billmate-lite/README.md",
+        "examples/billmate-lite/vibe-log.md",
+        "examples/billmate-lite/vibe-log.json",
+        "README.md",
+        "vibe-log.md",
+        "vibe-log.json"
+      ],
+      "artifacts_changed": [
+        "examples/billmate-lite/"
+      ],
+      "details": "Created a scratch billing project outside the repository, wrote failing tests first, implemented a tiny Node.js settlement calculator, generated VibeLog Markdown and JSON for the scratch project, and copied only the generated logs into examples/billmate-lite/.",
+      "bug_symptom": "not applicable",
+      "root_cause": "not applicable",
+      "fix": "not applicable",
+      "verification": "npm test in the scratch project passed with 3 tests; examples/billmate-lite/vibe-log.json, root vibe-log.json, and skills/vibelog/assets/vibe-log.schema.json parsed successfully; examples/billmate-lite/ contains no src, test, or package.json.",
+      "follow_up": [
+        "Use this result to decide whether the next slice should be deterministic Markdown-to-JSON export."
+      ],
+      "source": "current work session",
+      "confidence": "high"
     }
   ],
   "vibe_progress": [
@@ -863,6 +900,25 @@
       ],
       "source": "current work session",
       "confidence": "high"
+    },
+    {
+      "timestamp": "2026-05-26",
+      "stage": "prototype",
+      "what_happened": "Ran an agent-simulated BillMate Lite dogfood test and added generated logs as a repo example.",
+      "tools_used": [
+        "Codex",
+        "Node.js",
+        "VibeLog"
+      ],
+      "problems": [
+        "Needed to prove VibeLog can record a realistic agent-led mini project without requiring the human to manually provide project material."
+      ],
+      "next": [
+        "Verify and commit the generated example locally.",
+        "Consider deterministic Markdown-to-JSON export as the next slice."
+      ],
+      "source": "current work session",
+      "confidence": "high"
     }
   ],
   "public_summary": "VibeLog is a Markdown-first, hook-friendly skill and process record standard for vibe-built products. It records ideas, human and agent decisions, execution prompts, implementation status, validation design, verification evidence, artifacts, handoff state, and progress so future agents and VibeHub can continue from structured project memory.",
@@ -961,6 +1017,16 @@
       "residual_risk": "This verifies guide existence, JSON syntax, placeholder scan, and repository boundary. It does not run a scratch-project manual test yet; that remains the next usability check.",
       "source": "current work session",
       "confidence": "high"
+    },
+    {
+      "timestamp": "2026-05-26",
+      "type": "review",
+      "summary": "Verified the BillMate Lite generated example.",
+      "evidence_ref": "npm test in C:\\Users\\HXW\\Documents\\vibelog-scratch\\billmate-lite; node -e JSON parse for examples/billmate-lite/vibe-log.json, root vibe-log.json, and skills/vibelog/assets/vibe-log.schema.json; Test-Path examples\\billmate-lite\\src/test/package.json",
+      "result": "passed",
+      "residual_risk": "The scratch project is intentionally tiny and does not test a deterministic Markdown-to-JSON exporter yet.",
+      "source": "current work session",
+      "confidence": "high"
     }
   ],
   "artifact_index": [
@@ -1033,11 +1099,18 @@
       "ref": "skills/vibelog/references/agent-usage-guide.md",
       "visibility": "private",
       "notes": "Operational guide for agents that call VibeLog during real project sessions."
+    },
+    {
+      "type": "document",
+      "name": "BillMate Lite dogfood example",
+      "ref": "examples/billmate-lite/",
+      "visibility": "private",
+      "notes": "Generated VibeLog files from an agent-simulated billing project dogfood test. Scratch source code is intentionally omitted."
     }
   ],
   "bugfix_incident_log": [],
   "handoff_state": {
-    "current_state": "VibeLog is a v0.2 draft process record skill. Slice 1.5 has been committed locally as edd7b9e, correcting the repository back to a skill-first shape. Slice 2 implementation has added a local guide pack so the skill can be started, manually tested, validated, and used by future agents without rebuilding website or app source code.",
+    "current_state": "VibeLog is a v0.2 draft process record skill. The repository is skill-first and now includes a BillMate Lite generated example from an agent-simulated scratch project. No scratch app source is included in the repository.",
     "completed": [
       "Updated the VibeLog skill for automatic hook-friendly process recording.",
       "Added v0.2 draft template and schema fields.",
@@ -1052,33 +1125,32 @@
       "Added the Slice 2 implementation plan.",
       "Added Quickstart, Manual Test Guide, Example Scenario, and Validation Checklist under docs/guides/.",
       "Added skills/vibelog/references/agent-usage-guide.md.",
-      "Linked the new guides from README.md and skills/vibelog/SKILL.md."
+      "Linked the new guides from README.md and skills/vibelog/SKILL.md.",
+      "Ran an agent-simulated BillMate Lite dogfood test outside the repository.",
+      "Added examples/billmate-lite/ with generated VibeLog files only."
     ],
     "in_progress": [
-      "Running final verification for Slice 2 implementation."
+      "Ready to commit the BillMate Lite generated example locally."
     ],
     "pending": [
-      "Manual scratch-project test using docs/guides/manual-test-guide.md.",
       "Deterministic Markdown-to-JSON exporter.",
-      "Example Vibe Repo generated by the adapter.",
+      "Example Vibe Repo generated by an adapter.",
       "Any GitHub push requires a separate explicit user request."
     ],
     "blockers": [
       "No deterministic exporter exists yet, so vibe-log.json must still be maintained manually or generated later."
     ],
     "next_actions": [
-      "Complete final Slice 2 verification.",
-      "Commit the Slice 2 guide pack locally.",
-      "Use the manual test guide on a scratch project before starting automation adapter work."
+      "Commit the BillMate Lite generated example locally.",
+      "Decide whether the next slice should be deterministic Markdown-to-JSON exporter or agent hook automation."
     ],
     "context_for_next_agent": [
       "Do not build the VibeHub website yet.",
-      "First prove the VibeLog skill can be used and tested manually without a website.",
-      "Keep vibe-log.md as source of truth and regenerate JSON after Markdown changes.",
+      "Keep the repository skill-first.",
+      "Examples should contain generated logs only, not app source.",
       "Do not push to GitHub without explicit user approval.",
-      "This repository is skill-first; examples contain generated logs only.",
-      "Do not include VibeLog Studio application source code in this skill repo unless the user explicitly changes repository strategy.",
-      "Use docs/guides/manual-test-guide.md and docs/guides/validation-checklist.md for the next usability test."
+      "examples/billmate-lite/ should contain README.md, vibe-log.md, and vibe-log.json only.",
+      "The scratch source path is C:\\Users\\HXW\\Documents\\vibelog-scratch\\billmate-lite."
     ]
   },
   "public_private_projection": {
