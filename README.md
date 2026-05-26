@@ -66,6 +66,12 @@ Chat-like idea exploration should not be copied as a transcript. It should be di
 
 VibeLog is designed for automation hooks. A future Claude Code or Codex adapter can update it continuously during events such as prompt submission, tool use, turn stop, and context compaction.
 
+## Repository Identity
+
+This repository is skill-first. Its primary purpose is to make the `vibelog` skill, schema, and documentation easy for others to reuse.
+
+Example projects are kept under `examples/` as generated VibeLog records only. They are not included as application source code in this repository.
+
 ## Automation Direction
 
 The first automation target is Claude Code because its hook system can call deterministic scripts during the coding lifecycle.
@@ -107,6 +113,11 @@ See [Claude Code adapter notes](skills/vibelog/references/claude-code-hooks-adap
 |   `-- superpowers/
 |       `-- specs/
 |           `-- 2026-05-25-vibelog-v0.1-design.md
+|-- examples/
+|   `-- vibelog-studio/
+|       |-- README.md
+|       |-- vibe-log.md
+|       `-- vibe-log.json
 |-- vibe-log.md
 `-- vibe-log.json
 ```
@@ -156,6 +167,10 @@ Product strategy and MVP requirements for the future VibeHub / VibeLog Studio di
 
 Human-readable version notes.
 
+### `examples/`
+
+Generated VibeLog examples from real or dogfood sessions. These examples show process records, not app source code.
+
 ## Current Status
 
 This repository contains the VibeLog v0.2 draft prototype:
@@ -176,7 +191,7 @@ It is ready for local testing and Claude Code adapter implementation. It is not 
 - Build and test a Claude Code hook adapter.
 - Install and test the skill in real agent sessions.
 - Add adapters for other agent environments, such as Codex hooks, Cursor rules, or AGENTS.md.
-- Add sample Vibe Repos produced by the hook adapter.
+- Add more generated VibeLog examples produced by real agent sessions.
 - Decide on a license before broad public reuse.
 
 ## License

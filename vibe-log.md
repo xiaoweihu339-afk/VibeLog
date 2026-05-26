@@ -201,6 +201,15 @@ The long-term product may become VibeHub, a GitHub-like platform around Vibe Rep
 
 **Why:** Vibe coding can look complete without being verified or handoff-ready; future agents need process memory and product evidence.
 
+### 2026-05-26
+**Decision:** Keep this repository skill-first and publish VibeLog Studio only as generated VibeLog example output, not as application source code.
+
+**Why:** VibeLog is intended for others to reuse as a skill. Including the dogfood app source in the main repository makes the repository look like an app project instead of a reusable skill package.
+
+**Source:** user correction
+
+**Confidence:** high
+
 ## Human-in-the-Loop
 
 ### 2026-05-25
@@ -217,6 +226,23 @@ The long-term product may become VibeHub, a GitHub-like platform around Vibe Rep
 **Impact:** Updated the standard, skill workflow, reference docs, template, schema, and project log to record human steering events explicitly.
 
 **Source:** user request
+
+**Confidence:** high
+
+### 2026-05-26
+**Type:** scope
+
+**Human Input:** The user clarified that VibeLog Studio should be uploaded only as the VibeLog generated during this engineering session, not as engineering source code.
+
+**Agent Proposal:** The agent proposed a local corrective restructuring that removes app source from the repository and keeps only `examples/vibelog-studio/vibe-log.md` and `examples/vibelog-studio/vibe-log.json` as the dogfood case.
+
+**Final Decision:** Keep the repository as a reusable VibeLog skill repo; move the dogfood process record into `examples/vibelog-studio/`; remove app source and temporary implementation docs from the local tree.
+
+**Why It Mattered:** This protects the public reuse path for the skill while still preserving a real generated VibeLog example.
+
+**Impact:** The repository structure is being corrected locally before any further push decision.
+
+**Source:** user correction
 
 **Confidence:** high
 
@@ -393,6 +419,21 @@ No deterministic exporter exists yet. For now, validate JSON syntax and use manu
 **Result:** passed
 
 **Residual Risk:** This checks JSON syntax only, not full schema correctness against sample exports.
+
+**Source:** current work session
+
+**Confidence:** high
+
+### 2026-05-26
+**Type:** command_output
+
+**Summary:** Verified the Slice 1.5 skill-first repository correction.
+
+**Evidence Ref:** `git status --short`; `git diff --name-status`; `git diff --stat`; `Test-Path apps\vibelog-studio`; `node -e "for (const f of ['vibe-log.json','examples/vibelog-studio/vibe-log.json','skills/vibelog/assets/vibe-log.schema.json']) { JSON.parse(require('fs').readFileSync(f,'utf8')); console.log('OK '+f); }"`
+
+**Result:** passed
+
+**Residual Risk:** This verifies local repository shape and JSON syntax only. It does not validate the example JSON against the schema because there is not yet a deterministic schema validation command in the repo.
 
 **Source:** current work session
 
@@ -731,6 +772,25 @@ No deterministic exporter exists yet. For now, validate JSON syntax and use manu
 
 **Follow-up:** Ask Claude Code to implement the first hook adapter using the updated skill as source of truth.
 
+### 2026-05-26
+**Type:** docs
+
+**Summary:** Corrected the local repository structure to keep VibeLog skill-first.
+
+**Files Changed:** `README.md`, `examples/vibelog-studio/README.md`, `examples/vibelog-studio/vibe-log.md`, `examples/vibelog-studio/vibe-log.json`, removed local `apps/vibelog-studio` source files and temporary Slice 1/Slice 2 superpowers docs.
+
+**Details:** Moved the VibeLog Studio dogfood process record into `examples/vibelog-studio/` and clarified that examples contain generated VibeLog output only, not application source code.
+
+**Bug Symptom:** The repository had started to look like a mixed skill/app monorepo after the dogfood app source was added.
+
+**Root Cause:** The push boundary and repository identity were not separated clearly enough before moving the dogfood app into the same repository.
+
+**Fix:** Locally removed the app source from the repository structure, kept only the generated VibeLog case, and updated documentation to state that this is a skill-first repo.
+
+**Verification:** Passed local Slice 1.5 review. `git status --short`, `git diff --name-status`, and `git diff --stat` confirmed the local correction scope; `Test-Path` confirmed `apps/vibelog-studio` is absent and `examples/vibelog-studio/README.md`, `vibe-log.md`, and `vibe-log.json` are present; Node.js parsed `vibe-log.json`, `examples/vibelog-studio/vibe-log.json`, and `skills/vibelog/assets/vibe-log.schema.json`.
+
+**Follow-up:** Review the local correction report with the user, then ask separately whether to create a local corrective commit. Ask for separate explicit approval before any GitHub push.
+
 ## Bugfix / Incident Log
 
 No bugfix or incident entry for this update.
@@ -739,7 +799,7 @@ No bugfix or incident entry for this update.
 
 ### Current State
 
-VibeLog is now a v0.2 draft process record skill ready for Claude Code adapter planning. The repository has updated skill instructions, template, schema, format reference, Claude adapter notes, README, long-term product document, and self-recorded project log.
+VibeLog is a v0.2 draft process record skill. The local repository is being corrected back to a skill-first shape: core skill files remain under `skills/vibelog/`, while the VibeLog Studio dogfood case is represented only by generated VibeLog files under `examples/vibelog-studio/`.
 
 ### Completed
 
@@ -748,16 +808,19 @@ VibeLog is now a v0.2 draft process record skill ready for Claude Code adapter p
 - Added Claude Code hook adapter notes.
 - Updated README and skill metadata.
 - Recorded the update in this VibeLog.
+- Moved the VibeLog Studio dogfood case to `examples/vibelog-studio/` as generated VibeLog output only.
+- Removed app source from the local repository structure.
 
 ### In Progress
 
-- Reviewing consistency between the updated skill, schema, and project log.
+- Reviewing the local structure correction before any further GitHub push decision.
 
 ### Pending
 
 - Claude Code adapter implementation plan.
 - Deterministic Markdown-to-JSON exporter.
 - Example Vibe Repo generated by the adapter.
+- User decision on whether to push the local structure correction to GitHub.
 
 ### Blockers
 
@@ -768,12 +831,15 @@ VibeLog is now a v0.2 draft process record skill ready for Claude Code adapter p
 - Give Claude Code a focused prompt to implement the adapter.
 - Use the adapter on this repo.
 - Validate that another agent can continue from the generated VibeLog.
+- Review the local diff and decide whether to push the skill-first correction to GitHub.
 
 ### Context For Next Agent
 
 - Do not build the VibeHub website yet.
 - First prove the VibeLog skill and Claude Code hook adapter.
 - Keep `vibe-log.md` as source of truth and regenerate JSON after Markdown changes.
+- Do not include VibeLog Studio application source code in this skill repo unless the user explicitly changes repository strategy.
+- Examples should contain generated VibeLog records, not app source.
 
 ## Public / Private Projection
 
@@ -909,6 +975,21 @@ VibeLog is now a v0.2 draft process record skill ready for Claude Code adapter p
 **Problems:** Needed to keep the update focused on the underlying skill and avoid starting the VibeHub website too early.
 
 **Next:** Use Claude Code to design and implement the first hook adapter.
+
+**Source:** current work session
+
+**Confidence:** high
+
+### 2026-05-26
+**Stage:** prototype
+
+**What Happened:** Locally corrected the repository back to a skill-first structure and kept VibeLog Studio only as generated VibeLog example output.
+
+**Tools Used:** Codex, VibeLog
+
+**Problems:** The previous pushed structure made the repository look like it included an app source project, which could confuse people trying to reuse the skill.
+
+**Next:** Review the local diff and decide whether to push the corrective commit to GitHub.
 
 **Source:** current work session
 
