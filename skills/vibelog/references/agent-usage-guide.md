@@ -136,6 +136,28 @@ Before ending a meaningful session, update handoff state so the next agent can a
 
 If the handoff state is vague, update it before stopping.
 
+## Progress Reporting Rules
+
+Every completed meaningful task should report conservative project progress to the human.
+
+Use the long-term VibeHub vision as `100%`, not the local repo's immediate tasks. The current baseline is:
+
+```txt
+Project Progress: 10 / 100
+```
+
+Final reports should include:
+
+- overall progress out of `100`
+- change this task
+- current phase
+- completed this task
+- next unlock
+- main risk
+- confidence
+
+Use `docs/guides/progress-reporting.md` and `docs/guides/progress-reporting.zh.md`. If a task only clarifies wording, rules, or documentation, the progress change is usually `+0`.
+
 ## Verification Rules
 
 Only record verification evidence for checks that actually happened.

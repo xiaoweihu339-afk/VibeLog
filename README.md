@@ -107,6 +107,8 @@ See [Claude Code adapter notes](skills/vibelog/references/claude-code-hooks-adap
 |-- docs/
 |   |-- guides/
 |   |   |-- export-json.md
+|   |   |-- progress-reporting.md
+|   |   |-- progress-reporting.zh.md
 |   |   |-- quickstart.md
 |   |   |-- manual-test-guide.md
 |   |   |-- example-scenario.md
@@ -211,6 +213,8 @@ Practical guides for using and testing the skill:
 
 - [Quickstart](docs/guides/quickstart.md)
 - [Export JSON](docs/guides/export-json.md)
+- [Project progress reporting](docs/guides/progress-reporting.md)
+- [项目进度汇报机制](docs/guides/progress-reporting.zh.md)
 - [Manual test guide](docs/guides/manual-test-guide.md)
 - [Example scenario](docs/guides/example-scenario.md)
 - [Validation checklist](docs/guides/validation-checklist.md)

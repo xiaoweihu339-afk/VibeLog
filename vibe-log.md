@@ -348,6 +348,23 @@ The long-term product may become VibeHub, a GitHub-like platform around Vibe Rep
 
 **Confidence:** high
 
+### 2026-05-26
+**Type:** direction
+
+**Human Input:** The user approved adding a project progress reporting mechanism, but clarified that the total goal is much more ambitious and the current progress is far below 36%.
+
+**Agent Proposal:** The agent initially suggested reporting current progress as `36 / 100`.
+
+**Final Decision:** Use a conservative long-term progress baseline of `10 / 100`, measured against the full VibeHub vision rather than the current repository's local task completion.
+
+**Why It Mattered:** This keeps progress reports honest for a project whose true goal includes VibeLog, agent workflows, hooks, Vibe Repo storage, VibeHub product layers, collaboration, remix, open-source reuse, and community.
+
+**Impact:** Added bilingual progress reporting guides and updated the skill/agent rules so future task reports include conservative project progress snapshots.
+
+**Source:** user correction
+
+**Confidence:** high
+
 ## Open Questions
 
 - Should the next validator use the existing JSON Schema file directly or keep the lightweight validator as the default fast path?
@@ -358,7 +375,7 @@ The long-term product may become VibeHub, a GitHub-like platform around Vibe Rep
 
 ### Current State
 
-The VibeLog skill has a first deterministic Markdown-to-JSON exporter and lightweight validator. Slice 4 design is now focused on agent dogfood verification, and all user-review artifacts must be bilingual Chinese-English.
+The VibeLog skill has a first deterministic Markdown-to-JSON exporter and lightweight validator. Slice 4 design is now focused on agent dogfood verification, all user-review artifacts must be bilingual Chinese-English, and completed task reports should include a conservative project progress snapshot. Current long-term progress baseline is `10 / 100`.
 
 ### Completed
 
@@ -590,6 +607,21 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 **Result:** passed
 
 **Residual Risk:** This verifies the bilingual design files and repository checks. Future user-facing review artifacts still need to follow the bilingual rule.
+
+**Source:** current work session
+
+**Confidence:** high
+
+### 2026-05-26
+**Type:** review
+
+**Summary:** Verified the conservative project progress reporting mechanism.
+
+**Evidence Ref:** `rg -n "TBD|TODO|PLACEHOLDER|FIXME|\?\?" docs\guides\progress-reporting.md docs\guides\progress-reporting.zh.md`; `node --test`; `node scripts/validate-vibelog.mjs vibe-log.json`; `node scripts/export-vibelog.mjs vibe-log.md --out vibe-log.json --check`; `node -e "for (const f of ['vibe-log.json','skills/vibelog/assets/vibe-log.schema.json']) { JSON.parse(require('fs').readFileSync(f,'utf8')); console.log('OK '+f); }"`; `git diff --check`
+
+**Result:** passed
+
+**Residual Risk:** This verifies the reporting rule and repository checks. Future reports still depend on agents applying the conservative scoring rule honestly.
 
 **Source:** current work session
 
@@ -845,6 +877,26 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 **Visibility:** private
 
 **Notes:** Chinese translation of the Slice 4 design for user review.
+
+### Project progress reporting guide
+
+**Type:** document
+
+**Ref:** `docs/guides/progress-reporting.md`
+
+**Visibility:** private
+
+**Notes:** English guide for conservative long-term project progress snapshots in task reports.
+
+### Project progress reporting guide Chinese translation
+
+**Type:** document
+
+**Ref:** `docs/guides/progress-reporting.zh.md`
+
+**Visibility:** private
+
+**Notes:** Chinese guide for conservative long-term project progress snapshots in task reports.
 
 ## Execution Prompts
 
@@ -1103,6 +1155,23 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 
 **Reuse Notes:** Future design specs, implementation plans, slice reports, verification reports, and product requirement documents that need user review should have Chinese and English versions.
 
+### 2026-05-26
+**Agent / Tool:** Codex
+
+**Prompt Type:** docs
+
+**Prompt Visibility:** summary
+
+**Recording Mode:** exact
+
+**Prompt Summary:** User asked to add a progress reporting mechanism and corrected the initial estimate as too high for the long-term goal.
+
+**Prompt Text:** 可以，但是总目标很宏远，现在进度远没有36
+
+**Result:** Added bilingual project progress reporting guides, set the conservative baseline to `10 / 100`, and updated the skill and agent usage guide.
+
+**Reuse Notes:** Future task completion reports should include the conservative progress snapshot and should not inflate progress based on local repository work alone.
+
 ## Development Log
 
 ### 2026-05-25
@@ -1352,6 +1421,25 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 
 **Follow-up:** Ask the user to review the bilingual Slice 4 design before writing the implementation plan.
 
+### 2026-05-26
+**Type:** docs
+
+**Summary:** Added conservative project progress reporting.
+
+**Files Changed:** `docs/guides/progress-reporting.md`, `docs/guides/progress-reporting.zh.md`, `skills/vibelog/SKILL.md`, `skills/vibelog/references/agent-usage-guide.md`, `README.md`, `vibe-log.md`, `vibe-log.json`
+
+**Details:** Added bilingual progress reporting guides and updated skill rules so future completed task reports include project progress, change this task, current phase, completed work, next unlock, main risk, and confidence. The baseline is conservative at `10 / 100` because the full target is VibeHub and the broader Vibe Repo ecosystem, not only the local skill repository.
+
+**Bug Symptom:** The initial progress suggestion of `36 / 100` overstated progress against the long-term platform vision.
+
+**Root Cause:** The first estimate weighted the current local VibeLog foundation too heavily instead of measuring against the full VibeHub/community goal.
+
+**Fix:** Set the current baseline to `10 / 100` and defined conservative progress bands plus change rules.
+
+**Verification:** Passed. Progress guide placeholder scan returned no matches; `node --test` ran 9 tests successfully; root VibeLog JSON validated and matched Markdown; root JSON and schema parsed; `git diff --check` returned no output.
+
+**Follow-up:** Include the project progress snapshot in every future completed task report.
+
 ## Bugfix / Incident Log
 
 No bugfix or incident entry for this update.
@@ -1361,6 +1449,16 @@ No bugfix or incident entry for this update.
 ### Current State
 
 VibeLog is a v0.2 draft process record skill. Slice 1.5, Slice 2, the BillMate Lite dogfood example, and Slice 3 exporter are committed locally. Slice 4 design is now drafted around vibe-driven agent dogfood verification.
+
+### Project Progress Snapshot
+
+- Project Progress: 10 / 100
+- Change This Task: +0
+- Current Phase: VibeLog foundation and verification
+- Completed This Task: Added conservative progress reporting mechanism
+- Next Unlock: Slice 4 implementation plan
+- Main Risk: Agent dogfood verification has not run end to end yet
+- Confidence: medium
 
 ### Completed
 
@@ -1389,6 +1487,11 @@ VibeLog is a v0.2 draft process record skill. Slice 1.5, Slice 2, the BillMate L
 - Drafted the Slice 4 vibe-driven skill verification design.
 - Added the Slice 4 Chinese design translation.
 - Added the bilingual review rule for user-facing design, plan, report, verification, and product requirement artifacts.
+- Added bilingual project progress reporting guides.
+- Added progress snapshot rules to `skills/vibelog/SKILL.md` and `skills/vibelog/references/agent-usage-guide.md`.
+- Added bilingual progress reporting guides.
+- Added conservative project progress snapshot rules to the VibeLog skill and agent usage guide.
+- Set the current long-term project progress baseline to `10 / 100`.
 
 ### In Progress
 
@@ -1422,6 +1525,8 @@ VibeLog is a v0.2 draft process record skill. Slice 1.5, Slice 2, the BillMate L
 - Do not push to GitHub without separate explicit user approval.
 - Slice 4 should prefer agent dogfood verification over human manual verification.
 - Every artifact that needs user review should be available in both Chinese and English.
+- Every completed meaningful task report should include a conservative progress snapshot using the long-term project target as `100`.
+- Current long-term project progress baseline is `10 / 100`, not `36 / 100`.
 - Use `docs/superpowers/specs/2026-05-26-vibelog-vibe-verification-slice-4-design.md` and `.zh.md` as the source for the next implementation plan.
 - `examples/billmate-lite/` should contain generated logs only, not scratch source code.
 - Markdown is the source of truth; regenerate JSON with `scripts/export-vibelog.mjs`.
@@ -1681,6 +1786,21 @@ VibeLog is a v0.2 draft process record skill. Slice 1.5, Slice 2, the BillMate L
 **Problems:** The Slice 4 design was a user-review artifact but existed only in English.
 
 **Next:** Review the bilingual Slice 4 design, then write bilingual implementation plans and reports going forward.
+
+**Source:** current work session
+
+**Confidence:** high
+
+### 2026-05-26
+**Stage:** prototype
+
+**What Happened:** Added a conservative project progress reporting mechanism.
+
+**Tools Used:** Codex, VibeLog
+
+**Problems:** The first proposed progress estimate was too high because the total goal includes the much larger VibeHub and Vibe Repo ecosystem.
+
+**Next:** Use `10 / 100` as the baseline until Slice 4 agent dogfood verification is implemented and verified.
 
 **Source:** current work session
 

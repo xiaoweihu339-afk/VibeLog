@@ -89,6 +89,7 @@ Use these bundled resources when needed:
 - `references/vibelog-format.md`: field reference.
 - `references/agent-usage-guide.md`: operational guide for agents using VibeLog during sessions.
 - `references/claude-code-hooks-adapter.md`: notes for implementing Claude Code hook automation.
+- `../../docs/guides/progress-reporting.md`: project progress reporting rule for human-facing task summaries.
 
 ## Standard Process Record
 
@@ -402,6 +403,30 @@ If the log does not answer these questions, update it.
 When asked to export or prepare upload data, generate `vibe-log.json` from `vibe-log.md` using the schema in `assets/vibe-log.schema.json`.
 
 Markdown remains the source of truth. If JSON and Markdown disagree, update Markdown first, then regenerate JSON.
+
+### 16. Report Conservative Project Progress
+
+When completing a meaningful task, include a project progress snapshot in the final human-facing report.
+
+Use the long-term VibeHub vision as `100%`, not the local repository task list. Keep the number conservative.
+
+Current baseline for this project:
+
+```txt
+Project Progress: 10 / 100
+```
+
+Include:
+
+- overall progress out of `100`
+- change from this task
+- current phase
+- what this task completed
+- next unlock
+- main risk or missing capability
+- confidence
+
+Use `docs/guides/progress-reporting.md` and `docs/guides/progress-reporting.zh.md` for the full rule.
 
 ## Visibility Rules
 
