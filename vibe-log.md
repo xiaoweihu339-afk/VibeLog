@@ -627,6 +627,21 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 
 **Confidence:** high
 
+### 2026-05-26
+**Type:** review
+
+**Summary:** Verified the bilingual Slice 4 implementation plan.
+
+**Evidence Ref:** `rg -n "TBD|TODO|PLACEHOLDER|FIXME|implement later|fill in|appropriate|same meaning|内容与|语义与" docs\superpowers\plans\2026-05-26-vibelog-vibe-verification-slice-4.md docs\superpowers\plans\2026-05-26-vibelog-vibe-verification-slice-4.zh.md`; `node --test`; `node scripts/validate-vibelog.mjs vibe-log.json`; `node scripts/export-vibelog.mjs vibe-log.md --out vibe-log.json --check`; `node -e "for (const f of ['vibe-log.json','skills/vibelog/assets/vibe-log.schema.json']) { JSON.parse(require('fs').readFileSync(f,'utf8')); console.log('OK '+f); }"`; `git diff --check`
+
+**Result:** passed
+
+**Residual Risk:** This verifies the implementation plan artifacts and current repository checks. Slice 4 dogfood execution has not run yet.
+
+**Source:** current work session
+
+**Confidence:** high
+
 ## Project Context
 
 ### Repo / Workspace
@@ -897,6 +912,26 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 **Visibility:** private
 
 **Notes:** Chinese guide for conservative long-term project progress snapshots in task reports.
+
+### Slice 4 vibe verification implementation plan
+
+**Type:** document
+
+**Ref:** `docs/superpowers/plans/2026-05-26-vibelog-vibe-verification-slice-4.md`
+
+**Visibility:** private
+
+**Notes:** English implementation plan for Slice 4 agent dogfood verification.
+
+### Slice 4 vibe verification implementation plan Chinese translation
+
+**Type:** document
+
+**Ref:** `docs/superpowers/plans/2026-05-26-vibelog-vibe-verification-slice-4.zh.md`
+
+**Visibility:** private
+
+**Notes:** Chinese implementation plan for Slice 4 agent dogfood verification.
 
 ## Execution Prompts
 
@@ -1172,6 +1207,23 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 
 **Reuse Notes:** Future task completion reports should include the conservative progress snapshot and should not inflate progress based on local repository work alone.
 
+### 2026-05-26
+**Agent / Tool:** Codex
+
+**Prompt Type:** docs
+
+**Prompt Visibility:** summary
+
+**Recording Mode:** exact
+
+**Prompt Summary:** User approved executing the next step, which is writing the Slice 4 implementation plan.
+
+**Prompt Text:** 好执行
+
+**Result:** Drafted the bilingual Slice 4 implementation plan for agent dogfood verification.
+
+**Reuse Notes:** This prompt authorizes the implementation plan checkpoint only. Dogfood execution should start after the user reviews and approves the plan.
+
 ## Development Log
 
 ### 2026-05-25
@@ -1440,6 +1492,25 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 
 **Follow-up:** Include the project progress snapshot in every future completed task report.
 
+### 2026-05-26
+**Type:** docs
+
+**Summary:** Drafted the Slice 4 implementation plan.
+
+**Files Changed:** `docs/superpowers/plans/2026-05-26-vibelog-vibe-verification-slice-4.md`, `docs/superpowers/plans/2026-05-26-vibelog-vibe-verification-slice-4.zh.md`, `vibe-log.md`, `vibe-log.json`
+
+**Details:** Added bilingual implementation plans for Slice 4. The plan starts with red example-integrity tests, adds bilingual verification guides and dogfood protocol, runs a scratch Reading Card Lite dogfood project outside the repository, copies only generated VibeLog records into `examples/reading-card-lite/`, validates export/drift/tests, and creates a bilingual final report.
+
+**Bug Symptom:** not applicable
+
+**Root Cause:** not applicable
+
+**Fix:** not applicable
+
+**Verification:** Passed. Placeholder scan returned no matches; `node --test` ran 9 tests successfully; root VibeLog JSON validated and matched Markdown; root JSON and schema parsed; `git diff --check` returned no output.
+
+**Follow-up:** Ask the user to review the bilingual implementation plan before starting dogfood execution.
+
 ## Bugfix / Incident Log
 
 No bugfix or incident entry for this update.
@@ -1448,15 +1519,15 @@ No bugfix or incident entry for this update.
 
 ### Current State
 
-VibeLog is a v0.2 draft process record skill. Slice 1.5, Slice 2, the BillMate Lite dogfood example, and Slice 3 exporter are committed locally. Slice 4 design is now drafted around vibe-driven agent dogfood verification.
+VibeLog is a v0.2 draft process record skill. Slice 1.5, Slice 2, the BillMate Lite dogfood example, and Slice 3 exporter are committed locally. Slice 4 bilingual design and implementation plan are now drafted around vibe-driven agent dogfood verification.
 
 ### Project Progress Snapshot
 
 - Project Progress: 10 / 100
 - Change This Task: +0
 - Current Phase: VibeLog foundation and verification
-- Completed This Task: Added conservative progress reporting mechanism
-- Next Unlock: Slice 4 implementation plan
+- Completed This Task: Drafted bilingual Slice 4 implementation plan
+- Next Unlock: Slice 4 dogfood execution
 - Main Risk: Agent dogfood verification has not run end to end yet
 - Confidence: medium
 
@@ -1492,14 +1563,15 @@ VibeLog is a v0.2 draft process record skill. Slice 1.5, Slice 2, the BillMate L
 - Added bilingual progress reporting guides.
 - Added conservative project progress snapshot rules to the VibeLog skill and agent usage guide.
 - Set the current long-term project progress baseline to `10 / 100`.
+- Drafted the Slice 4 implementation plan in English and Chinese.
 
 ### In Progress
 
-- Slice 4 bilingual design is ready for user review.
+- Slice 4 bilingual implementation plan is ready for user review.
 
 ### Pending
 
-- Write Slice 4 implementation plan after design review.
+- Execute Slice 4 implementation after plan review.
 - Full JSON Schema validation.
 - Example Vibe Repo generated by the adapter.
 - Any GitHub push requires a separate explicit user request.
@@ -1511,7 +1583,8 @@ VibeLog is a v0.2 draft process record skill. Slice 1.5, Slice 2, the BillMate L
 ### Next Actions
 
 - Use the exporter in the future Claude Code or Codex hook adapter.
-- Implement Slice 4 guides and a new agent-generated example if the design is approved.
+- Review the Slice 4 implementation plan.
+- Implement Slice 4 guides and a new agent-generated example if the plan is approved.
 - Add full JSON Schema validation.
 - Decide whether to install the skill locally or keep iterating inside the repository first.
 
@@ -1528,6 +1601,7 @@ VibeLog is a v0.2 draft process record skill. Slice 1.5, Slice 2, the BillMate L
 - Every completed meaningful task report should include a conservative progress snapshot using the long-term project target as `100`.
 - Current long-term project progress baseline is `10 / 100`, not `36 / 100`.
 - Use `docs/superpowers/specs/2026-05-26-vibelog-vibe-verification-slice-4-design.md` and `.zh.md` as the source for the next implementation plan.
+- Use `docs/superpowers/plans/2026-05-26-vibelog-vibe-verification-slice-4.md` and `.zh.md` to execute Slice 4 after review.
 - `examples/billmate-lite/` should contain generated logs only, not scratch source code.
 - Markdown is the source of truth; regenerate JSON with `scripts/export-vibelog.mjs`.
 - Validate generated JSON with `scripts/validate-vibelog.mjs`.
@@ -1801,6 +1875,21 @@ VibeLog is a v0.2 draft process record skill. Slice 1.5, Slice 2, the BillMate L
 **Problems:** The first proposed progress estimate was too high because the total goal includes the much larger VibeHub and Vibe Repo ecosystem.
 
 **Next:** Use `10 / 100` as the baseline until Slice 4 agent dogfood verification is implemented and verified.
+
+**Source:** current work session
+
+**Confidence:** high
+
+### 2026-05-26
+**Stage:** prototype
+
+**What Happened:** Drafted the bilingual Slice 4 implementation plan.
+
+**Tools Used:** Codex, VibeLog
+
+**Problems:** Needed a concrete execution plan before running agent dogfood verification so the scratch source boundary, test design, bilingual review artifacts, and progress reporting rules remain explicit.
+
+**Next:** Review the bilingual plan, then execute Slice 4 dogfood verification if approved.
 
 **Source:** current work session
 
