@@ -161,19 +161,19 @@ function mapStop(input, timestamp) {
     timestamp,
     current_state: summarizeText(message, "Claude Code turn ended; review latest logs and repository state."),
     progress_snapshot: {
-      project_progress: "18 / 100",
-      change_this_task: "+3",
-      current_phase: "Claude Code hook adapter",
-      completed_this_task: "Mapped Claude Code hook payloads to Vibe Event JSON",
-      next_unlock: "Live hook installation and real-session verification",
-      main_risk: "This adapter is fixture-verified but not installed into a live Claude Code settings file",
+      project_progress: "22 / 100",
+      change_this_task: "+0",
+      current_phase: "safe adoption path",
+      completed_this_task: "Captured Claude Code hook event through the VibeLog adapter",
+      next_unlock: "real project opt-in install verification and packaging path",
+      main_risk: "Automatic hook recording is project-local and should be enabled only after explicit review",
       confidence: "medium"
     },
     completed: ["Claude Code hook event captured"],
     in_progress: [],
-    pending: ["Review generated VibeLog updates", "Run live Claude Code hook verification when ready"],
+    pending: ["Review generated VibeLog updates", "Run real-project opt-in install verification only after approval"],
     blockers: [],
-    next_actions: ["Inspect VibeLog changes", "Continue with live hook installation only after user approval"],
+    next_actions: ["Inspect VibeLog changes", "Keep hooks project-local and opt-in"],
     context_for_next_agent: [
       `Session: ${input.session_id ?? "unknown"}`,
       `Stop hook active: ${input.stop_hook_active === true ? "true" : "false"}`

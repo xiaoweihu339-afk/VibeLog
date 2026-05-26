@@ -1,369 +1,386 @@
 {
-  "schema": "vibelog@0.2-draft",
-  "title": "BillMate Lite",
-  "one_line_vibe": "A tiny bill splitter that turns shared expenses into clear per-person settlement suggestions.",
-  "stage": "prototype",
-  "visibility": "private",
-  "code_visibility": "hidden",
-  "prompt_visibility": "summary",
-  "collaboration_status": "closed",
-  "creation_mode": "agent_led_human_approved",
-  "process_level": "core",
-  "tools": [
-    "Codex",
-    "Node.js",
-    "node:test"
+  "artifact_index": [
+    {
+      "name": "Scratch project source",
+      "notes": "Local-only scratch source for dogfood validation. Not copied into the VibeLog skill repository.",
+      "ref": "`C:\\Users\\HXW\\Documents\\vibelog-scratch\\billmate-lite`",
+      "type": "code_repo",
+      "visibility": "private"
+    },
+    {
+      "name": "Test output",
+      "notes": "3 passing Node tests after implementation.",
+      "ref": "`npm test`",
+      "type": "test_output",
+      "visibility": "private"
+    }
   ],
-  "tags": [
-    "billing",
-    "dogfood",
-    "manual-test",
-    "vibelog"
-  ],
-  "created_at": "2026-05-26",
-  "updated_at": "2026-05-26",
-  "current_idea": "BillMate Lite is a small local Node.js domain utility for shared bills. Given expenses with a payer, amount, description, and participants, it calculates who should pay whom so the group can settle up with minimal transfers. The prototype intentionally stays small: no UI, no accounts, no cloud sync, and no persistence.",
-  "idea_expansion": {
-    "problem": "Shared expenses are easy to discuss casually but hard to settle cleanly without a small calculation step.",
-    "target_users": [
-      "friends",
-      "roommates",
-      "travelers"
+  "branch_remix_readiness": {
+    "attribution_requirements": "pending license decision",
+    "remix_allowed": "false",
+    "suggested_contribution_areas": [
+      "deterministic exporter",
+      "more dogfood examples",
+      "validation checklist improvements"
     ],
-    "core_value": "Tell each person exactly whom to pay and how much.",
+    "what_can_be_reused": "the generated VibeLog example after the main repository license is chosen",
+    "what_should_not_be_reused": "scratch source path or any private local context"
+  },
+  "bugfix_incident_log": [
+    {
+      "bug_symptom": "An expense with zero amount or no participants would make the settlement output meaningless.",
+      "fix": "Added input validation for payer, positive amount, and non-empty participants.",
+      "follow_up": "Add validation for duplicate participant names if future inputs come from free-form UI.",
+      "root_cause": "Validation needed to be explicit before calculation.",
+      "summary": "Prevented invalid expenses from entering settlement calculation.",
+      "timestamp": "2026-05-26",
+      "verification": "`rejects invalid expenses before calculating settlements` passed in `npm test`."
+    }
+  ],
+  "code_repositories": [
+    {
+      "code_visibility": "hidden",
+      "latest_verification": "`npm test` passed",
+      "name": "Local Scratch Repository",
+      "provider": "local",
+      "sync_status": "local_only",
+      "url_path": "`C:\\Users\\HXW\\Documents\\vibelog-scratch\\billmate-lite`"
+    }
+  ],
+  "code_visibility": "hidden",
+  "collaboration_status": "closed",
+  "created_at": "2026-05-26",
+  "creation_mode": "agent_led_human_approved",
+  "current_idea": "BillMate Lite is a small local Node.js domain utility for shared bills. Given expenses with a payer, amount, description, and participants, it calculates who should pay whom so the group can settle up with minimal transfers.\n\nThe prototype intentionally stays small: no UI, no accounts, no cloud sync, and no persistence. Its purpose is to test whether VibeLog can record a realistic mini vibe project from idea through test, implementation, verification, and handoff.",
+  "decisions": [
+    {
+      "decision": "Use a billing splitter as the simulated dogfood project.",
+      "impact": "The test can prove VibeLog works with code artifacts while keeping app source outside the skill repository.",
+      "timestamp": "2026-05-26",
+      "why": "It is small, concrete, and has enough logic to produce real tests and verification evidence."
+    },
+    {
+      "decision": "Keep scratch app source outside the VibeLog repository.",
+      "impact": "Only generated VibeLog files are suitable for copying into `examples/`.",
+      "timestamp": "2026-05-26",
+      "why": "The VibeLog repository is skill-first and should not become a mixed app/source monorepo."
+    }
+  ],
+  "development_log": [
+    {
+      "bug_symptom": "not applicable",
+      "details": "Added Node built-in test coverage for one shared bill, multiple bill simplification, and invalid expense rejection.",
+      "files_changed": [
+        "package.json",
+        "test/bill-splitter.test.js"
+      ],
+      "fix": "not applicable",
+      "follow_up": [
+        "src/bill-splitter.js"
+      ],
+      "root_cause": "not applicable",
+      "summary": "Added failing tests for bill settlement behavior.",
+      "timestamp": "2026-05-26",
+      "type": "test",
+      "verification": "`npm test` failed with `ERR_MODULE_NOT_FOUND` because implementation did not exist yet."
+    },
+    {
+      "bug_symptom": "not applicable",
+      "details": "Added `calculateSettlements`, validation, cent-based equal splitting, and debtor/creditor settlement simplification.",
+      "files_changed": [
+        "src/bill-splitter.js"
+      ],
+      "fix": "not applicable",
+      "follow_up": "Add unequal split support only if a future user story needs it.",
+      "root_cause": "not applicable",
+      "summary": "Implemented settlement calculation.",
+      "timestamp": "2026-05-26",
+      "type": "feature",
+      "verification": "`npm test` passed with 3 tests."
+    }
+  ],
+  "execution_prompts": [
+    {
+      "agent_or_tool": "Codex",
+      "prompt_summary": "User asked whether the agent could simulate a small billing project instead of requiring manual testing.",
+      "prompt_text": "必须得我手动吗？你不可以模拟一个小项目，做一个账单啥的小项目去测试吗？",
+      "prompt_type": "build",
+      "prompt_visibility": "summary",
+      "recording_mode": "exact",
+      "result": "Created a scratch BillMate Lite project, wrote tests first, implemented a small settlement calculator, ran verification, and generated VibeLog files.",
+      "reuse_notes": "Use agent-simulated scratch projects to dogfood VibeLog before asking the human to provide real unfinished work.",
+      "timestamp": "2026-05-26"
+    }
+  ],
+  "handoff_state": {
+    "blockers": [
+      "No blockers."
+    ],
+    "completed": [
+      "Tests written first.",
+      "Tests failed before implementation.",
+      "`calculateSettlements` implemented.",
+      "Tests passed after implementation.",
+      "VibeLog Markdown and JSON generated."
+    ],
+    "context_for_next_agent": [
+      "This scratch project is intentionally tiny.",
+      "The important artifact is the generated VibeLog, not the billing code.",
+      "The scratch source path is local and private."
+    ],
+    "current_state": "BillMate Lite is a local scratch project with a tested bill splitting core. It exists only to dogfood VibeLog.",
+    "in_progress": [
+      "Copying generated VibeLog files into the main VibeLog repository example directory."
+    ],
+    "next_actions": [
+      "Copy `vibe-log.md` and `vibe-log.json` to `examples/billmate-lite/`.",
+      "Do not copy scratch source code.",
+      "Use this example to decide whether the next slice should be exporter automation."
+    ],
+    "pending": [
+      "Verify copied example JSON parses.",
+      "Update root VibeLog with this dogfood result."
+    ]
+  },
+  "human_in_the_loop": [
+    {
+      "agent_proposal": "Simulate a small billing project in a scratch directory, run it like a real project, and use it to test VibeLog.",
+      "final_decision": "The test is agent-simulated. The human does not need to manually create the project.",
+      "human_input": "\"必须得我手动吗？你不可以模拟一个小项目，做一个账单啥的小项目去测试吗？\"",
+      "impact": "Slice 2.1 becomes an agent-simulated dogfood test instead of a human manual test.",
+      "timestamp": "2026-05-26",
+      "type": "direction",
+      "why_it_mattered": "This tests whether VibeLog can support real agent-led workflow, which is central to the long-term product vision."
+    }
+  ],
+  "idea_evolution": [
+    {
+      "after": "Create a tiny bill splitter as a scratch project to test VibeLog without needing the user to manually provide a real project.",
+      "before": "none",
+      "confidence": "high",
+      "reason": "The user asked whether the agent could simulate a small billing project instead of requiring manual testing.",
+      "source": "user prompt and agent execution",
+      "timestamp": "2026-05-26",
+      "type": "initial"
+    },
+    {
+      "after": "A Node.js settlement-calculation core with tests, no UI, and no persistence.",
+      "before": "A generic billing test project.",
+      "confidence": "high",
+      "reason": "A small domain core is enough to exercise execution prompts, development logs, validation design, verification evidence, and handoff while keeping the scratch project disposable.",
+      "source": "agent design choice",
+      "timestamp": "2026-05-26",
+      "type": "refinement"
+    }
+  ],
+  "idea_expansion": {
+    "assumptions": "equal split is enough for the first test; all amounts are in one currency; participants are named strings.",
     "core_features": [
       "expense input model",
       "equal participant split",
       "settlement simplification",
-      "invalid expense validation"
+      "invalid expense validation."
     ],
+    "core_value": "Tell each person exactly whom to pay and how much.",
     "non_goals": [
       "accounts",
       "payment processing",
       "database storage",
       "UI",
       "currency conversion",
-      "receipt scanning"
+      "receipt scanning."
+    ],
+    "product_hypothesis": [
+      "A tiny",
+      "testable core calculation is enough to prove the billing idea before any UI exists."
+    ],
+    "use_cases": [
+      "split dinner",
+      "groceries",
+      "taxi",
+      "trip costs",
+      "roommate expenses."
+    ],
+    "why_it_matters": [
+      "Billing is familiar",
+      "concrete",
+      "and good for testing VibeLog because it has product intent",
+      "implementation behavior",
+      "validation",
+      "and edge cases."
     ]
   },
-  "idea_evolution": [
-    {
-      "timestamp": "2026-05-26",
-      "type": "initial",
-      "before": "none",
-      "after": "Create a tiny bill splitter as a scratch project to test VibeLog without needing the user to manually provide a real project.",
-      "reason": "The user asked whether the agent could simulate a small billing project instead of requiring manual testing.",
-      "source": "user prompt and agent execution",
-      "confidence": "high"
-    },
-    {
-      "timestamp": "2026-05-26",
-      "type": "refinement",
-      "before": "A generic billing test project.",
-      "after": "A Node.js settlement-calculation core with tests, no UI, and no persistence.",
-      "reason": "A small domain core is enough to exercise execution prompts, development logs, validation design, verification evidence, and handoff while keeping the scratch project disposable.",
-      "source": "agent design choice",
-      "confidence": "high"
-    }
-  ],
-  "decisions": [
-    {
-      "timestamp": "2026-05-26",
-      "decision": "Use a billing splitter as the simulated dogfood project.",
-      "why": "It is small, concrete, and has enough logic to produce real tests and verification evidence.",
-      "impact": "The test can prove VibeLog works with code artifacts while keeping app source outside the skill repository."
-    },
-    {
-      "timestamp": "2026-05-26",
-      "decision": "Keep scratch app source outside the VibeLog repository.",
-      "why": "The VibeLog repository is skill-first and should not become a mixed app/source monorepo.",
-      "impact": "Only generated VibeLog files are suitable for copying into examples."
-    }
-  ],
-  "human_in_the_loop": [
-    {
-      "timestamp": "2026-05-26",
-      "type": "direction",
-      "human_input": "必须得我手动吗？你不可以模拟一个小项目，做一个账单啥的小项目去测试吗？",
-      "agent_proposal": "Simulate a small billing project in a scratch directory, run it like a real project, and use it to test VibeLog.",
-      "final_decision": "The test is agent-simulated. The human does not need to manually create the project.",
-      "why_it_mattered": "This tests whether VibeLog can support real agent-led workflow, which is central to the long-term product vision.",
-      "impact": "Slice 2.1 becomes an agent-simulated dogfood test instead of a human manual test."
-    }
-  ],
+  "implementation_status": {
+    "blocked": [
+      "No blockers."
+    ],
+    "completed": [
+      "Created scratch project at `C:\\Users\\HXW\\Documents\\vibelog-scratch\\billmate-lite`.",
+      "Added `package.json`.",
+      "Added `test/bill-splitter.test.js`.",
+      "Added `src/bill-splitter.js`.",
+      "Ran tests red before implementation.",
+      "Ran tests green after implementation.",
+      "Created this VibeLog Markdown and JSON."
+    ],
+    "current_state": "The scratch BillMate Lite project has a tested Node.js calculation module and a generated VibeLog.",
+    "important_context_for_next_agent": [
+      "Do not copy `src/`, `test/`, or `package.json` into the VibeLog repository.",
+      "The scratch project can remain outside the repo as local evidence.",
+      "This example exists to validate VibeLog process recording, not to ship a billing product."
+    ],
+    "in_progress": [
+      "Copying generated logs into the main VibeLog repository as an example."
+    ],
+    "next_actions": [
+      "Copy generated VibeLog files as example output only.",
+      "Run JSON parse checks.",
+      "Commit the example locally if accepted."
+    ],
+    "pending": [
+      "Add `examples/billmate-lite/` to the main VibeLog repository.",
+      "Verify copied example JSON parses.",
+      "Update root VibeLog with this dogfood test result."
+    ]
+  },
+  "one_line_vibe": "A tiny bill splitter that turns shared expenses into clear per-person settlement suggestions.",
   "open_questions": [
     "Should future examples use English, Chinese, or bilingual logs?",
     "Should the next dogfood test include a deterministic Markdown-to-JSON exporter?",
     "Should scratch project source remain disposable, or should a separate demo-source repository be created later?"
   ],
-  "implementation_status": {
-    "current_state": "The scratch BillMate Lite project has a tested Node.js calculation module and a generated VibeLog.",
-    "completed": [
-      "Created scratch project at C:\\Users\\HXW\\Documents\\vibelog-scratch\\billmate-lite.",
-      "Added package.json.",
-      "Added test/bill-splitter.test.js.",
-      "Added src/bill-splitter.js.",
-      "Ran tests red before implementation.",
-      "Ran tests green after implementation.",
-      "Created this VibeLog Markdown and JSON."
+  "process_level": "core",
+  "project_context": {
+    "do_not_change": [
+      "Do not copy scratch app source into the VibeLog repository.",
+      "Do not treat this as a production billing product."
     ],
-    "in_progress": [
-      "Copying generated logs into the main VibeLog repository as an example."
+    "important_files": [
+      "`package.json`: local Node test script.",
+      "`test/bill-splitter.test.js`: behavior tests.",
+      "`src/bill-splitter.js`: settlement calculation implementation.",
+      "`vibe-log.md`: human-readable process record.",
+      "`vibe-log.json`: structured process record."
     ],
-    "pending": [
-      "Add examples/billmate-lite/ to the main VibeLog repository.",
-      "Verify copied example JSON parses.",
-      "Update root VibeLog with this dogfood test result."
+    "known_issues": [
+      "No deterministic Markdown-to-JSON exporter was used; Markdown and JSON were generated manually for this dogfood test."
     ],
-    "blocked": [],
-    "next_actions": [
-      "Copy generated VibeLog files as example output only.",
-      "Run JSON parse checks.",
-      "Commit the example locally if accepted."
+    "repo_workspace": "`C:\\Users\\HXW\\Documents\\vibelog-scratch\\billmate-lite`",
+    "run_test_commands": [
+      "`npm test`",
+      "`node -e \"JSON.parse(require('fs').readFileSync('vibe-log.json','utf8')); console.log('OK vibe-log.json')\"`"
     ]
   },
+  "prompt_visibility": "summary",
+  "public_private_projection": {
+    "code_visibility": "hidden",
+    "collaboration_status": "closed",
+    "license_usage_note": "no license selected",
+    "prompt_visibility": "summary",
+    "public_summary": "BillMate Lite is a tiny local bill splitter used to dogfood VibeLog's process recording.",
+    "remix_permission": "unknown"
+  },
+  "public_summary": "BillMate Lite is a tiny local bill splitter used to dogfood VibeLog. The example proves that VibeLog can record an agent-simulated project from idea through tests, implementation, verification, and handoff without requiring website features or app source in the skill repository.",
+  "schema": "vibelog@0.2-draft",
+  "stage": "prototype",
+  "tags": [
+    "billing",
+    "dogfood",
+    "manual-test",
+    "vibelog"
+  ],
+  "title": "BillMate Lite",
+  "tools": [
+    "Codex",
+    "Node.js",
+    "node:test"
+  ],
+  "updated_at": "2026-05-26",
   "validation_design": {
-    "success_criteria": [
-      "A test-first scratch implementation can be represented in VibeLog.",
-      "A future agent can understand the billing idea, implementation status, test evidence, and next actions from the log.",
-      "The generated JSON parses.",
-      "The main repo receives only generated log files as an example."
-    ],
+    "automated_test_strategy": "Use Node's built-in `node:test` runner.",
     "core_user_paths": [
       "Enter shared expenses.",
       "Calculate balances.",
       "Return settlement rows.",
       "Reject invalid expense input."
     ],
-    "manual_test_steps": [
-      "Read vibe-log.md.",
-      "Confirm the one-line vibe and current idea are clear.",
-      "Confirm execution prompt and development log are present.",
-      "Run npm test in the scratch directory.",
-      "Parse vibe-log.json.",
-      "Read handoff state as a new agent."
-    ],
-    "automated_test_strategy": "Use Node's built-in node:test runner.",
     "edge_cases": [
       "amount is zero or negative",
       "participants list is empty",
       "multiple expenses simplify into fewer settlement rows",
       "cent rounding across participant splits"
     ],
+    "manual_test_steps": [],
     "regression_points": [
       "Do not produce settlements for invalid expenses.",
       "Do not require UI or persistence for the core calculation.",
       "Do not add scratch source code to the VibeLog skill repository."
     ],
-    "risks_safety_privacy": [
+    "risks_safety_privacy_checks": [
       "No real financial data is used.",
       "All names and expenses are fake.",
       "The scratch project remains private/local."
+    ],
+    "success_criteria": [
+      "A test-first scratch implementation can be represented in VibeLog.",
+      "A future agent can understand the billing idea, implementation status, test evidence, and next actions from the log.",
+      "The generated JSON parses.",
+      "The main repo receives only generated log files as an example."
     ]
   },
   "verification_evidence": [
     {
-      "timestamp": "2026-05-26",
-      "type": "test_result",
-      "summary": "Watched tests fail before implementation because src/bill-splitter.js did not exist.",
-      "evidence_ref": "npm test in C:\\Users\\HXW\\Documents\\vibelog-scratch\\billmate-lite",
-      "result": "failed",
+      "confidence": "high",
+      "evidence_ref": "`npm test` in `C:\\Users\\HXW\\Documents\\vibelog-scratch\\billmate-lite`",
       "residual_risk": "This proves the tests detected missing implementation, not final correctness.",
+      "result": "failed",
       "source": "command output",
-      "confidence": "high"
+      "summary": "Watched tests fail before implementation because `src/bill-splitter.js` did not exist.",
+      "timestamp": "2026-05-26",
+      "type": "test_result"
     },
     {
-      "timestamp": "2026-05-26",
-      "type": "test_result",
-      "summary": "Node test suite passed after implementing calculateSettlements.",
-      "evidence_ref": "npm test",
-      "result": "passed",
+      "confidence": "high",
       "details": "3 tests passed: one shared bill split, multiple bill simplification, invalid expense rejection.",
+      "evidence_ref": "`npm test`",
       "residual_risk": "This is a small domain test only. It does not cover currencies, unequal splits, UI, persistence, or payment flows.",
+      "result": "passed",
       "source": "command output",
-      "confidence": "high"
+      "summary": "Node test suite passed after implementing `calculateSettlements`.",
+      "timestamp": "2026-05-26",
+      "type": "test_result"
     }
   ],
-  "project_context": {
-    "repo_workspace": "C:\\Users\\HXW\\Documents\\vibelog-scratch\\billmate-lite",
-    "important_files": [
-      "package.json",
-      "test/bill-splitter.test.js",
-      "src/bill-splitter.js",
-      "vibe-log.md",
-      "vibe-log.json"
+  "vibe_intake": {
+    "current_stage": "prototype",
+    "desired_outcome": "Convert a few shared expense records into clear settlement rows.",
+    "problem": "Shared expenses are easy to discuss casually but hard to settle cleanly without a small calculation step.",
+    "target_users": [
+      "Friends",
+      "roommates",
+      "or travelers who need a simple settlement suggestion after shared spending."
     ],
-    "run_test_commands": [
-      "npm test",
-      "node -e \"JSON.parse(require('fs').readFileSync('vibe-log.json','utf8')); console.log('OK vibe-log.json')\""
-    ],
-    "known_issues": [
-      "No deterministic Markdown-to-JSON exporter was used; Markdown and JSON were generated manually for this dogfood test."
-    ],
-    "do_not_change": [
-      "Do not copy scratch app source into the VibeLog repository.",
-      "Do not treat this as a production billing product."
+    "tools_agents": [
+      "Codex",
+      "Node.js",
+      "node:test"
     ]
-  },
-  "code_repositories": [
-    {
-      "provider": "local",
-      "url": "C:\\Users\\HXW\\Documents\\vibelog-scratch\\billmate-lite",
-      "sync_status": "local_only",
-      "code_visibility": "hidden",
-      "latest_verification": "npm test passed"
-    }
-  ],
-  "artifact_index": [
-    {
-      "type": "code_repo",
-      "name": "Scratch project source",
-      "ref": "C:\\Users\\HXW\\Documents\\vibelog-scratch\\billmate-lite",
-      "visibility": "private",
-      "notes": "Local-only scratch source for dogfood validation. Not copied into the VibeLog skill repository."
-    },
-    {
-      "type": "test_output",
-      "name": "Test output",
-      "ref": "npm test",
-      "visibility": "private",
-      "notes": "3 passing Node tests after implementation."
-    }
-  ],
-  "execution_prompts": [
-    {
-      "timestamp": "2026-05-26",
-      "agent_or_tool": "Codex",
-      "prompt_type": "build",
-      "prompt_visibility": "summary",
-      "recording_mode": "exact",
-      "prompt_summary": "User asked whether the agent could simulate a small billing project instead of requiring manual testing.",
-      "prompt_text": "必须得我手动吗？你不可以模拟一个小项目，做一个账单啥的小项目去测试吗？",
-      "result": "Created a scratch BillMate Lite project, wrote tests first, implemented a small settlement calculator, ran verification, and generated VibeLog files.",
-      "reuse_notes": "Use agent-simulated scratch projects to dogfood VibeLog before asking the human to provide real unfinished work."
-    }
-  ],
-  "development_log": [
-    {
-      "timestamp": "2026-05-26",
-      "type": "test",
-      "summary": "Added failing tests for bill settlement behavior.",
-      "files_changed": [
-        "package.json",
-        "test/bill-splitter.test.js"
-      ],
-      "details": "Added Node built-in test coverage for one shared bill, multiple bill simplification, and invalid expense rejection.",
-      "bug_symptom": "not applicable",
-      "root_cause": "not applicable",
-      "fix": "not applicable",
-      "verification": "npm test failed with ERR_MODULE_NOT_FOUND because implementation did not exist yet.",
-      "follow_up": [
-        "Implement src/bill-splitter.js."
-      ],
-      "source": "current work session",
-      "confidence": "high"
-    },
-    {
-      "timestamp": "2026-05-26",
-      "type": "feature",
-      "summary": "Implemented settlement calculation.",
-      "files_changed": [
-        "src/bill-splitter.js"
-      ],
-      "details": "Added calculateSettlements, validation, cent-based equal splitting, and debtor/creditor settlement simplification.",
-      "bug_symptom": "not applicable",
-      "root_cause": "not applicable",
-      "fix": "not applicable",
-      "verification": "npm test passed with 3 tests.",
-      "follow_up": [
-        "Add unequal split support only if a future user story needs it."
-      ],
-      "source": "current work session",
-      "confidence": "high"
-    }
-  ],
-  "bugfix_incident_log": [
-    {
-      "timestamp": "2026-05-26",
-      "summary": "Prevented invalid expenses from entering settlement calculation.",
-      "bug_symptom": "An expense with zero amount or no participants would make the settlement output meaningless.",
-      "root_cause": "Validation needed to be explicit before calculation.",
-      "fix": "Added input validation for payer, positive amount, and non-empty participants.",
-      "verification": "rejects invalid expenses before calculating settlements passed in npm test.",
-      "follow_up": "Add validation for duplicate participant names if future inputs come from free-form UI."
-    }
-  ],
-  "handoff_state": {
-    "current_state": "BillMate Lite is a local scratch project with a tested bill splitting core. It exists only to dogfood VibeLog.",
-    "completed": [
-      "Tests written first.",
-      "Tests failed before implementation.",
-      "calculateSettlements implemented.",
-      "Tests passed after implementation.",
-      "VibeLog Markdown and JSON generated."
-    ],
-    "in_progress": [
-      "Copying generated VibeLog files into the main VibeLog repository example directory."
-    ],
-    "pending": [
-      "Verify copied example JSON parses.",
-      "Update root VibeLog with this dogfood result."
-    ],
-    "blockers": [],
-    "next_actions": [
-      "Copy vibe-log.md and vibe-log.json to examples/billmate-lite/.",
-      "Do not copy scratch source code.",
-      "Use this example to decide whether the next slice should be exporter automation."
-    ],
-    "context_for_next_agent": [
-      "This scratch project is intentionally tiny.",
-      "The important artifact is the generated VibeLog, not the billing code.",
-      "The scratch source path is local and private."
-    ]
-  },
-  "public_private_projection": {
-    "public_summary": "BillMate Lite is a tiny local bill splitter used to dogfood VibeLog's process recording.",
-    "code_visibility": "hidden",
-    "prompt_visibility": "summary",
-    "collaboration_status": "closed",
-    "remix_permission": "unknown",
-    "license_or_usage_note": "No license selected."
-  },
-  "branch_remix_readiness": {
-    "remix_allowed": false,
-    "what_can_be_reused": [
-      "the generated VibeLog example after the main repository license is chosen"
-    ],
-    "what_should_not_be_reused": [
-      "scratch source path",
-      "private local context"
-    ],
-    "suggested_contribution_areas": [
-      "deterministic exporter",
-      "more dogfood examples",
-      "validation checklist improvements"
-    ],
-    "attribution_requirements": "pending license decision"
   },
   "vibe_progress": [
     {
-      "timestamp": "2026-05-26",
+      "confidence": "high",
+      "next": "Copy generated logs into the VibeLog repository as example output only.",
+      "problems": "Needed to test VibeLog without requiring the human to provide a real unfinished project.",
+      "source": "current work session",
       "stage": "prototype",
-      "what_happened": "Simulated a small billing project to dogfood VibeLog.",
+      "timestamp": "2026-05-26",
       "tools_used": [
         "Codex",
         "Node.js",
         "VibeLog"
       ],
-      "problems": [
-        "Needed to test VibeLog without requiring the human to provide a real unfinished project."
-      ],
-      "next": [
-        "Copy generated logs into the VibeLog repository as example output only."
-      ],
-      "source": "current work session",
-      "confidence": "high"
+      "what_happened": "Simulated a small billing project to dogfood VibeLog."
     }
   ],
-  "public_summary": "BillMate Lite is a tiny local bill splitter used to dogfood VibeLog. The example proves that VibeLog can record an agent-simulated project from idea through tests, implementation, verification, and handoff without requiring website features or app source in the skill repository."
+  "visibility": "private"
 }

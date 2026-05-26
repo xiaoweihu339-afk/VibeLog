@@ -1,14 +1,546 @@
 {
-  "schema": "vibelog@0.2-draft",
-  "title": "VibeLog Studio MVP",
-  "one_line_vibe": "A local-first tool for creating, viewing, updating, and exporting Vibe Repos so VibeLog can be dogfooded in real development.",
-  "stage": "prototype",
-  "visibility": "private",
+  "artifact_index": [
+    {
+      "name": "VibeLog Studio App",
+      "notes": "Local-first Next.js implementation of Slice 1.",
+      "ref": "`apps/vibelog-studio`",
+      "type": "code_repo",
+      "visibility": "private"
+    },
+    {
+      "name": "Slice 1 Implementation Plan",
+      "notes": "Task-by-task implementation plan and completion gate.",
+      "ref": "`docs/superpowers/plans/2026-05-26-vibelog-studio-slice-1.md`",
+      "type": "document",
+      "visibility": "private"
+    },
+    {
+      "name": "VibeLog Studio dogfood VibeLog",
+      "notes": "Human-readable process record for the first real dogfood project.",
+      "ref": "`apps/vibelog-studio/vibe-log.md`",
+      "type": "document",
+      "visibility": "private"
+    },
+    {
+      "name": "VibeLog Studio dogfood JSON",
+      "notes": "Structured export for future VibeHub upload shape.",
+      "ref": "`apps/vibelog-studio/vibe-log.json`",
+      "type": "document",
+      "visibility": "private"
+    },
+    {
+      "name": "Automated Test Output",
+      "notes": "Unit, integration, build, and browser flow evidence.",
+      "ref": "`npm run test`, `npm run e2e`",
+      "type": "test_output",
+      "visibility": "private"
+    }
+  ],
+  "branch_remix_readiness": {
+    "attribution_requirements": "pending license decision.",
+    "remix_allowed": "unknown",
+    "suggested_contribution_areas": [
+      "domain model",
+      "exporters",
+      "local persistence",
+      "UI",
+      "tests."
+    ],
+    "what_can_be_reused": "product concept and public documentation after license decision.",
+    "what_should_not_be_reused": "private prompts or hidden code until the user changes visibility."
+  },
+  "bugfix_incident_log": [
+    {
+      "affected_area": "E2E test infrastructure.",
+      "confidence": "high",
+      "fix": "Updated `scripts/run-e2e.mjs` to clean the target port before starting and kill the process tree afterward.",
+      "prevention_follow_up": "Keep process-tree cleanup in the runner and check for leftover Listen sockets after E2E changes.",
+      "root_cause": "The test runner killed only the parent shell process; the actual Next server child could remain alive on Windows.",
+      "source": "command output and port inspection",
+      "symptom": "E2E initially timed out or hit stale UI on port 3100.",
+      "timestamp": "2026-05-26",
+      "verification": "`npm run e2e` passed."
+    },
+    {
+      "affected_area": "E2E selector design.",
+      "confidence": "high",
+      "fix": "Scoped assertions to the detail region and progress region.",
+      "prevention_follow_up": "Prefer scoped locators for content that also appears in exports.",
+      "root_cause": "The E2E test used broad full-page text selectors for content duplicated in the Markdown preview.",
+      "source": "Playwright error output",
+      "symptom": "Playwright strict mode failed because text assertions matched both visible page text and export preview text.",
+      "timestamp": "2026-05-26",
+      "verification": "`npm run e2e` passed after narrowing selectors."
+    }
+  ],
+  "code_repositories": [],
   "code_visibility": "hidden",
-  "prompt_visibility": "summary",
   "collaboration_status": "closed",
+  "created_at": "2026-05-26",
   "creation_mode": "human_ai_co_created",
+  "current_idea": "VibeLog Studio MVP is the first real dogfood project for VibeLog. It now has a working local-first Slice 1: a user can create a Vibe Repo, view its current state, append a structured update, export Markdown/JSON, and keep data across refresh through browser localStorage.\n\nThe goal is still not to build the full VibeHub community. The goal is to prove that VibeLog can support a real vibe-built product from idea to MVP, including idea evolution, execution prompts, implementation status, validation design, verification evidence, and handoff state.",
+  "decisions": [
+    {
+      "confidence": "high",
+      "decision": "Use VibeLog Studio MVP as the first real dogfood project.",
+      "source": "user direction and agent recommendation",
+      "timestamp": "2026-05-26",
+      "why": "It directly tests whether VibeLog can support a real vibe-built product workflow."
+    },
+    {
+      "confidence": "high",
+      "decision": "Do not start with hook automation.",
+      "source": "user correction",
+      "timestamp": "2026-05-26",
+      "why": "First prove the manual/skill-driven VibeLog process inside a real project, then automate painful parts later."
+    },
+    {
+      "confidence": "high",
+      "decision": "A task is complete only when both single-function testing and integrated-flow testing pass.",
+      "source": "user testing principle",
+      "timestamp": "2026-05-26",
+      "why": "AI-generated work often looks correct in isolation but fails when combined with the product flow."
+    },
+    {
+      "confidence": "high",
+      "decision": "Use Next.js, React, TypeScript, Zod, Vitest, Playwright, and `localStorage` for Slice 1.",
+      "source": "agent proposal accepted by user confirmation",
+      "timestamp": "2026-05-26",
+      "why": "This keeps the app close to a future full-stack route while still allowing a small local-first proof."
+    },
+    {
+      "confidence": "high",
+      "decision": "Slice 2 will focus on file round-trip, schema validation, and Git Link Lite.",
+      "source": "user confirmation and agent recommendation",
+      "timestamp": "2026-05-26",
+      "why": "This strengthens the Vibe Repo foundation without jumping ahead to cloud sync, community, or built-in Git hosting."
+    },
+    {
+      "confidence": "high",
+      "decision": "Add `code_repositories` as an optional VibeLog schema field.",
+      "source": "user direction",
+      "timestamp": "2026-05-26",
+      "why": "Git should own code history while VibeLog records process memory and links to the relevant code repository, branch, commit, demo, and artifact state."
+    }
+  ],
+  "development_log": [
+    {
+      "details": "Established the first real Vibe Repo that records the process of building VibeLog Studio MVP.",
+      "files_changed": [
+        "apps/vibelog-studio/vibe-log.md",
+        "apps/vibelog-studio/vibe-log.json"
+      ],
+      "follow_up": "Present test design and key decisions to the user before coding.",
+      "summary": "Created the initial dogfood VibeLog for VibeLog Studio MVP.",
+      "timestamp": "2026-05-26",
+      "type": "docs",
+      "verification": "JSON parse was planned after structured export."
+    },
+    {
+      "details": "Defined the app layers, files, TDD workflow, and two-layer completion gate.",
+      "files_changed": [
+        "docs/superpowers/plans/2026-05-26-vibelog-studio-slice-1.md"
+      ],
+      "follow_up": "Execute task by task.",
+      "summary": "Created Slice 1 implementation plan.",
+      "timestamp": "2026-05-26",
+      "type": "docs",
+      "verification": "Plan reviewed against the user's requirements before implementation."
+    },
+    {
+      "details": "Created a Next.js/React/TypeScript app with Vitest and Playwright configuration.",
+      "files_changed": [
+        "apps/vibelog-studio/package.json",
+        "tsconfig.json",
+        "next.config.mjs",
+        "vitest.config.ts",
+        "playwright.config.ts",
+        "app/layout.tsx",
+        "app/page.tsx",
+        "app/globals.css"
+      ],
+      "follow_up": "Add domain tests and implementation.",
+      "summary": "Scaffolded the VibeLog Studio app.",
+      "timestamp": "2026-05-26",
+      "type": "config",
+      "verification": "Later build and tests passed."
+    },
+    {
+      "details": "Added defaults for private visibility, summary prompt visibility, core process level, implementation status, validation design, handoff state, idea evolution, and progress updates.",
+      "files_changed": [
+        "apps/vibelog-studio/src/domain/vibe-repo.ts",
+        "apps/vibelog-studio/src/domain/vibe-repo.test.ts"
+      ],
+      "follow_up": "Keep schema alignment tight as the public standard evolves.",
+      "summary": "Implemented Vibe Repo domain model and update rules.",
+      "timestamp": "2026-05-26",
+      "type": "feature",
+      "verification": "Domain tests passed and later full Vitest suite passed."
+    },
+    {
+      "details": "Exporters convert a `VibeRepo` into readable Markdown and parseable JSON.",
+      "files_changed": [
+        "apps/vibelog-studio/src/exporters/markdown.ts",
+        "apps/vibelog-studio/src/exporters/json.ts"
+      ],
+      "follow_up": "Add real file download/import in Slice 2.",
+      "summary": "Implemented Markdown and JSON exporters.",
+      "timestamp": "2026-05-26",
+      "type": "feature",
+      "verification": "Exporter tests passed and integration flow confirmed JSON parse."
+    },
+    {
+      "details": "Added `VibeRepository`, `MemoryVibeRepository`, and `LocalStorageVibeRepository` with invalid-payload tolerance.",
+      "files_changed": [
+        "apps/vibelog-studio/src/repository/vibe-repository.ts"
+      ],
+      "follow_up": "Consider IndexedDB only if localStorage becomes limiting.",
+      "summary": "Implemented repository abstraction and local persistence.",
+      "timestamp": "2026-05-26",
+      "type": "feature",
+      "verification": "Repository tests passed and E2E reload persistence passed."
+    },
+    {
+      "details": "Built create form, repo list, detail view, update form, progress list, and Markdown/JSON export preview.",
+      "files_changed": [
+        "apps/vibelog-studio/app/page.tsx",
+        "apps/vibelog-studio/app/globals.css"
+      ],
+      "follow_up": [
+        "Add download/import",
+        "better populated mobile QA",
+        "and schema validation UX."
+      ],
+      "summary": "Implemented the first UI slice.",
+      "timestamp": "2026-05-26",
+      "type": "feature",
+      "verification": "Playwright E2E passed; browser visual QA passed on desktop and mobile."
+    },
+    {
+      "details": "Covered create -> update -> export at integration level and create -> list -> detail -> update -> export -> reload at browser level.",
+      "files_changed": [
+        "apps/vibelog-studio/src/integration/vibe-flow.test.ts",
+        "apps/vibelog-studio/e2e/vibe-flow.spec.ts"
+      ],
+      "follow_up": "Add edge-case E2E coverage after the core flow stabilizes.",
+      "summary": "Added and ran automated verification.",
+      "timestamp": "2026-05-26",
+      "type": "test",
+      "verification": "`npm run test` passed with 5 files and 8 tests; `npm run e2e` passed with 1 browser test."
+    },
+    {
+      "bug_symptom": "Playwright could hit stale old app state or fail with port conflicts.",
+      "details": "Added port cleanup before test start and process-tree cleanup after test end.",
+      "files_changed": [
+        "apps/vibelog-studio/scripts/run-e2e.mjs"
+      ],
+      "fix": "Added `killPort` and `killProcessTree` helpers using PowerShell/taskkill on Windows.",
+      "follow_up": "Consider avoiding shell args warning in the runner later.",
+      "root_cause": "`server.kill()` killed the shell parent but could leave the Next child process listening on port 3100.",
+      "summary": "Fixed E2E runner cleanup on Windows.",
+      "timestamp": "2026-05-26",
+      "type": "bugfix",
+      "verification": "`npm run e2e` passed and no Listen socket remained on port 3100."
+    },
+    {
+      "details": "Created commit `5111e72 Add VibeLog Studio slice 1` and pushed it to `origin/master`.",
+      "files_changed": [
+        ".gitignore"
+      ],
+      "follow_up": "Use this as the rollback point before Slice 2 implementation.",
+      "summary": "Committed and pushed Slice 1 to GitHub.",
+      "timestamp": "2026-05-26",
+      "type": "release",
+      "verification": "`npm run test` passed with 5 files and 8 tests; `npm run e2e` passed with 1 browser test before commit."
+    },
+    {
+      "details": "Added optional `code_repositories` to the VibeLog schema, documented the Git code repository reference model, and wrote the Slice 2 design around file round-trip, schema validation, and Git Link Lite.",
+      "files_changed": [
+        "skills/vibelog/assets/vibe-log.schema.json",
+        "skills/vibelog/references/vibelog-format.md",
+        "docs/superpowers/specs/2026-05-26-vibelog-studio-slice-2-design.md"
+      ],
+      "follow_up": "Write the Slice 2 implementation plan after user review.",
+      "summary": "Prepared Slice 2 design and Git link schema foundation.",
+      "timestamp": "2026-05-26",
+      "type": "docs",
+      "verification": "Schema JSON and dogfood VibeLog JSON parsed successfully; `npm run test` passed with 5 files and 8 tests; `npm run e2e` passed with 1 browser test."
+    }
+  ],
+  "execution_prompts": [
+    {
+      "agent_or_tool": "Codex",
+      "prompt_summary": "User approved starting the project after requiring VibeLog to be called before implementation and test design to be shown before work.",
+      "prompt_text": "开始！！！！",
+      "prompt_type": "design",
+      "prompt_visibility": "summary",
+      "recording_mode": "exact",
+      "result": "Created the VibeLog Studio MVP dogfood VibeLog and paused before product implementation to present test design and key decisions.",
+      "reuse_notes": "Future implementation should start only after the user approves the test design and key decisions.",
+      "timestamp": "2026-05-26"
+    },
+    {
+      "agent_or_tool": "Codex",
+      "prompt_summary": "User confirmed the proposed plan and authorized implementation.",
+      "prompt_text": "确认",
+      "prompt_type": "build",
+      "prompt_visibility": "summary",
+      "recording_mode": "exact",
+      "result": "Implemented VibeLog Studio Slice 1 with domain, exporters, persistence, UI, tests, and VibeLog update.",
+      "reuse_notes": "Treat short human approvals as execution prompts when they release an agent to perform engineering work.",
+      "timestamp": "2026-05-26"
+    },
+    {
+      "agent_or_tool": "Codex",
+      "prompt_summary": "User confirmed Slice 2 and authorized four preparation steps before implementation.",
+      "prompt_text": "确认，你先开工四个准备",
+      "prompt_type": "docs",
+      "prompt_visibility": "summary",
+      "recording_mode": "exact",
+      "result": "Committed and pushed Slice 1, added `code_repositories` to the VibeLog schema, fixed JSON import as the Slice 2 import priority, and wrote the Slice 2 design document.",
+      "reuse_notes": "This prompt is an engineering execution prompt because it authorized repository, schema, and documentation work.",
+      "timestamp": "2026-05-26"
+    }
+  ],
+  "handoff_state": {
+    "blockers": [
+      "No engineering blocker for Slice 1.",
+      "Release/public sharing decisions remain with the human."
+    ],
+    "completed": [
+      "Dogfood VibeLog created and updated.",
+      "Implementation plan created.",
+      "App scaffold created.",
+      "Domain model implemented.",
+      "Markdown/JSON exporters implemented.",
+      "Memory/localStorage repositories implemented.",
+      "UI implemented.",
+      "Unit, integration, E2E, build, and visual QA completed.",
+      "Slice 1 committed and pushed as `5111e72`.",
+      "Slice 2 design document created.",
+      "VibeLog schema prepared for Git repository references."
+    ],
+    "context_for_next_agent": [
+      "Work in `apps/vibelog-studio`.",
+      "Run `npm run test` and `npm run e2e` from `apps/vibelog-studio`.",
+      "Slice 1 rollback point is commit `5111e72`.",
+      "Slice 2 design lives at `docs/superpowers/specs/2026-05-26-vibelog-studio-slice-2-design.md`.",
+      "Do not skip VibeLog updates after meaningful work.",
+      "Record engineering execution prompts, not idea-chat transcripts.",
+      "Keep privacy defaults private until the human changes them."
+    ],
+    "current_state": "VibeLog Studio Slice 1 works locally and has been pushed to GitHub. Slice 2 preparation files are local and ready for review: schema support for `code_repositories`, format documentation, and a Slice 2 design doc.",
+    "in_progress": [
+      "Finalizing Slice 2 preparation handoff."
+    ],
+    "next_actions": [
+      "Let the user review the Slice 2 design.",
+      "Write a detailed Slice 2 implementation plan after approval.",
+      "Implement Slice 2 with two-layer testing."
+    ],
+    "pending": [
+      "Dependency audit decision.",
+      "Download/import and schema validation UX.",
+      "Git Link Lite implementation.",
+      "Hook automation design after the manual loop is stronger."
+    ]
+  },
+  "human_in_the_loop": [
+    {
+      "agent_proposal": "Codex proposed to start with VibeLog Studio MVP as a real dogfood project.",
+      "confidence": "high",
+      "final_decision": "Begin by creating the VibeLog record, then present test design and key decisions before coding.",
+      "human_input": "The user delegated the project to Codex but required important decisions to be asked, test design to be shown before work, and VibeLog to be called before implementation.",
+      "impact": "This file was created before product code and became the first dogfood Vibe Repo.",
+      "source": "user direction",
+      "timestamp": "2026-05-26",
+      "type": "direction",
+      "why_it_mattered": "This preserves human ownership of important product and validation decisions while letting Codex handle ordinary execution."
+    },
+    {
+      "agent_proposal": "Start the project workflow by invoking VibeLog first, not by writing product code.",
+      "confidence": "high",
+      "final_decision": "Create the VibeLog Studio dogfood record and pause before implementation to show test design.",
+      "human_input": "The user said \"开始！！！！\"",
+      "impact": "The first engineering slice became ready for user review.",
+      "source": "user approval",
+      "timestamp": "2026-05-26",
+      "type": "approval",
+      "why_it_mattered": "It confirmed the project could start while preserving the agreed pre-work gate."
+    },
+    {
+      "agent_proposal": "Proceed with Slice 1 using the proposed architecture and two-layer completion gate.",
+      "confidence": "high",
+      "final_decision": "Codex implemented the first local-first VibeLog Studio slice.",
+      "human_input": "The user said \"确认\".",
+      "impact": "Product code, tests, E2E flow, and dogfood records were created.",
+      "source": "user approval",
+      "timestamp": "2026-05-26",
+      "type": "approval",
+      "why_it_mattered": "It converted the plan into approved execution while keeping the human's validation standard as the release gate."
+    },
+    {
+      "agent_proposal": "First commit and push Slice 1, then prepare the VibeLog schema, JSON import direction, and Slice 2 design document.",
+      "confidence": "high",
+      "final_decision": "Execute the four preparation steps before implementation.",
+      "human_input": "The user confirmed Slice 2 and asked Codex to start the four preparation steps.",
+      "impact": "Slice 1 was pushed to GitHub, `code_repositories` was added to the schema, JSON import was fixed as the first import target, and a Slice 2 design doc was created.",
+      "source": "user approval",
+      "timestamp": "2026-05-26",
+      "type": "approval",
+      "why_it_mattered": "It preserves the step-by-step rhythm and keeps Slice 2 grounded in a stable Slice 1 milestone."
+    }
+  ],
+  "idea_evolution": [
+    {
+      "after": "Use VibeLog Studio MVP as the first dogfood project and record the entire vibe process with VibeLog.",
+      "before": "VibeLog existed as a skill and standard, but had not yet been used to build a real product from zero.",
+      "confidence": "high",
+      "reason": "The user corrected that the real first engineering step should be using the skill to genuinely vibe a project, not building hooks or updater infrastructure first.",
+      "source": "user direction",
+      "timestamp": "2026-05-26",
+      "type": "initial"
+    },
+    {
+      "after": "The human confirmed the plan, and Slice 1 was implemented as a local-first app under `apps/vibelog-studio`.",
+      "before": "The first VibeLog Studio record was pre-implementation and blocked on test-design approval.",
+      "confidence": "high",
+      "reason": "The user said \"确认\", approving the proposed test gate and engineering direction.",
+      "source": "user approval and implementation evidence",
+      "timestamp": "2026-05-26",
+      "type": "refinement"
+    }
+  ],
+  "idea_expansion": {
+    "assumptions": "",
+    "core_features_implemented_in_slice_1": "",
+    "core_value": [
+      "make vibe process memory visible",
+      "structured",
+      "and portable."
+    ],
+    "non_goals_for_slice_1": "",
+    "product_hypothesis": [
+      "If VibeLog Studio can make one Vibe Repo easy to create",
+      "update",
+      "inspect",
+      "and export",
+      "then VibeLog has a stronger foundation for future hooks and VibeHub."
+    ],
+    "use_cases": "",
+    "why_it_matters": "A standard becomes real only when it survives use inside a real project."
+  },
+  "implementation_status": {
+    "blocked": [
+      "No product blockers for Slice 1.",
+      "Public release remains blocked on human decisions about GitHub push, license, visibility, and audit posture."
+    ],
+    "completed": [
+      "Created dogfood VibeLog before product code.",
+      "Created implementation plan at `docs/superpowers/plans/2026-05-26-vibelog-studio-slice-1.md`.",
+      "Scaffolded `apps/vibelog-studio`.",
+      "Implemented domain model and update rules.",
+      "Implemented Markdown and JSON exporters.",
+      "Implemented repository interface with memory and localStorage implementations.",
+      "Implemented compact local-first UI.",
+      "Added unit, integration, and Playwright E2E tests.",
+      "Fixed E2E runner process cleanup on Windows.",
+      "Ran desktop and mobile browser visual checks.",
+      "Updated VibeLog source and JSON export.",
+      "Committed and pushed Slice 1 as `5111e72 Add VibeLog Studio slice 1`.",
+      "Added `code_repositories` to the VibeLog JSON schema.",
+      "Created the Slice 2 design document."
+    ],
+    "current_state": "Slice 1 is implemented, verified, committed, and pushed to GitHub. Slice 2 preparation is underway: the schema now supports Git repository links, JSON import is the confirmed import priority, and the Slice 2 design document exists.",
+    "important_context_for_next_agent": [
+      "Do not build public community features before the local Vibe Repo loop is stronger.",
+      "Do not skip the two-layer completion test.",
+      "`npm run e2e` builds the app, starts `next start` on port 3100, runs Playwright, and cleans up the process tree.",
+      "`prompt_visibility` remains `summary`; full prompts are not public by default.",
+      "The `npm audit --omit=dev` result currently reports 2 moderate issues through Next/PostCSS and suggests a breaking forced fix, so it was not applied."
+    ],
+    "in_progress": [
+      "Preparing Slice 2 implementation planning."
+    ],
+    "next_actions": [
+      "Review the Slice 2 design document.",
+      "Write the Slice 2 implementation plan after approval.",
+      "Start Slice 2 implementation with the same two-layer test rule."
+    ],
+    "pending": [
+      "Decide whether to address or track the moderate `npm audit` advisory.",
+      "Add download/import features for real files.",
+      "Add schema validation feedback in the app.",
+      "Add Git Link Lite editing and export support.",
+      "Add hook-based automatic VibeLog updates in a later slice."
+    ]
+  },
+  "one_line_vibe": "A local-first tool for creating, viewing, updating, and exporting Vibe Repos so VibeLog can be dogfooded in real development.",
+  "open_questions": [
+    "Should the `npm audit --omit=dev` moderate PostCSS/Next advisory be handled immediately or tracked until a non-breaking Next update is available?",
+    "Should the UI become bilingual before public sharing?",
+    "Should imported repos keep their original id, or receive a new local id to avoid overwriting existing data?",
+    "Should Slice 2 UI show one primary Git link while the data model supports multiple links?",
+    "Should downloads use fixed filenames or repo-title-prefixed filenames?"
+  ],
   "process_level": "core",
+  "project_context": {
+    "do_not_change": [
+      "Do not start with public community features.",
+      "Do not build hooks before the local Vibe Repo loop is strong enough.",
+      "Do not skip the two-layer completion test.",
+      "Do not publish private prompts by default."
+    ],
+    "important_files": [
+      "`README.md`: repository overview.",
+      "`skills/vibelog/SKILL.md`: VibeLog skill instructions.",
+      "`skills/vibelog/assets/vibe-log.schema.json`: VibeLog schema.",
+      "`docs/product/vibehub-long-term-product-document.md`: long-term product document.",
+      "`docs/superpowers/plans/2026-05-26-vibelog-studio-slice-1.md`: implementation plan.",
+      "`apps/vibelog-studio/app/page.tsx`: UI shell.",
+      "`apps/vibelog-studio/src/domain/vibe-repo.ts`: domain model.",
+      "`apps/vibelog-studio/src/exporters/markdown.ts`: Markdown exporter.",
+      "`apps/vibelog-studio/src/exporters/json.ts`: JSON exporter.",
+      "`apps/vibelog-studio/src/repository/vibe-repository.ts`: persistence abstraction.",
+      "`apps/vibelog-studio/e2e/vibe-flow.spec.ts`: browser product-flow test.",
+      "`apps/vibelog-studio/vibe-log.md`: dogfood VibeLog source.",
+      "`apps/vibelog-studio/vibe-log.json`: structured VibeLog export."
+    ],
+    "known_issues": [
+      "`npm audit --omit=dev` reports 2 moderate advisories through Next/PostCSS.",
+      "No file download/import flow yet; exports are previewed in the UI.",
+      "No schema validation UX yet.",
+      "No hook automation yet."
+    ],
+    "repo_workspace": "`C:\\Users\\HXW\\Documents\\vibecoding`",
+    "run_test_commands": [
+      "`cd apps/vibelog-studio`",
+      "`npm run dev`",
+      "`npm run test`",
+      "`npm run build`",
+      "`npm run e2e`",
+      "`npm audit --omit=dev`"
+    ]
+  },
+  "prompt_visibility": "summary",
+  "public_private_projection": {
+    "code_visibility": "hidden",
+    "collaboration_status": "closed",
+    "license_usage_note": "no license selected yet",
+    "prompt_visibility": "summary",
+    "public_summary": "VibeLog Studio MVP is a local-first tool for creating and exporting Vibe Repos.",
+    "remix_permission": "unknown"
+  },
+  "public_summary": "VibeLog Studio MVP is a small local-first tool for creating, viewing, updating, and exporting Vibe Repos. Its first purpose is to dogfood VibeLog itself by recording the full vibe process from idea to implementation.",
+  "schema": "vibelog@0.2-draft",
+  "stage": "prototype",
+  "tags": [
+    "vibelog-studio",
+    "dogfood",
+    "local-first",
+    "vibe-repo"
+  ],
+  "title": "VibeLog Studio MVP",
   "tools": [
     "Codex",
     "VibeLog",
@@ -18,291 +550,22 @@
     "Vitest",
     "Playwright"
   ],
-  "tags": [
-    "vibelog-studio",
-    "dogfood",
-    "local-first",
-    "vibe-repo"
-  ],
-  "created_at": "2026-05-26",
   "updated_at": "2026-05-26",
-  "current_idea": "VibeLog Studio MVP has a verified and pushed Slice 1. Slice 2 is prepared around file round-trip, schema validation, and Git Link Lite so VibeLog can become a portable Vibe Repo workbench that links process memory to Git-managed code.",
-  "vibe_intake": {
-    "problem": "VibeLog needs to be tested in a real product workflow, not only as a theoretical standard.",
-    "target_users": [
-      "vibe builders",
-      "non-technical creators",
-      "future agents",
-      "the VibeHub project itself"
-    ],
-    "desired_outcome": "A working local MVP that proves a Vibe Repo can be created, updated, viewed, and exported.",
-    "current_stage": "prototype",
-    "tools_or_agents": [
-      "Codex",
-      "VibeLog",
-      "Next.js",
-      "React",
-      "TypeScript",
-      "Vitest",
-      "Playwright"
-    ]
-  },
-  "idea_expansion": {
-    "product_hypothesis": "If VibeLog Studio can make one Vibe Repo easy to create, update, inspect, and export, then VibeLog has a stronger foundation for future hooks and VibeHub.",
-    "problem": "VibeLog needs real dogfood.",
-    "target_users": [
-      "vibe builders",
-      "non-technical creators",
-      "future agents"
-    ],
-    "why_it_matters": "A standard becomes real only when it survives use inside a real project.",
-    "core_value": "Make vibe process memory visible, structured, and portable.",
-    "core_features": [
-      "create a Vibe Repo",
-      "view current idea and status",
-      "append structured updates",
-      "export vibe-log.md style Markdown",
-      "export vibe-log.json style JSON",
-      "persist locally"
-    ],
-    "use_cases": [
-      "start a new vibe project",
-      "continue an existing vibe project",
-      "hand off to another agent",
-      "prepare future VibeHub upload data"
-    ],
-    "non_goals": [
-      "no public community",
-      "no accounts",
-      "no cloud sync",
-      "no marketplace",
-      "no branch/remix workflow in slice 1",
-      "no hook automation in slice 1"
-    ],
-    "assumptions": [
-      "local-first is enough for the first proof",
-      "Markdown and JSON export are more important than polished UI",
-      "two-layer testing is required before a task is complete"
-    ]
-  },
-  "idea_evolution": [
-    {
-      "timestamp": "2026-05-26",
-      "type": "initial",
-      "before": "VibeLog existed as a skill and standard, but had not yet been used to build a real product from zero.",
-      "after": "Use VibeLog Studio MVP as the first dogfood project and record the entire vibe process with VibeLog.",
-      "reason": "The user corrected that the real first engineering step should be using the skill to genuinely vibe a project, not building hooks or updater infrastructure first.",
-      "source": "user direction",
-      "confidence": "high"
-    },
-    {
-      "timestamp": "2026-05-26",
-      "type": "refinement",
-      "before": "The first VibeLog Studio record was pre-implementation and blocked on test-design approval.",
-      "after": "The human confirmed the plan, and Slice 1 was implemented as a local-first app under apps/vibelog-studio.",
-      "reason": "The user said ??, approving the proposed test gate and engineering direction.",
-      "source": "user approval and implementation evidence",
-      "confidence": "high"
-    }
-  ],
-  "scope_plan": {
-    "current_goal": "Complete Slice 1 of VibeLog Studio MVP: create, view, update, export, persist, and verify a local Vibe Repo flow.",
-    "in_scope": [
-      "Create a Next.js app under apps/vibelog-studio.",
-      "Model Vibe Repo domain defaults and update rules.",
-      "Export Markdown and JSON.",
-      "Persist local Vibe Repos through a repository interface backed by localStorage.",
-      "Build a compact app shell for create, list, detail, update, and export preview.",
-      "Test each task with single tests and integrated product-flow tests.",
-      "Update this dogfood VibeLog with prompts, development logs, bugfixes, verification, and handoff."
-    ],
-    "out_of_scope": [
-      "Public VibeHub community.",
-      "Accounts, permissions, and cloud database.",
-      "Marketplace or idea trading.",
-      "Branch/remix collaboration workflow.",
-      "Claude Code or Codex hook automation.",
-      "Production deployment."
-    ],
-    "acceptance_criteria": [
-      "A user can create a local Vibe Repo from title, one-line vibe, and current idea.",
-      "The created repo appears in the dashboard and detail view.",
-      "A user can append a structured update.",
-      "Markdown export includes the key VibeLog sections.",
-      "JSON export parses and preserves the same repo identity and status data.",
-      "Data persists after browser refresh.",
-      "Single tests pass.",
-      "Integrated browser flow passes.",
-      "The dogfood VibeLog is updated and JSON parses."
-    ],
-    "planned_steps": [
-      "Create implementation plan.",
-      "Scaffold the app.",
-      "Write failing tests before implementation for domain, exporters, repository, and UI flow.",
-      "Implement each layer.",
-      "Run verification.",
-      "Update VibeLog and handoff."
-    ]
-  },
-  "decisions": [
-    {
-      "timestamp": "2026-05-26",
-      "decision": "Use VibeLog Studio MVP as the first real dogfood project.",
-      "why": "It directly tests whether VibeLog can support a real vibe-built product workflow.",
-      "source": "user direction and agent recommendation",
-      "confidence": "high"
-    },
-    {
-      "timestamp": "2026-05-26",
-      "decision": "Do not start with hook automation.",
-      "why": "First prove the manual/skill-driven VibeLog process inside a real project, then automate painful parts later.",
-      "source": "user correction",
-      "confidence": "high"
-    },
-    {
-      "timestamp": "2026-05-26",
-      "decision": "A task is complete only when both single-function testing and integrated-flow testing pass.",
-      "why": "AI-generated work often looks correct in isolation but fails when combined with the product flow.",
-      "source": "user testing principle",
-      "confidence": "high"
-    },
-    {
-      "timestamp": "2026-05-26",
-      "decision": "Use Next.js, React, TypeScript, Zod, Vitest, Playwright, and localStorage for Slice 1.",
-      "why": "This keeps the app close to a future full-stack route while still allowing a small local-first proof.",
-      "source": "agent proposal accepted by user confirmation",
-      "confidence": "high"
-    },
-    {
-      "timestamp": "2026-05-26",
-      "decision": "Slice 2 will focus on file round-trip, schema validation, and Git Link Lite.",
-      "why": "This strengthens the Vibe Repo foundation without jumping ahead to cloud sync, community, or built-in Git hosting.",
-      "source": "user confirmation and agent recommendation",
-      "confidence": "high"
-    },
-    {
-      "timestamp": "2026-05-26",
-      "decision": "Add code_repositories as an optional VibeLog schema field.",
-      "why": "Git should own code history while VibeLog records process memory and links to the relevant code repository, branch, commit, demo, and artifact state.",
-      "source": "user direction",
-      "confidence": "high"
-    }
-  ],
-  "human_in_the_loop": [
-    {
-      "timestamp": "2026-05-26",
-      "type": "direction",
-      "human_input": "The user delegated the project to Codex but required important decisions to be asked, test design to be shown before work, and VibeLog to be called before implementation.",
-      "agent_proposal": "Codex proposed to start with VibeLog Studio MVP as a real dogfood project.",
-      "final_decision": "Begin by creating the VibeLog record, then present test design and key decisions before coding.",
-      "why_it_mattered": "This preserves human ownership of important product and validation decisions while letting Codex handle ordinary execution.",
-      "impact": "This file was created before product code and became the first dogfood Vibe Repo.",
-      "source": "user direction",
-      "confidence": "high"
-    },
-    {
-      "timestamp": "2026-05-26",
-      "type": "approval",
-      "human_input": "The user said ??????",
-      "agent_proposal": "Start the project workflow by invoking VibeLog first, not by writing product code.",
-      "final_decision": "Create the VibeLog Studio dogfood record and pause before implementation to show test design.",
-      "why_it_mattered": "It confirmed the project could start while preserving the agreed pre-work gate.",
-      "impact": "The first engineering slice became ready for user review.",
-      "source": "user approval",
-      "confidence": "high"
-    },
-    {
-      "timestamp": "2026-05-26",
-      "type": "approval",
-      "human_input": "The user said ??.",
-      "agent_proposal": "Proceed with Slice 1 using the proposed architecture and two-layer completion gate.",
-      "final_decision": "Codex implemented the first local-first VibeLog Studio slice.",
-      "why_it_mattered": "It converted the plan into approved execution while keeping the human's validation standard as the release gate.",
-      "impact": "Product code, tests, E2E flow, and dogfood records were created.",
-      "source": "user approval",
-      "confidence": "high"
-    },
-    {
-      "timestamp": "2026-05-26",
-      "type": "approval",
-      "human_input": "The user confirmed Slice 2 and asked Codex to start the four preparation steps.",
-      "agent_proposal": "First commit and push Slice 1, then prepare the VibeLog schema, JSON import direction, and Slice 2 design document.",
-      "final_decision": "Execute the four preparation steps before implementation.",
-      "why_it_mattered": "It preserves the step-by-step rhythm and keeps Slice 2 grounded in a stable Slice 1 milestone.",
-      "impact": "Slice 1 was pushed to GitHub, code_repositories was added to the schema, JSON import was fixed as the first import target, and a Slice 2 design doc was created.",
-      "source": "user approval",
-      "confidence": "high"
-    }
-  ],
-  "open_questions": [
-    "Should the npm audit --omit=dev moderate PostCSS/Next advisory be handled immediately or tracked until a non-breaking Next update is available?",
-    "Should the UI become bilingual before public sharing?",
-    "Should imported repos keep their original id, or receive a new local id to avoid overwriting existing data?",
-    "Should Slice 2 UI show one primary Git link while the data model supports multiple links?",
-    "Should downloads use fixed filenames or repo-title-prefixed filenames?"
-  ],
-  "implementation_status": {
-    "current_state": "Slice 1 is implemented, verified, committed, and pushed to GitHub. Slice 2 preparation is underway: the schema now supports Git repository links, JSON import is the confirmed import priority, and the Slice 2 design document exists.",
-    "completed": [
-      "Created dogfood VibeLog before product code.",
-      "Created implementation plan.",
-      "Scaffolded apps/vibelog-studio.",
-      "Implemented domain model and update rules.",
-      "Implemented Markdown and JSON exporters.",
-      "Implemented repository interface with memory and localStorage implementations.",
-      "Implemented compact local-first UI.",
-      "Added unit, integration, and Playwright E2E tests.",
-      "Fixed E2E runner process cleanup on Windows.",
-      "Ran desktop and mobile browser visual checks.",
-      "Updated VibeLog source and JSON export.",
-      "Committed and pushed Slice 1 as 5111e72 Add VibeLog Studio slice 1.",
-      "Added code_repositories to the VibeLog JSON schema.",
-      "Created the Slice 2 design document."
-    ],
-    "in_progress": [
-      "Preparing Slice 2 implementation planning."
-    ],
-    "pending": [
-      "Decide whether to address or track the moderate npm audit advisory.",
-      "Add download/import features for real files.",
-      "Add schema validation feedback in the app.",
-      "Add Git Link Lite editing and export support.",
-      "Add hook-based automatic VibeLog updates in a later slice."
-    ],
-    "blocked": [
-      "No product blockers for Slice 1.",
-      "Slice 2 implementation waits for user review of the design."
-    ],
-    "next_actions": [
-      "Review the Slice 2 design document.",
-      "Write the Slice 2 implementation plan after approval.",
-      "Start Slice 2 implementation with the same two-layer test rule."
-    ],
-    "important_context_for_next_agent": [
-      "Do not build public community features before the local Vibe Repo loop is stronger.",
-      "Do not skip the two-layer completion test.",
-      "Slice 1 rollback point is commit 5111e72.",
-      "Slice 2 design lives at docs/superpowers/specs/2026-05-26-vibelog-studio-slice-2-design.md.",
-      "prompt_visibility remains summary; full prompts are not public by default."
-    ]
-  },
   "validation_design": {
-    "success_criteria": [
-      "A user can create a local Vibe Repo from title, one-line vibe, and current idea.",
-      "The created Vibe Repo can be viewed in the app.",
-      "The user can append at least one structured update.",
-      "The app can preview Markdown export.",
-      "The app can preview JSON export.",
-      "Exported JSON parses.",
-      "Exported Markdown and JSON describe the same repo.",
-      "Local data persists after page refresh.",
-      "Each task passes both single-function tests and integrated-flow tests."
-    ],
+    "automated_test_strategy": "Unit tests cover domain defaults, update rules, Markdown export, JSON export, memory/localStorage repository behavior. Integration tests cover create -> update -> export. Playwright E2E covers create -> list -> detail -> append update -> Markdown preview -> JSON preview -> refresh persistence.",
     "core_user_paths": [
       "Create Vibe Repo -> view detail -> export Markdown.",
       "Create Vibe Repo -> view detail -> export JSON.",
       "Create Vibe Repo -> append update -> see updated status/history.",
       "Refresh page -> reopen existing Vibe Repo."
+    ],
+    "edge_cases": [
+      "Empty title or one-line vibe.",
+      "Very long current idea.",
+      "Export with no updates beyond the initial idea.",
+      "Invalid stored localStorage payload.",
+      "Refresh after local save.",
+      "JSON export parse failure."
     ],
     "manual_test_steps": [
       "Open the app.",
@@ -314,15 +577,6 @@
       "Preview JSON and verify it parses.",
       "Refresh the browser and confirm the repo remains."
     ],
-    "automated_test_strategy": "Unit tests cover domain defaults, update rules, Markdown export, JSON export, memory/localStorage repository behavior. Integration tests cover create -> update -> export. Playwright E2E covers create -> list -> detail -> append update -> Markdown preview -> JSON preview -> refresh persistence.",
-    "edge_cases": [
-      "Empty title or one-line vibe.",
-      "Very long current idea.",
-      "Export with no updates beyond the initial idea.",
-      "Invalid stored localStorage payload.",
-      "Refresh after local save.",
-      "JSON export parse failure."
-    ],
     "regression_points": [
       "Do not lose idea history when updating current idea.",
       "Do not make public visibility the default.",
@@ -331,586 +585,114 @@
       "Do not mark a task complete unless both single and integration tests pass.",
       "Do not leave an E2E server process listening after tests."
     ],
-    "risks_safety_privacy": [
-      "Exported full prompts may contain sensitive information; default prompt visibility should remain summary.",
+    "risks_safety_privacy_checks": [
+      "Exported full prompts may contain sensitive information; default prompt visibility should remain `summary`.",
       "Local persistence can be fragile; export/import should arrive before serious use.",
       "Dependency audit currently has a moderate PostCSS advisory through Next; forced fix is breaking and was not applied."
     ],
-    "owner": "human + Codex"
+    "success_criteria": [
+      "A user can create a local Vibe Repo from title, one-line vibe, and current idea.",
+      "The created Vibe Repo can be viewed in the app.",
+      "The user can append at least one structured update.",
+      "The app can preview Markdown export.",
+      "The app can preview JSON export.",
+      "Exported JSON parses.",
+      "Exported Markdown and JSON describe the same repo.",
+      "Local data persists after page refresh.",
+      "Each task passes both single-function tests and integrated-flow tests."
+    ]
   },
   "verification_evidence": [
     {
-      "timestamp": "2026-05-26",
-      "type": "test_result",
-      "summary": "npm run test passed.",
+      "confidence": "high",
       "evidence_ref": "Vitest reported 5 test files passed and 8 tests passed.",
-      "result": "passed",
       "residual_risk": "Browser behavior still required E2E verification.",
+      "result": "passed",
       "source": "command output",
-      "confidence": "high"
+      "summary": "`npm run test` passed.",
+      "timestamp": "2026-05-26",
+      "type": "test_result"
     },
     {
-      "timestamp": "2026-05-26",
-      "type": "test_result",
-      "summary": "npm run e2e passed.",
+      "confidence": "high",
       "evidence_ref": "Next build completed successfully; Playwright reported 1 Chromium test passed for create, update, export, and reload persistence.",
-      "result": "passed",
       "residual_risk": "E2E currently covers one happy path only.",
+      "result": "passed",
       "source": "command output",
-      "confidence": "high"
+      "summary": "`npm run e2e` passed.",
+      "timestamp": "2026-05-26",
+      "type": "test_result"
     },
     {
-      "timestamp": "2026-05-26",
-      "type": "manual_qa",
-      "summary": "Browser visual QA passed on desktop and 390px mobile viewport.",
+      "confidence": "high",
       "evidence_ref": "In-app browser DOM checks found title, create form, fields, repo list, and empty state; screenshots showed no obvious layout break.",
-      "result": "passed",
       "residual_risk": "Visual QA did not cover every populated state on mobile.",
+      "result": "passed",
       "source": "browser inspection",
-      "confidence": "high"
+      "summary": "Browser visual QA passed on desktop and 390px mobile viewport.",
+      "timestamp": "2026-05-26",
+      "type": "manual_qa"
     },
     {
-      "timestamp": "2026-05-26",
-      "type": "command_output",
-      "summary": "npm audit --omit=dev reported 2 moderate vulnerabilities through Next/PostCSS.",
-      "evidence_ref": "Audit reported PostCSS <8.5.10 XSS advisory via Next 9.3.4-canary.0 - 16.3.0-canary.5; npm audit fix --force would install a breaking Next version, so no forced fix was applied.",
-      "result": "failed",
+      "confidence": "high",
+      "evidence_ref": "Audit reported PostCSS `<8.5.10` XSS advisory via Next `9.3.4-canary.0 - 16.3.0-canary.5`; `npm audit fix --force` would install a breaking Next version, so no forced fix was applied.",
       "residual_risk": "Track or upgrade when a non-breaking Next/PostCSS path exists.",
+      "result": "failed",
       "source": "command output",
-      "confidence": "high"
-    },
-    {
+      "summary": "`npm audit --omit=dev` reported 2 moderate vulnerabilities through Next/PostCSS.",
       "timestamp": "2026-05-26",
-      "type": "command_output",
-      "summary": "Schema and dogfood VibeLog JSON parsed successfully.",
-      "evidence_ref": "node parsed skills/vibelog/assets/vibe-log.schema.json and apps/vibelog-studio/vibe-log.json without errors.",
-      "result": "passed",
-      "residual_risk": "This checks JSON syntax, not full JSON Schema validation.",
-      "source": "command output",
-      "confidence": "high"
-    },
-    {
-      "timestamp": "2026-05-26",
-      "type": "test_result",
-      "summary": "Slice 1 app tests still passed after Slice 2 prep changes.",
-      "evidence_ref": "npm run test reported 5 test files passed and 8 tests passed.",
-      "result": "passed",
-      "residual_risk": "Slice 2 implementation tests do not exist yet because this was preparation work.",
-      "source": "command output",
-      "confidence": "high"
-    },
-    {
-      "timestamp": "2026-05-26",
-      "type": "test_result",
-      "summary": "Slice 1 browser flow still passed after Slice 2 prep changes.",
-      "evidence_ref": "npm run e2e built the app and Playwright reported 1 Chromium test passed.",
-      "result": "passed",
-      "residual_risk": "E2E still covers only the Slice 1 happy path.",
-      "source": "command output",
-      "confidence": "high"
+      "type": "command_output"
     }
   ],
-  "project_context": {
-    "repo_url": "https://github.com/xiaoweihu339-afk/VibeLog.git",
-    "workspace_path": "C:\\Users\\HXW\\Documents\\vibecoding",
-    "important_files": [
-      "README.md",
-      "skills/vibelog/SKILL.md",
-      "skills/vibelog/assets/vibe-log.schema.json",
-      "docs/product/vibehub-long-term-product-document.md",
-      "docs/superpowers/plans/2026-05-26-vibelog-studio-slice-1.md",
-      "apps/vibelog-studio/app/page.tsx",
-      "apps/vibelog-studio/src/domain/vibe-repo.ts",
-      "apps/vibelog-studio/src/exporters/markdown.ts",
-      "apps/vibelog-studio/src/exporters/json.ts",
-      "apps/vibelog-studio/src/repository/vibe-repository.ts",
-      "apps/vibelog-studio/e2e/vibe-flow.spec.ts",
-      "apps/vibelog-studio/vibe-log.md",
-      "apps/vibelog-studio/vibe-log.json",
-      "skills/vibelog/references/vibelog-format.md",
-      "docs/superpowers/specs/2026-05-26-vibelog-studio-slice-2-design.md"
+  "vibe_intake": {
+    "current_stage": "prototype",
+    "desired_outcome": [
+      "a working local MVP that proves a Vibe Repo can be created",
+      "updated",
+      "viewed",
+      "and exported."
     ],
-    "run_commands": [
-      "cd apps/vibelog-studio",
-      "npm run dev"
+    "problem": [
+      "VibeLog needs to be tested in a real product workflow",
+      "not only as a theoretical standard."
     ],
-    "test_commands": [
-      "npm run test",
-      "npm run build",
-      "npm run e2e",
-      "npm audit --omit=dev"
+    "target_users": [
+      "vibe builders",
+      "non-technical creators",
+      "future agents",
+      "and the VibeHub project itself."
     ],
-    "known_issues": [
-      "npm audit --omit=dev reports 2 moderate advisories through Next/PostCSS.",
-      "No file download/import flow yet; exports are previewed in the UI.",
-      "No schema validation UX yet.",
-      "No Git Link Lite UI implementation yet.",
-      "No hook automation yet."
-    ],
-    "do_not_change": [
-      "Do not start with public community features.",
-      "Do not build hooks before the local Vibe Repo loop is strong enough.",
-      "Do not skip the two-layer completion test.",
-      "Do not publish private prompts by default."
+    "tools_agents": [
+      "Codex",
+      "VibeLog",
+      "Next.js",
+      "React",
+      "TypeScript",
+      "Vitest",
+      "Playwright"
     ]
-  },
-  "artifact_index": [
-    {
-      "type": "code_repo",
-      "name": "VibeLog Studio App",
-      "ref": "apps/vibelog-studio",
-      "visibility": "private",
-      "notes": "Local-first Next.js implementation of Slice 1."
-    },
-    {
-      "type": "document",
-      "name": "Slice 1 Implementation Plan",
-      "ref": "docs/superpowers/plans/2026-05-26-vibelog-studio-slice-1.md",
-      "visibility": "private",
-      "notes": "Task-by-task implementation plan and completion gate."
-    },
-    {
-      "type": "document",
-      "name": "VibeLog Studio dogfood VibeLog",
-      "ref": "apps/vibelog-studio/vibe-log.md",
-      "visibility": "private",
-      "notes": "Human-readable process record for the first real dogfood project."
-    },
-    {
-      "type": "document",
-      "name": "VibeLog Studio dogfood JSON",
-      "ref": "apps/vibelog-studio/vibe-log.json",
-      "visibility": "private",
-      "notes": "Structured export for future VibeHub upload shape."
-    },
-    {
-      "type": "test_output",
-      "name": "Automated Test Output",
-      "ref": "npm run test; npm run e2e",
-      "visibility": "private",
-      "notes": "Unit, integration, build, and browser flow evidence."
-    },
-    {
-      "type": "document",
-      "name": "Slice 2 Design",
-      "ref": "docs/superpowers/specs/2026-05-26-vibelog-studio-slice-2-design.md",
-      "visibility": "private",
-      "notes": "Design basis for file round-trip, schema validation, and Git Link Lite."
-    }
-  ],
-  "execution_prompts": [
-    {
-      "timestamp": "2026-05-26",
-      "agent_or_tool": "Codex",
-      "prompt_type": "design",
-      "prompt_visibility": "summary",
-      "recording_mode": "exact",
-      "prompt_summary": "User approved starting the project after requiring VibeLog to be called before implementation and test design to be shown before work.",
-      "prompt_text": "??????",
-      "result": "Created the VibeLog Studio MVP dogfood VibeLog and paused before product implementation to present test design and key decisions.",
-      "reuse_notes": "Future implementation should start only after the user approves the test design and key decisions."
-    },
-    {
-      "timestamp": "2026-05-26",
-      "agent_or_tool": "Codex",
-      "prompt_type": "build",
-      "prompt_visibility": "summary",
-      "recording_mode": "exact",
-      "prompt_summary": "User confirmed the proposed plan and authorized implementation.",
-      "prompt_text": "??",
-      "result": "Implemented VibeLog Studio Slice 1 with domain, exporters, persistence, UI, tests, and VibeLog update.",
-      "reuse_notes": "Treat short human approvals as execution prompts when they release an agent to perform engineering work."
-    },
-    {
-      "timestamp": "2026-05-26",
-      "agent_or_tool": "Codex",
-      "prompt_type": "docs",
-      "prompt_visibility": "summary",
-      "recording_mode": "exact",
-      "prompt_summary": "User confirmed Slice 2 and authorized four preparation steps before implementation.",
-      "prompt_text": "???????????",
-      "result": "Committed and pushed Slice 1, added code_repositories to the VibeLog schema, fixed JSON import as the Slice 2 import priority, and wrote the Slice 2 design document.",
-      "reuse_notes": "This prompt is an engineering execution prompt because it authorized repository, schema, and documentation work."
-    }
-  ],
-  "development_log": [
-    {
-      "timestamp": "2026-05-26",
-      "type": "docs",
-      "summary": "Created the initial dogfood VibeLog for VibeLog Studio MVP.",
-      "files_changed": [
-        "apps/vibelog-studio/vibe-log.md",
-        "apps/vibelog-studio/vibe-log.json"
-      ],
-      "artifacts_changed": [
-        "apps/vibelog-studio/vibe-log.md",
-        "apps/vibelog-studio/vibe-log.json"
-      ],
-      "details": "Established the first real Vibe Repo that records the process of building VibeLog Studio MVP.",
-      "bug_symptom": "not applicable",
-      "root_cause": "not applicable",
-      "fix": "not applicable",
-      "verification": "JSON parse planned after structured export.",
-      "follow_up": [
-        "Present test design and key decisions to the user before coding."
-      ],
-      "source": "current work session",
-      "confidence": "high"
-    },
-    {
-      "timestamp": "2026-05-26",
-      "type": "docs",
-      "summary": "Created Slice 1 implementation plan.",
-      "files_changed": [
-        "docs/superpowers/plans/2026-05-26-vibelog-studio-slice-1.md"
-      ],
-      "artifacts_changed": [
-        "docs/superpowers/plans/2026-05-26-vibelog-studio-slice-1.md"
-      ],
-      "details": "Defined the app layers, files, TDD workflow, and two-layer completion gate.",
-      "bug_symptom": "not applicable",
-      "root_cause": "not applicable",
-      "fix": "not applicable",
-      "verification": "Plan reviewed against the user's requirements before implementation.",
-      "follow_up": [
-        "Execute task by task."
-      ],
-      "source": "current work session",
-      "confidence": "high"
-    },
-    {
-      "timestamp": "2026-05-26",
-      "type": "config",
-      "summary": "Scaffolded the VibeLog Studio app.",
-      "files_changed": [
-        "apps/vibelog-studio/package.json",
-        "apps/vibelog-studio/tsconfig.json",
-        "apps/vibelog-studio/next.config.mjs",
-        "apps/vibelog-studio/vitest.config.ts",
-        "apps/vibelog-studio/playwright.config.ts",
-        "apps/vibelog-studio/app/layout.tsx",
-        "apps/vibelog-studio/app/page.tsx",
-        "apps/vibelog-studio/app/globals.css"
-      ],
-      "artifacts_changed": [
-        "apps/vibelog-studio"
-      ],
-      "details": "Created a Next.js/React/TypeScript app with Vitest and Playwright configuration.",
-      "bug_symptom": "not applicable",
-      "root_cause": "not applicable",
-      "fix": "not applicable",
-      "verification": "Later build and tests passed.",
-      "follow_up": [
-        "Add domain tests and implementation."
-      ],
-      "source": "current work session",
-      "confidence": "high"
-    },
-    {
-      "timestamp": "2026-05-26",
-      "type": "feature",
-      "summary": "Implemented Vibe Repo domain model and update rules.",
-      "files_changed": [
-        "apps/vibelog-studio/src/domain/vibe-repo.ts",
-        "apps/vibelog-studio/src/domain/vibe-repo.test.ts"
-      ],
-      "artifacts_changed": [
-        "apps/vibelog-studio/src/domain"
-      ],
-      "details": "Added defaults for private visibility, summary prompt visibility, core process level, implementation status, validation design, handoff state, idea evolution, and progress updates.",
-      "bug_symptom": "not applicable",
-      "root_cause": "not applicable",
-      "fix": "not applicable",
-      "verification": "Domain tests passed and later full Vitest suite passed.",
-      "follow_up": [
-        "Keep schema alignment tight as the public standard evolves."
-      ],
-      "source": "current work session",
-      "confidence": "high"
-    },
-    {
-      "timestamp": "2026-05-26",
-      "type": "feature",
-      "summary": "Implemented Markdown and JSON exporters.",
-      "files_changed": [
-        "apps/vibelog-studio/src/exporters/markdown.ts",
-        "apps/vibelog-studio/src/exporters/json.ts",
-        "apps/vibelog-studio/src/exporters/markdown.test.ts",
-        "apps/vibelog-studio/src/exporters/json.test.ts"
-      ],
-      "artifacts_changed": [
-        "apps/vibelog-studio/src/exporters"
-      ],
-      "details": "Exporters convert a VibeRepo into readable Markdown and parseable JSON.",
-      "bug_symptom": "not applicable",
-      "root_cause": "not applicable",
-      "fix": "not applicable",
-      "verification": "Exporter tests passed and integration flow confirmed JSON parse.",
-      "follow_up": [
-        "Add real file download/import in Slice 2."
-      ],
-      "source": "current work session",
-      "confidence": "high"
-    },
-    {
-      "timestamp": "2026-05-26",
-      "type": "feature",
-      "summary": "Implemented repository abstraction and local persistence.",
-      "files_changed": [
-        "apps/vibelog-studio/src/repository/vibe-repository.ts",
-        "apps/vibelog-studio/src/repository/vibe-repository.test.ts"
-      ],
-      "artifacts_changed": [
-        "apps/vibelog-studio/src/repository"
-      ],
-      "details": "Added VibeRepository, MemoryVibeRepository, and LocalStorageVibeRepository with invalid-payload tolerance.",
-      "bug_symptom": "not applicable",
-      "root_cause": "not applicable",
-      "fix": "not applicable",
-      "verification": "Repository tests passed and E2E reload persistence passed.",
-      "follow_up": [
-        "Consider IndexedDB only if localStorage becomes limiting."
-      ],
-      "source": "current work session",
-      "confidence": "high"
-    },
-    {
-      "timestamp": "2026-05-26",
-      "type": "feature",
-      "summary": "Implemented the first UI slice.",
-      "files_changed": [
-        "apps/vibelog-studio/app/page.tsx",
-        "apps/vibelog-studio/app/globals.css"
-      ],
-      "artifacts_changed": [
-        "apps/vibelog-studio/app"
-      ],
-      "details": "Built create form, repo list, detail view, update form, progress list, and Markdown/JSON export preview.",
-      "bug_symptom": "not applicable",
-      "root_cause": "not applicable",
-      "fix": "not applicable",
-      "verification": "Playwright E2E passed; browser visual QA passed on desktop and mobile.",
-      "follow_up": [
-        "Add download/import, better populated mobile QA, and schema validation UX."
-      ],
-      "source": "current work session",
-      "confidence": "high"
-    },
-    {
-      "timestamp": "2026-05-26",
-      "type": "test",
-      "summary": "Added and ran automated verification.",
-      "files_changed": [
-        "apps/vibelog-studio/src/integration/vibe-flow.test.ts",
-        "apps/vibelog-studio/e2e/vibe-flow.spec.ts"
-      ],
-      "artifacts_changed": [
-        "apps/vibelog-studio/src/integration",
-        "apps/vibelog-studio/e2e"
-      ],
-      "details": "Covered create -> update -> export at integration level and create -> list -> detail -> update -> export -> reload at browser level.",
-      "bug_symptom": "not applicable",
-      "root_cause": "not applicable",
-      "fix": "not applicable",
-      "verification": "npm run test passed with 5 files and 8 tests; npm run e2e passed with 1 browser test.",
-      "follow_up": [
-        "Add edge-case E2E coverage after the core flow stabilizes."
-      ],
-      "source": "current work session",
-      "confidence": "high"
-    },
-    {
-      "timestamp": "2026-05-26",
-      "type": "bugfix",
-      "summary": "Fixed E2E runner cleanup on Windows.",
-      "files_changed": [
-        "apps/vibelog-studio/scripts/run-e2e.mjs"
-      ],
-      "artifacts_changed": [
-        "apps/vibelog-studio/scripts/run-e2e.mjs"
-      ],
-      "details": "Added port cleanup before test start and process-tree cleanup after test end.",
-      "bug_symptom": "Playwright could hit stale old app state or fail with port conflicts.",
-      "root_cause": "server.kill() killed the shell parent but could leave the Next child process listening on port 3100.",
-      "fix": "Added killPort and killProcessTree helpers using PowerShell/taskkill on Windows.",
-      "verification": "npm run e2e passed and no Listen socket remained on port 3100.",
-      "follow_up": [
-        "Consider avoiding shell args warning in the runner later."
-      ],
-      "source": "current work session",
-      "confidence": "high"
-    },
-    {
-      "timestamp": "2026-05-26",
-      "type": "release",
-      "summary": "Committed and pushed Slice 1 to GitHub.",
-      "files_changed": [
-        "Slice 1 app",
-        "tests",
-        "plan",
-        ".gitignore",
-        "dogfood VibeLog files"
-      ],
-      "artifacts_changed": [
-        "Git commit 5111e72"
-      ],
-      "details": "Created commit 5111e72 Add VibeLog Studio slice 1 and pushed it to origin/master.",
-      "bug_symptom": "not applicable",
-      "root_cause": "not applicable",
-      "fix": "not applicable",
-      "verification": "npm run test passed with 5 files and 8 tests; npm run e2e passed with 1 browser test before commit.",
-      "follow_up": [
-        "Use this as the rollback point before Slice 2 implementation."
-      ],
-      "source": "current work session",
-      "confidence": "high"
-    },
-    {
-      "timestamp": "2026-05-26",
-      "type": "docs",
-      "summary": "Prepared Slice 2 design and Git link schema foundation.",
-      "files_changed": [
-        "skills/vibelog/assets/vibe-log.schema.json",
-        "skills/vibelog/references/vibelog-format.md",
-        "docs/superpowers/specs/2026-05-26-vibelog-studio-slice-2-design.md"
-      ],
-      "artifacts_changed": [
-        "VibeLog schema",
-        "VibeLog format reference",
-        "Slice 2 design doc"
-      ],
-      "details": "Added optional code_repositories to the VibeLog schema, documented the Git code repository reference model, and wrote the Slice 2 design around file round-trip, schema validation, and Git Link Lite.",
-      "bug_symptom": "not applicable",
-      "root_cause": "not applicable",
-      "fix": "not applicable",
-      "verification": "Schema JSON and dogfood VibeLog JSON parsed successfully; npm run test passed with 5 files and 8 tests; npm run e2e passed with 1 browser test.",
-      "follow_up": [
-        "Write the Slice 2 implementation plan after user review."
-      ],
-      "source": "current work session",
-      "confidence": "high"
-    }
-  ],
-  "bugfix_incident_log": [
-    {
-      "timestamp": "2026-05-26",
-      "symptom": "E2E initially timed out or hit stale UI on port 3100.",
-      "root_cause": "The test runner killed only the parent shell process; the actual Next server child could remain alive on Windows.",
-      "fix": "Updated scripts/run-e2e.mjs to clean the target port before starting and kill the process tree afterward.",
-      "affected_area": "E2E test infrastructure",
-      "verification": "npm run e2e passed.",
-      "prevention_or_follow_up": [
-        "Keep process-tree cleanup in the runner.",
-        "Check for leftover Listen sockets after E2E changes."
-      ],
-      "source": "command output and port inspection",
-      "confidence": "high"
-    },
-    {
-      "timestamp": "2026-05-26",
-      "symptom": "Playwright strict mode failed because text assertions matched both visible page text and export preview text.",
-      "root_cause": "The E2E test used broad full-page text selectors for content duplicated in the Markdown preview.",
-      "fix": "Scoped assertions to the detail region and progress region.",
-      "affected_area": "E2E selector design",
-      "verification": "npm run e2e passed after narrowing selectors.",
-      "prevention_or_follow_up": [
-        "Prefer scoped locators for content that also appears in exports."
-      ],
-      "source": "Playwright error output",
-      "confidence": "high"
-    }
-  ],
-  "handoff_state": {
-    "current_state": "VibeLog Studio Slice 1 works locally and has been pushed to GitHub. Slice 2 preparation files are local and ready for review: schema support for code_repositories, format documentation, and a Slice 2 design doc.",
-    "completed": [
-      "Dogfood VibeLog created and updated.",
-      "Implementation plan created.",
-      "App scaffold created.",
-      "Domain model implemented.",
-      "Markdown/JSON exporters implemented.",
-      "Memory/localStorage repositories implemented.",
-      "UI implemented.",
-      "Unit, integration, E2E, build, and visual QA completed.",
-      "Slice 1 committed and pushed as 5111e72.",
-      "Slice 2 design document created.",
-      "VibeLog schema prepared for Git repository references."
-    ],
-    "in_progress": [
-      "Finalizing Slice 2 preparation handoff."
-    ],
-    "pending": [
-      "Dependency audit decision.",
-      "Download/import and schema validation UX.",
-      "Git Link Lite implementation.",
-      "Hook automation design after the manual loop is stronger."
-    ],
-    "blockers": [
-      "No engineering blocker for Slice 1.",
-      "Slice 2 implementation waits for user review of the design."
-    ],
-    "next_actions": [
-      "Let the user review the Slice 2 design.",
-      "Write a detailed Slice 2 implementation plan after approval.",
-      "Implement Slice 2 with two-layer testing."
-    ],
-    "context_for_next_agent": [
-      "Work in apps/vibelog-studio.",
-      "Run npm run test and npm run e2e from apps/vibelog-studio.",
-      "Slice 1 rollback point is commit 5111e72.",
-      "Slice 2 design lives at docs/superpowers/specs/2026-05-26-vibelog-studio-slice-2-design.md.",
-      "Do not skip VibeLog updates after meaningful work.",
-      "Record engineering execution prompts, not idea-chat transcripts.",
-      "Keep privacy defaults private until the human changes them."
-    ]
-  },
-  "public_private_projection": {
-    "public_summary": "VibeLog Studio MVP is a local-first tool for creating and exporting Vibe Repos.",
-    "code_visibility": "hidden",
-    "prompt_visibility": "summary",
-    "collaboration_status": "closed",
-    "remix_permission": "unknown",
-    "license_or_usage_note": "No license selected yet."
-  },
-  "branch_remix_readiness": {
-    "remix_allowed": false,
-    "what_can_be_reused": [
-      "product concept and public documentation after license decision"
-    ],
-    "what_should_not_be_reused": [
-      "private prompts",
-      "hidden code until the user changes visibility"
-    ],
-    "suggested_contribution_areas": [
-      "domain model",
-      "exporters",
-      "local persistence",
-      "UI",
-      "tests"
-    ],
-    "attribution_requirements": "pending license decision"
   },
   "vibe_progress": [
     {
-      "timestamp": "2026-05-26",
+      "confidence": "high",
+      "next": "Present test design and key decisions to the user.",
+      "problems": "Must avoid overbuilding and must preserve the pre-implementation test design gate.",
+      "source": "current work session",
       "stage": "brief",
-      "what_happened": "Started VibeLog Studio MVP as the first real dogfood project by creating its VibeLog before writing product code.",
+      "timestamp": "2026-05-26",
       "tools_used": [
         "Codex",
         "VibeLog"
       ],
-      "problems": [
-        "Must avoid overbuilding and must preserve the pre-implementation test design gate."
-      ],
-      "next": [
-        "Present test design and key decisions to the user."
-      ],
-      "source": "current work session",
-      "confidence": "high"
+      "what_happened": "Started VibeLog Studio MVP as the first real dogfood project by creating its VibeLog before writing product code."
     },
     {
-      "timestamp": "2026-05-26",
+      "confidence": "high",
+      "next": "Review locally, decide commit/push, and choose Slice 2 priority.",
+      "problems": "E2E runner needed Windows process-tree cleanup; broad Playwright text selectors conflicted with export preview content; dependency audit reports moderate Next/PostCSS advisory.",
+      "source": "current work session",
       "stage": "prototype",
-      "what_happened": "Implemented and verified Slice 1 of VibeLog Studio: create, view, update, export, and persist local Vibe Repos.",
+      "timestamp": "2026-05-26",
       "tools_used": [
         "Codex",
         "VibeLog",
@@ -920,63 +702,22 @@
         "Vitest",
         "Playwright"
       ],
-      "problems": [
-        "E2E runner needed Windows process-tree cleanup.",
-        "Broad Playwright text selectors conflicted with export preview content.",
-        "Dependency audit reports moderate Next/PostCSS advisory."
-      ],
-      "next": [
-        "Review locally.",
-        "Decide commit/push.",
-        "Choose Slice 2 priority."
-      ],
-      "source": "current work session",
-      "confidence": "high"
+      "what_happened": "Implemented and verified Slice 1 of VibeLog Studio: create, view, update, export, and persist local Vibe Repos."
     },
     {
-      "timestamp": "2026-05-26",
+      "confidence": "high",
+      "next": "Review the Slice 2 design, then write an implementation plan.",
+      "problems": "Slice 2 must stay focused on file portability and Git metadata, not expand into cloud sync or Git hosting yet.",
+      "source": "current work session",
       "stage": "prototype",
-      "what_happened": "Completed Slice 2 preparation: pushed Slice 1, added Git repository link support to the VibeLog schema, and wrote the Slice 2 design doc.",
+      "timestamp": "2026-05-26",
       "tools_used": [
         "Codex",
         "VibeLog",
         "Git"
       ],
-      "problems": [
-        "Slice 2 must stay focused on file portability and Git metadata, not expand into cloud sync or Git hosting yet."
-      ],
-      "next": [
-        "Review the Slice 2 design.",
-        "Write an implementation plan."
-      ],
-      "source": "current work session",
-      "confidence": "high"
+      "what_happened": "Completed Slice 2 preparation: pushed Slice 1, added Git repository link support to the VibeLog schema, and wrote the Slice 2 design doc."
     }
   ],
-  "public_summary": "VibeLog Studio MVP is a small local-first tool for creating, viewing, updating, and exporting Vibe Repos. Its first purpose is to dogfood VibeLog itself by recording the full vibe process from idea to implementation.",
-  "code_repositories": [
-    {
-      "provider": "github",
-      "url": "https://github.com/xiaoweihu339-afk/VibeLog.git",
-      "remote_name": "origin",
-      "default_branch": "master",
-      "current_branch": "master",
-      "latest_commit_sha": "5111e7219974220d882c2e8e9fc21f071477720a",
-      "sync_status": "pushed",
-      "code_visibility": "hidden",
-      "demo_url": "",
-      "artifact_urls": [],
-      "linked_commits": [
-        {
-          "sha": "5111e7219974220d882c2e8e9fc21f071477720a",
-          "branch": "master",
-          "message": "Add VibeLog Studio slice 1",
-          "timestamp": "2026-05-26",
-          "summary": "Committed and pushed the verified VibeLog Studio Slice 1 milestone.",
-          "vibelog_entry_ref": "development_log:2026-05-26-slice-1-release"
-        }
-      ],
-      "notes": "Code remains Git-managed; VibeLog records process memory and links to Git state."
-    }
-  ]
+  "visibility": "private"
 }

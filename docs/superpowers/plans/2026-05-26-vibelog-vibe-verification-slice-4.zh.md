@@ -306,10 +306,10 @@ node --test
 在 `README.md` 的 `docs/guides/` 列表里加入：
 
 ```md
-- [Vibe verification guide](docs/guides/vibe-verification-guide.md)
-- [Vibe 验证指南](docs/guides/vibe-verification-guide.zh.md)
-- [Agent dogfood protocol](docs/guides/agent-dogfood-protocol.md)
-- [Agent dogfood 协议](docs/guides/agent-dogfood-protocol.zh.md)
+- [Vibe verification guide](../../guides/vibe-verification-guide.md)
+- [Vibe 验证指南](../../guides/vibe-verification-guide.zh.md)
+- [Agent dogfood protocol](../../guides/agent-dogfood-protocol.md)
+- [Agent dogfood 协议](../../guides/agent-dogfood-protocol.zh.md)
 ```
 
 ### Task 3：Scratch Reading Card Dogfood

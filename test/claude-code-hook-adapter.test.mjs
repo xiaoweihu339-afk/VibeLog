@@ -170,6 +170,8 @@ test("maps Stop to handoff_updated", () => {
   assert.equal(events.length, 1);
   assert.equal(events[0].type, "handoff_updated");
   assert.match(events[0].current_state, /Implemented the adapter/);
+  assert.equal(events[0].progress_snapshot.project_progress, "22 / 100");
+  assert.match(events[0].progress_snapshot.next_unlock, /real project opt-in/i);
   assert.ok(events[0].pending.includes("Review generated VibeLog updates"));
 });
 

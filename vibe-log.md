@@ -403,7 +403,7 @@ The long-term product may become VibeHub, a GitHub-like platform around Vibe Rep
 
 ### Current State
 
-The VibeLog skill now has a deterministic Markdown-to-JSON exporter, lightweight validator, recorder core, Claude Code hook adapter, scratch-local live hook verifier, and dry-run-first project-local hook settings generator. Slice 8 adds the first safe adoption path for enabling VibeLog hooks in a real project without touching global Claude Code settings.
+The VibeLog skill now has a deterministic Markdown-to-JSON exporter, lightweight validator, recorder core, Claude Code hook adapter, scratch-local live hook verifier, and dry-run-first project-local hook settings generator. Slice 9 fixed the first comprehensive audit findings and added regression coverage for all generated examples.
 
 ### Completed
 
@@ -443,10 +443,11 @@ The VibeLog skill now has a deterministic Markdown-to-JSON exporter, lightweight
 - Added bilingual Slice 7 live hook verification guide and report.
 - Added a dry-run-first Claude Code VibeLog hook settings generator.
 - Added bilingual Slice 8 opt-in install guide and report.
+- Fixed first comprehensive audit issues: example JSON drift, incomplete example coverage, broken Slice 4 links, stale Stop handoff progress, and stale hook example settings.
 
 ### In Progress
 
-- Final repository verification and local commit for Slice 8.
+- Local commit for Slice 9.
 
 ### Pending
 
@@ -454,14 +455,14 @@ The VibeLog skill now has a deterministic Markdown-to-JSON exporter, lightweight
 - Test the opt-in hook generator across real user projects.
 - Add full JSON Schema validation.
 - Add richer example Vibe Repos after the adapter exists.
+- Make Claude Code Stop handoff progress configurable instead of static.
 
 ### Blocked
 
-- No current Slice 8 blocker. Historical note: `skill-creator` quick validation could not run because the current Python environment is missing the `yaml` package.
+- No current Slice 9 blocker. Historical note: `skill-creator` quick validation could not run because the current Python environment is missing the `yaml` package.
 
 ### Next Actions
 
-- Finish full repository verification and commit Slice 8 locally.
 - Run a future real-project opt-in install verification only after explicit user approval.
 - Add full JSON Schema validation.
 - Decide whether to install the skill locally or keep iterating inside the repository first.
@@ -800,6 +801,42 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 
 **Confidence:** high
 
+### 2026-05-27
+
+**Type:** test_result
+
+**Summary:** Verified Slice 9 first audit fixes.
+
+**Evidence Ref:** `node --test test\vibelog-examples.test.mjs test\claude-code-hook-adapter.test.mjs`; Markdown relative link checker over all tracked `.md` files.
+
+**Result:** passed
+
+**Details:** Targeted tests passed with 14 tests. The expanded example tests now cover all example directories and assert JSON/Markdown sync. Markdown link checker scanned 73 files and found no broken relative links.
+
+**Residual Risk:** Stop hook progress is updated but still static; future work should make it configurable or derive it from the current VibeLog.
+
+**Source:** current work session
+
+**Confidence:** high
+
+### 2026-05-27
+
+**Type:** test_result
+
+**Summary:** Ran final Slice 9 repository verification.
+
+**Evidence Ref:** `node --test`; `node scripts\validate-vibelog.mjs vibe-log.json`; `node scripts\export-vibelog.mjs vibe-log.md --out vibe-log.json --check`; `node scripts\validate-vibelog.mjs examples\reading-card-lite\vibe-log.json`; `node scripts\export-vibelog.mjs examples\reading-card-lite\vibe-log.md --out examples\reading-card-lite\vibe-log.json --check`; `node scripts\validate-vibelog.mjs examples\billmate-lite\vibe-log.json`; `node scripts\export-vibelog.mjs examples\billmate-lite\vibe-log.md --out examples\billmate-lite\vibe-log.json --check`; `node scripts\validate-vibelog.mjs examples\vibelog-studio\vibe-log.json`; `node scripts\export-vibelog.mjs examples\vibelog-studio\vibe-log.md --out examples\vibelog-studio\vibe-log.json --check`; Markdown relative link checker; Slice 9 placeholder scan; `git diff --check`.
+
+**Result:** passed
+
+**Details:** Full `node --test` passed with 40 tests. Root VibeLog and all three examples validated and matched Markdown. Markdown link checker scanned 73 files and found no broken relative links. Slice 9 placeholder scan produced no matches. `git diff --check` returned only line-ending normalization warnings for the touched Slice 4 plan files, with exit code 0.
+
+**Residual Risk:** Stop handoff progress is still static and should become configurable in a future slice.
+
+**Source:** current work session
+
+**Confidence:** high
+
 ## Project Context
 
 ### Repo / Workspace
@@ -842,6 +879,8 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 - `docs/reports/slice-7-live-hook-verification-report.zh.md`: Chinese Slice 7 live hook verification report.
 - `docs/reports/slice-8-opt-in-hook-install-report.md`: English Slice 8 opt-in hook install report.
 - `docs/reports/slice-8-opt-in-hook-install-report.zh.md`: Chinese Slice 8 opt-in hook install report.
+- `docs/reports/slice-9-first-audit-fixes-report.md`: English Slice 9 first audit fixes report.
+- `docs/reports/slice-9-first-audit-fixes-report.zh.md`: Chinese Slice 9 first audit fixes report.
 - `examples/reading-card-lite/`: generated VibeLog dogfood example only.
 - `scripts/export-vibelog.mjs`: deterministic Markdown-to-JSON exporter.
 - `scripts/validate-vibelog.mjs`: lightweight VibeLog JSON validator.
@@ -1295,6 +1334,16 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 
 **Notes:** Bilingual report for Slice 8 opt-in hook settings generator and progress snapshot.
 
+### Slice 9 first audit fixes reports
+
+**Type:** report
+
+**Ref:** `docs/reports/slice-9-first-audit-fixes-report.md`, `docs/reports/slice-9-first-audit-fixes-report.zh.md`
+
+**Visibility:** private
+
+**Notes:** Bilingual report for the first comprehensive audit fixes and regression coverage.
+
 ## Execution Prompts
 
 ### 2026-05-25
@@ -1674,6 +1723,24 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 **Result:** Added a dry-run-first project-local Claude Code VibeLog hook settings generator, tests, bilingual opt-in install guide, and bilingual report.
 
 **Reuse Notes:** Treat this as authorization for the S8 generator and docs only. It does not authorize installing hooks into a real user project or pushing to GitHub.
+
+### 2026-05-27
+
+**Agent / Tool:** Codex
+
+**Prompt Type:** build
+
+**Prompt Visibility:** summary
+
+**Recording Mode:** exact
+
+**Prompt Summary:** User authorized executing Slice 9 first audit fixes.
+
+**Prompt Text:** 执行s9
+
+**Result:** Fixed first audit issues, expanded regression tests, synchronized examples, updated Stop handoff progress, fixed broken links, and updated example hook settings.
+
+**Reuse Notes:** Treat this as authorization for audit fixes only. It does not authorize GitHub push.
 
 ## Development Log
 
@@ -2130,6 +2197,36 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 
 **Confidence:** high
 
+### 2026-05-27
+
+**Type:** bugfix
+
+**Summary:** Fixed first comprehensive audit findings.
+
+**Files Changed:**
+- `examples/billmate-lite/vibe-log.json`
+- `examples/vibelog-studio/vibe-log.json`
+- `test/vibelog-examples.test.mjs`
+- `test/claude-code-hook-adapter.test.mjs`
+- `scripts/claude-code-hook-adapter.mjs`
+- `docs/superpowers/plans/2026-05-26-vibelog-vibe-verification-slice-4.md`
+- `docs/superpowers/plans/2026-05-26-vibelog-vibe-verification-slice-4.zh.md`
+- `skills/vibelog/assets/claude-code-hooks.settings.example.json`
+- `docs/reports/slice-9-first-audit-fixes-report.md`
+- `docs/reports/slice-9-first-audit-fixes-report.zh.md`
+
+**Details:** Synchronized stale example JSON exports, expanded example regression tests to all examples, repaired broken relative links in Slice 4 plans, updated stale Stop handoff progress, and aligned the example Claude Code settings with the safer project-local setup direction.
+
+**Verification:** Targeted tests passed with 14 tests and the Markdown relative link checker found no broken links across 73 tracked Markdown files.
+
+**Follow-up:**
+- `Make Stop handoff progress configurable instead of static.`
+- `Keep all generated examples under drift checks.`
+
+**Source:** current work session
+
+**Confidence:** high
+
 ## Bugfix / Incident Log
 
 ### 2026-05-26
@@ -2164,16 +2261,16 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 
 ### Current State
 
-Slice 8 added a dry-run-first project-local Claude Code hook settings generator. The project now has a safer path from scratch live-hook proof to real-project opt-in setup, while still avoiding global settings changes.
+Slice 9 fixed the first comprehensive audit findings. All examples are now covered by drift tests, broken Slice 4 links are repaired, the Claude Code Stop handoff no longer writes the old Slice 6 progress snapshot, and example hook settings are aligned with the opt-in setup direction.
 
 ### Project Progress Snapshot
 
-- Project Progress: 22 / 100
-- Change This Task: +2
-- Current Phase: safe adoption path
-- Completed This Task: Added dry-run-first project-local Claude Code hook settings generator
-- Next Unlock: real project opt-in install verification and packaging path
-- Main Risk: generator is verified locally but not yet tested across many real user projects
+- Project Progress: 23 / 100
+- Change This Task: +1
+- Current Phase: first audit fixes
+- Completed This Task: Fixed first comprehensive audit issues and added regression coverage
+- Next Unlock: real-project opt-in install acceptance test
+- Main Risk: progress snapshot logic is still static inside the Claude Code adapter
 - Confidence: medium
 
 ### Completed
@@ -2183,16 +2280,19 @@ Slice 8 added a dry-run-first project-local Claude Code hook settings generator.
 - Bilingual Slice 7 guide and report added
 - Dry-run-first opt-in hook settings generator added
 - Bilingual Slice 8 guide and report added
+- First comprehensive audit fixes completed
+- All examples covered by JSON drift tests
 
 ### In Progress
 
-- Local commit for Slice 8
+- Local commit for Slice 9
 
 ### Pending
 
 - Test opt-in hook setup on a real project after explicit approval
 - Add stronger schema validation
 - Decide packaging/install path for normal users
+- Make Stop handoff progress configurable instead of static
 
 ### Blockers
 
@@ -2200,12 +2300,12 @@ Slice 8 added a dry-run-first project-local Claude Code hook settings generator.
 
 ### Next Actions
 
-- Commit Slice 8 locally
+- Commit Slice 9 locally
 - Plan a real-project opt-in install acceptance test before touching any non-scratch Claude Code settings
 
 ### Context For Next Agent
 
-- Session: slice-8-codex
+- Session: slice-9-codex
 - Stop hook active: false
 ## Public / Private Projection
 
@@ -2521,6 +2621,21 @@ Slice 8 added a dry-run-first project-local Claude Code hook settings generator.
 **Problems:** Needed a safe bridge from scratch hook verification to real-project adoption without changing global Claude Code settings or silently enabling hooks.
 
 **Next:** Finish full repository verification, commit locally, then test opt-in setup on a real project only after explicit user approval.
+
+**Source:** current work session
+
+**Confidence:** high
+
+### 2026-05-27
+**Stage:** prototype
+
+**What Happened:** Fixed the first comprehensive audit findings and added regression coverage.
+
+**Tools Used:** Codex, Node.js, VibeLog
+
+**Problems:** The first audit found stale example JSON exports, incomplete example test coverage, broken Slice 4 links, stale Stop handoff progress, and outdated example hook settings.
+
+**Next:** Run full verification, commit locally, then plan a real-project opt-in install acceptance test.
 
 **Source:** current work session
 

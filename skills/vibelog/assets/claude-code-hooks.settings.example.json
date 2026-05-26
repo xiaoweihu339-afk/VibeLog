@@ -2,30 +2,36 @@
   "hooks": {
     "UserPromptSubmit": [
       {
+        "matcher": "",
         "hooks": [
           {
             "type": "command",
-            "command": "node scripts/claude-code-hook-adapter.mjs --log vibe-log.md --json vibe-log.json --event-dir .vibelog-events"
+            "shell": "powershell",
+            "command": "node C:\\path\\to\\VibeLog\\scripts\\claude-code-hook-adapter.mjs --log $env:CLAUDE_PROJECT_DIR/vibe-log.md --json $env:CLAUDE_PROJECT_DIR/vibe-log.json --event-dir $env:CLAUDE_PROJECT_DIR/.vibelog-events"
           }
         ]
       }
     ],
     "PostToolUse": [
       {
+        "matcher": "",
         "hooks": [
           {
             "type": "command",
-            "command": "node scripts/claude-code-hook-adapter.mjs --log vibe-log.md --json vibe-log.json --event-dir .vibelog-events"
+            "shell": "powershell",
+            "command": "node C:\\path\\to\\VibeLog\\scripts\\claude-code-hook-adapter.mjs --log $env:CLAUDE_PROJECT_DIR/vibe-log.md --json $env:CLAUDE_PROJECT_DIR/vibe-log.json --event-dir $env:CLAUDE_PROJECT_DIR/.vibelog-events"
           }
         ]
       }
     ],
     "Stop": [
       {
+        "matcher": "",
         "hooks": [
           {
             "type": "command",
-            "command": "node scripts/claude-code-hook-adapter.mjs --log vibe-log.md --json vibe-log.json --event-dir .vibelog-events"
+            "shell": "powershell",
+            "command": "node C:\\path\\to\\VibeLog\\scripts\\claude-code-hook-adapter.mjs --log $env:CLAUDE_PROJECT_DIR/vibe-log.md --json $env:CLAUDE_PROJECT_DIR/vibe-log.json --event-dir $env:CLAUDE_PROJECT_DIR/.vibelog-events"
           }
         ]
       }

@@ -3,31 +3,49 @@ import assert from "node:assert/strict";
 import { readdir, readFile } from "node:fs/promises";
 import { join } from "node:path";
 
+import { isSameJsonFile } from "../scripts/export-vibelog.mjs";
 import { validateVibeLog } from "../scripts/validate-vibelog.mjs";
 
-const exampleDir = "examples/reading-card-lite";
+const exampleDirs = [
+  "examples/vibelog-studio",
+  "examples/billmate-lite",
+  "examples/reading-card-lite"
+];
 const allowedFiles = new Set(["README.md", "vibe-log.md", "vibe-log.json"]);
 
-test("reading-card-lite example contains only generated VibeLog artifacts", async () => {
-  const entries = await readdir(exampleDir, { withFileTypes: true });
-  const names = entries.map((entry) => entry.name).sort();
+test("examples contain only generated VibeLog artifacts", async () => {
+  for (const exampleDir of exampleDirs) {
+    const entries = await readdir(exampleDir, { withFileTypes: true });
+    const names = entries.map((entry) => entry.name).sort();
 
-  assert.deepEqual(names, ["README.md", "vibe-log.json", "vibe-log.md"].sort());
-  for (const entry of entries) {
-    assert.equal(entry.isFile(), true, `${entry.name} must be a file`);
-    assert.equal(allowedFiles.has(entry.name), true, `${entry.name} is not allowed in examples`);
+    assert.deepEqual(names, ["README.md", "vibe-log.json", "vibe-log.md"].sort(), exampleDir);
+    for (const entry of entries) {
+      assert.equal(entry.isFile(), true, `${exampleDir}/${entry.name} must be a file`);
+      assert.equal(allowedFiles.has(entry.name), true, `${exampleDir}/${entry.name} is not allowed in examples`);
+    }
   }
 });
 
-test("reading-card-lite JSON is valid VibeLog data", async () => {
-  const data = JSON.parse(await readFile(join(exampleDir, "vibe-log.json"), "utf8"));
-  const result = validateVibeLog(data);
+test("example JSON files are valid VibeLog data", async () => {
+  for (const exampleDir of exampleDirs) {
+    const data = JSON.parse(await readFile(join(exampleDir, "vibe-log.json"), "utf8"));
+    const result = validateVibeLog(data);
 
-  assert.equal(result.valid, true, result.errors.join("\n"));
+    assert.equal(result.valid, true, `${exampleDir}\n${result.errors.join("\n")}`);
+  }
 });
 
-test("reading-card-lite Markdown includes core dogfood evidence sections", async () => {
-  const markdown = await readFile(join(exampleDir, "vibe-log.md"), "utf8");
+test("example JSON files match their Markdown source", async () => {
+  for (const exampleDir of exampleDirs) {
+    assert.equal(
+      await isSameJsonFile(join(exampleDir, "vibe-log.md"), join(exampleDir, "vibe-log.json")),
+      true,
+      `${exampleDir}/vibe-log.json drifted from Markdown`
+    );
+  }
+});
+
+test("examples include core dogfood evidence sections", async () => {
   const requiredSections = [
     "## One-Line Vibe",
     "## Current Idea",
@@ -43,8 +61,11 @@ test("reading-card-lite Markdown includes core dogfood evidence sections", async
     "## Public Summary"
   ];
 
-  for (const section of requiredSections) {
-    assert.match(markdown, new RegExp(section.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  for (const exampleDir of exampleDirs) {
+    const markdown = await readFile(join(exampleDir, "vibe-log.md"), "utf8");
+    for (const section of requiredSections) {
+      assert.match(markdown, new RegExp(section.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")), `${exampleDir} missing ${section}`);
+    }
   }
 });
 
