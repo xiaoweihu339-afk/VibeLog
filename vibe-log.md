@@ -642,6 +642,21 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 
 **Confidence:** high
 
+### 2026-05-26
+**Type:** test_result
+
+**Summary:** Verified Slice 4 agent dogfood implementation and the generated Reading Card Lite example.
+
+**Evidence Ref:** `npm test` in `C:\Users\HXW\Documents\vibelog-scratch\reading-card-lite` failed before implementation with `ERR_MODULE_NOT_FOUND`; `npm test` in the scratch project passed after implementation with 3 tests; `node scripts/validate-vibelog.mjs examples/reading-card-lite/vibe-log.json`; `node scripts/export-vibelog.mjs examples/reading-card-lite/vibe-log.md --out examples/reading-card-lite/vibe-log.json --check`; `node --test test/vibelog-examples.test.mjs`; `node --test`; final verification commands after root JSON regeneration.
+
+**Result:** passed
+
+**Residual Risk:** Slice 4 verifies agent dogfood recording and repository boundaries, but hook automation is still not implemented. Full JSON Schema validation is also still pending.
+
+**Source:** current work session
+
+**Confidence:** high
+
 ## Project Context
 
 ### Repo / Workspace
@@ -666,12 +681,22 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 - `docs/product/vibehub-long-term-product-document.md`: long-term VibeHub product document.
 - `docs/guides/`: practical guide pack for starting, testing, validating, and handing off VibeLog.
 - `docs/guides/export-json.md`: deterministic export and validation guide.
+- `docs/guides/vibe-verification-guide.md`: English guide for agent-run VibeLog verification.
+- `docs/guides/vibe-verification-guide.zh.md`: Chinese guide for agent-run VibeLog verification.
+- `docs/guides/agent-dogfood-protocol.md`: English dogfood protocol.
+- `docs/guides/agent-dogfood-protocol.zh.md`: Chinese dogfood protocol.
 - `docs/releases/v0.2-draft.md`: release notes for the second draft version.
 - `docs/superpowers/plans/2026-05-26-vibelog-exporter-slice-3.md`: Slice 3 implementation plan.
+- `docs/superpowers/plans/2026-05-26-vibelog-vibe-verification-slice-4.md`: Slice 4 implementation plan.
+- `docs/superpowers/plans/2026-05-26-vibelog-vibe-verification-slice-4.zh.md`: Slice 4 implementation plan Chinese translation.
+- `docs/reports/slice-4-vibe-verification-report.md`: English Slice 4 verification report.
+- `docs/reports/slice-4-vibe-verification-report.zh.md`: Chinese Slice 4 verification report.
+- `examples/reading-card-lite/`: generated VibeLog dogfood example only.
 - `scripts/export-vibelog.mjs`: deterministic Markdown-to-JSON exporter.
 - `scripts/validate-vibelog.mjs`: lightweight VibeLog JSON validator.
 - `test/export-vibelog.test.mjs`: exporter regression tests.
 - `test/validate-vibelog.test.mjs`: validator regression tests.
+- `test/vibelog-examples.test.mjs`: generated example integrity and repository-boundary tests.
 
 ### Run / Test Commands
 
@@ -680,6 +705,9 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 - `node scripts/export-vibelog.mjs vibe-log.md --out vibe-log.json`
 - `node scripts/export-vibelog.mjs vibe-log.md --out vibe-log.json --check`
 - `node scripts/validate-vibelog.mjs vibe-log.json`
+- `node scripts/validate-vibelog.mjs examples/reading-card-lite/vibe-log.json`
+- `node scripts/export-vibelog.mjs examples/reading-card-lite/vibe-log.md --out examples/reading-card-lite/vibe-log.json --check`
+- `node --test test/vibelog-examples.test.mjs`
 - `rg -n "[^\\x00-\\x7F]" docs skills vibe-log.md vibe-log.json`
 
 ### Known Issues
@@ -932,6 +960,36 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 **Visibility:** private
 
 **Notes:** Chinese implementation plan for Slice 4 agent dogfood verification.
+
+### Slice 4 vibe verification guides
+
+**Type:** document
+
+**Ref:** `docs/guides/vibe-verification-guide.md`, `docs/guides/vibe-verification-guide.zh.md`, `docs/guides/agent-dogfood-protocol.md`, `docs/guides/agent-dogfood-protocol.zh.md`
+
+**Visibility:** private
+
+**Notes:** Bilingual guide pair for agent-run vibe verification and the scratch dogfood protocol.
+
+### Reading Card Lite dogfood example
+
+**Type:** vibelog_example
+
+**Ref:** `examples/reading-card-lite/`
+
+**Visibility:** private
+
+**Notes:** Generated VibeLog records from a scratch Reading Card Lite project. The scratch source stays outside this repository.
+
+### Slice 4 verification reports
+
+**Type:** report
+
+**Ref:** `docs/reports/slice-4-vibe-verification-report.md`, `docs/reports/slice-4-vibe-verification-report.zh.md`
+
+**Visibility:** private
+
+**Notes:** Bilingual report for Slice 4 dogfood verification and progress snapshot.
 
 ## Execution Prompts
 
@@ -1224,6 +1282,23 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 
 **Reuse Notes:** This prompt authorizes the implementation plan checkpoint only. Dogfood execution should start after the user reviews and approves the plan.
 
+### 2026-05-26
+**Agent / Tool:** Codex
+
+**Prompt Type:** build
+
+**Prompt Visibility:** summary
+
+**Recording Mode:** exact
+
+**Prompt Summary:** User asked to retry the Slice 4 execution after previously approving it.
+
+**Prompt Text:** 重试
+
+**Result:** Resumed Slice 4 dogfood execution locally: added red example-integrity tests, created bilingual verification guides, ran the Reading Card Lite scratch project with TDD, generated a VibeLog example, and prepared verification reports.
+
+**Reuse Notes:** A short retry prompt can be an engineering execution prompt when it restarts an approved implementation plan.
+
 ## Development Log
 
 ### 2026-05-25
@@ -1511,24 +1586,93 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 
 **Follow-up:** Ask the user to review the bilingual implementation plan before starting dogfood execution.
 
+### 2026-05-26
+**Type:** test
+
+**Summary:** Added Slice 4 example integrity tests and watched them fail before implementation.
+
+**Files Changed:** `test/vibelog-examples.test.mjs`
+
+**Details:** The test verifies that `examples/reading-card-lite/` contains only generated VibeLog artifacts, the example JSON validates, required dogfood evidence sections exist, and Slice 4 guides exist in bilingual pairs.
+
+**Bug Symptom:** The new tests failed because the Reading Card Lite example and Slice 4 guides did not exist yet.
+
+**Root Cause:** Slice 4 implementation had not been executed.
+
+**Fix:** Added guides, generated example records, and exported JSON in later steps.
+
+**Verification:** `node --test test/vibelog-examples.test.mjs` initially failed with missing files, then passed after implementation.
+
+**Follow-up:** Keep this test as a guardrail for future generated examples.
+
+### 2026-05-26
+**Type:** docs
+
+**Summary:** Added bilingual vibe verification guides and dogfood protocol.
+
+**Files Changed:** `docs/guides/vibe-verification-guide.md`, `docs/guides/vibe-verification-guide.zh.md`, `docs/guides/agent-dogfood-protocol.md`, `docs/guides/agent-dogfood-protocol.zh.md`, `README.md`
+
+**Details:** Documented the principle that agent-verifiable work should be verified by agents first, clarified human and agent roles, defined isolated and combined checks, and described the repository boundary for generated examples.
+
+**Bug Symptom:** not applicable
+
+**Root Cause:** not applicable
+
+**Fix:** not applicable
+
+**Verification:** The bilingual guide existence test passed.
+
+**Follow-up:** Use these guides before future hook or adapter automation work.
+
+### 2026-05-26
+**Type:** test
+
+**Summary:** Ran Reading Card Lite as a scratch agent dogfood project.
+
+**Files Changed:** `examples/reading-card-lite/README.md`, `examples/reading-card-lite/vibe-log.md`, `examples/reading-card-lite/vibe-log.json`
+
+**Details:** Created scratch source outside the repository at `C:\Users\HXW\Documents\vibelog-scratch\reading-card-lite`, wrote tests first, confirmed RED, implemented minimal Node.js logic, confirmed GREEN, and copied only generated VibeLog records into the repository.
+
+**Bug Symptom:** Duplicate example text could appear across generated study cards.
+
+**Root Cause:** The desired behavior needed explicit uniqueness tracking.
+
+**Fix:** The scratch implementation tracks used examples and prefixes duplicates with the card concept.
+
+**Verification:** Scratch `npm test` passed with 3 tests; example JSON validated; example drift check passed; repository example integrity test passed; full repository `node --test` passed.
+
+**Follow-up:** Implement hook or adapter automation so VibeLog updates can happen continuously during real sessions.
+
 ## Bugfix / Incident Log
 
-No bugfix or incident entry for this update.
+### 2026-05-26
+
+**Summary:** Prevented generated examples from accidentally including scratch project source.
+
+**Bug Symptom:** A dogfood example could drift into application-source storage, which would violate the skill-first repository strategy.
+
+**Root Cause:** Before Slice 4, there was no automated integrity test enforcing the generated-example boundary.
+
+**Fix:** Added `test/vibelog-examples.test.mjs` to assert that `examples/reading-card-lite/` contains only `README.md`, `vibe-log.md`, and `vibe-log.json`.
+
+**Verification:** `node --test test/vibelog-examples.test.mjs` passed after the generated example was added.
+
+**Follow-up:** Generalize the integrity test if future examples need the same boundary rule.
 
 ## Handoff State
 
 ### Current State
 
-VibeLog is a v0.2 draft process record skill. Slice 1.5, Slice 2, the BillMate Lite dogfood example, and Slice 3 exporter are committed locally. Slice 4 bilingual design and implementation plan are now drafted around vibe-driven agent dogfood verification.
+VibeLog is a v0.2 draft process record skill. Slice 1.5, Slice 2, the BillMate Lite dogfood example, Slice 3 exporter, and Slice 4 agent dogfood verification are implemented locally. The repository now has a repeatable Reading Card Lite dogfood example, bilingual verification guides, and integrity tests that protect the generated-example boundary.
 
 ### Project Progress Snapshot
 
-- Project Progress: 10 / 100
-- Change This Task: +0
-- Current Phase: VibeLog foundation and verification
-- Completed This Task: Drafted bilingual Slice 4 implementation plan
-- Next Unlock: Slice 4 dogfood execution
-- Main Risk: Agent dogfood verification has not run end to end yet
+- Project Progress: 12 / 100
+- Change This Task: +2
+- Current Phase: Agent dogfood verification
+- Completed This Task: Implemented Slice 4 dogfood verification with Reading Card Lite generated example
+- Next Unlock: Hook / adapter automatic recording
+- Main Risk: Hook automation has not been implemented yet
 - Confidence: medium
 
 ### Completed
@@ -1564,14 +1708,20 @@ VibeLog is a v0.2 draft process record skill. Slice 1.5, Slice 2, the BillMate L
 - Added conservative project progress snapshot rules to the VibeLog skill and agent usage guide.
 - Set the current long-term project progress baseline to `10 / 100`.
 - Drafted the Slice 4 implementation plan in English and Chinese.
+- Added Slice 4 bilingual vibe verification guides and dogfood protocol.
+- Added `test/vibelog-examples.test.mjs`.
+- Ran the Reading Card Lite scratch project outside the repository using TDD.
+- Added `examples/reading-card-lite/` with generated VibeLog records only.
+- Verified example JSON, drift checks, example integrity tests, and full repository tests.
+- Created bilingual Slice 4 verification reports.
 
 ### In Progress
 
-- Slice 4 bilingual implementation plan is ready for user review.
+- No active slice implementation after Slice 4 verification.
 
 ### Pending
 
-- Execute Slice 4 implementation after plan review.
+- Build hook / adapter automatic recording.
 - Full JSON Schema validation.
 - Example Vibe Repo generated by the adapter.
 - Any GitHub push requires a separate explicit user request.
@@ -1583,8 +1733,7 @@ VibeLog is a v0.2 draft process record skill. Slice 1.5, Slice 2, the BillMate L
 ### Next Actions
 
 - Use the exporter in the future Claude Code or Codex hook adapter.
-- Review the Slice 4 implementation plan.
-- Implement Slice 4 guides and a new agent-generated example if the plan is approved.
+- Design the first hook or adapter that can update VibeLog automatically during a real vibe session.
 - Add full JSON Schema validation.
 - Decide whether to install the skill locally or keep iterating inside the repository first.
 
@@ -1599,10 +1748,11 @@ VibeLog is a v0.2 draft process record skill. Slice 1.5, Slice 2, the BillMate L
 - Slice 4 should prefer agent dogfood verification over human manual verification.
 - Every artifact that needs user review should be available in both Chinese and English.
 - Every completed meaningful task report should include a conservative progress snapshot using the long-term project target as `100`.
-- Current long-term project progress baseline is `10 / 100`, not `36 / 100`.
-- Use `docs/superpowers/specs/2026-05-26-vibelog-vibe-verification-slice-4-design.md` and `.zh.md` as the source for the next implementation plan.
-- Use `docs/superpowers/plans/2026-05-26-vibelog-vibe-verification-slice-4.md` and `.zh.md` to execute Slice 4 after review.
+- Current long-term project progress is `12 / 100`, not `36 / 100`.
+- Use `docs/guides/vibe-verification-guide.md` and `.zh.md` before future verification slices.
+- Use `docs/guides/agent-dogfood-protocol.md` and `.zh.md` before future scratch dogfood examples.
 - `examples/billmate-lite/` should contain generated logs only, not scratch source code.
+- `examples/reading-card-lite/` should contain generated logs only, not scratch source code.
 - Markdown is the source of truth; regenerate JSON with `scripts/export-vibelog.mjs`.
 - Validate generated JSON with `scripts/validate-vibelog.mjs`.
 

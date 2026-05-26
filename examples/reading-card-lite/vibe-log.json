@@ -1,0 +1,457 @@
+{
+  "artifact_index": [
+    {
+      "name": "Scratch project source",
+      "notes": "Local-only scratch source for dogfood validation. Not copied into the VibeLog skill repository.",
+      "ref": "`C:\\Users\\HXW\\Documents\\vibelog-scratch\\reading-card-lite`",
+      "type": "code_workspace",
+      "visibility": "private"
+    },
+    {
+      "name": "Generated example Markdown",
+      "notes": "Human-readable process record generated from this dogfood run.",
+      "ref": "`examples/reading-card-lite/vibe-log.md`",
+      "type": "vibelog_markdown",
+      "visibility": "private"
+    },
+    {
+      "name": "Generated example JSON",
+      "notes": "Structured export generated from the Markdown source of truth.",
+      "ref": "`examples/reading-card-lite/vibe-log.json`",
+      "type": "vibelog_json",
+      "visibility": "private"
+    }
+  ],
+  "branch_remix_readiness": {
+    "attribution_requirements": "pending license decision",
+    "remix_allowed": "false",
+    "suggested_contribution_areas": [
+      "hook adapters",
+      "automatic prompt capture",
+      "richer validation schema",
+      "more dogfood examples"
+    ],
+    "what_can_be_reused": "the generated VibeLog example structure after license decisions are made",
+    "what_should_not_be_reused": "private local scratch source path in a public export"
+  },
+  "bugfix_incident_log": [
+    {
+      "bug_symptom": "Two notes could use the same example text even when they belonged to different concepts, making review cards harder to distinguish.",
+      "fix": "Track used examples and prefix a duplicate example with the card concept.",
+      "follow_up": [
+        "If this becomes a real app",
+        "add user-facing duplicate warnings or richer example editing."
+      ],
+      "root_cause": "The desired behavior needed explicit uniqueness tracking during card generation.",
+      "summary": "Prevented duplicate example text from appearing across generated study cards.",
+      "timestamp": "2026-05-26",
+      "verification": "The scratch test `creates study cards and avoids duplicate examples across themes` passed after implementation."
+    }
+  ],
+  "code_repositories": [
+    {
+      "code_visibility": "hidden",
+      "latest_verification": "`npm test` passed",
+      "name": "Local Scratch Workspace",
+      "provider": "local",
+      "sync_status": "local_only",
+      "url_path": "`C:\\Users\\HXW\\Documents\\vibelog-scratch\\reading-card-lite`"
+    }
+  ],
+  "code_visibility": "hidden",
+  "collaboration_status": "closed",
+  "created_at": "2026-05-26",
+  "creation_mode": "agent_led_human_approved",
+  "current_idea": "Reading Card Lite is a small local Node.js utility that takes reading notes with theme, concept, explanation, and example fields, then produces grouped Markdown review cards. The prototype is intentionally tiny: no UI, no database, no account system, and no cloud sync.\n\nIts purpose is to test whether VibeLog can record an agent-led vibe coding process with test design, idea change, human decision, exact execution prompt, development work, incident thinking, verification evidence, artifact boundaries, and handoff state.",
+  "decisions": [
+    {
+      "decision": "Keep Reading Card Lite source code outside the VibeLog repository.",
+      "impact": "The example directory contains only `README.md`, `vibe-log.md`, and `vibe-log.json`.",
+      "timestamp": "2026-05-26",
+      "why": "This repository is skill-first. Examples should show generated VibeLog records, not turn the skill repository into an application source repository."
+    },
+    {
+      "decision": "Use automated agent dogfood verification instead of asking the human to manually inspect every step.",
+      "impact": "Slice 4 focuses on repeatable commands, example integrity tests, exporter checks, validator checks, and concise evidence reporting.",
+      "timestamp": "2026-05-26",
+      "why": "The user's principle is that anything an agent can vibe-verify should not become human manual work."
+    }
+  ],
+  "development_log": [
+    {
+      "confidence": "high",
+      "details": "Tests cover normalized theme grouping, study card creation, duplicate example handling, and grouped Markdown export.",
+      "files_changed": [
+        "C:\\Users\\HXW\\Documents\\vibelog-scratch\\reading-card-lite\\package.json",
+        "C:\\Users\\HXW\\Documents\\vibelog-scratch\\reading-card-lite\\test\\reading-card-lite.test.mjs"
+      ],
+      "follow_up": [
+        "src/reading-card-lite.mjs"
+      ],
+      "source": "current work session",
+      "summary": "Added scratch tests for Reading Card Lite behavior.",
+      "timestamp": "2026-05-26",
+      "type": "test",
+      "verification": "`npm test` failed before implementation with `ERR_MODULE_NOT_FOUND`."
+    },
+    {
+      "confidence": "high",
+      "details": "Added theme grouping, normalized note handling, study card generation, duplicate example prefixing, review question generation, and grouped Markdown export.",
+      "files_changed": [
+        "C:\\Users\\HXW\\Documents\\vibelog-scratch\\reading-card-lite\\src\\reading-card-lite.mjs"
+      ],
+      "follow_up": "Use generated VibeLog records as the repository example.",
+      "source": "current work session",
+      "summary": "Implemented Reading Card Lite scratch logic.",
+      "timestamp": "2026-05-26",
+      "type": "feature",
+      "verification": "`npm test` passed with 3 tests."
+    },
+    {
+      "confidence": "high",
+      "details": "The example documents the scratch project process while keeping source code outside the repository.",
+      "files_changed": [
+        "examples/reading-card-lite/README.md",
+        "examples/reading-card-lite/vibe-log.md"
+      ],
+      "follow_up": "Export JSON and run integrity checks.",
+      "source": "current work session",
+      "summary": "Generated the Reading Card Lite VibeLog example.",
+      "timestamp": "2026-05-26",
+      "type": "docs",
+      "verification": "Pending JSON export and repository tests."
+    }
+  ],
+  "execution_prompts": [
+    {
+      "agent_or_tool": "Codex",
+      "prompt_summary": "Retry and execute Slice 4 dogfood verification locally without pushing.",
+      "prompt_text": "重试",
+      "prompt_type": "build",
+      "prompt_visibility": "summary",
+      "recording_mode": "exact",
+      "result": "Codex resumed Slice 4, wrote red example-integrity tests, created guides, ran a scratch Reading Card Lite project with TDD, and generated this VibeLog example.",
+      "reuse_notes": "A short human trigger can still be a build prompt when it resumes an approved implementation plan.",
+      "timestamp": "2026-05-26"
+    },
+    {
+      "agent_or_tool": "Codex",
+      "prompt_summary": "Execute the plan-defined scratch Reading Card Lite dogfood task.",
+      "prompt_text": "Create a scratch Reading Card Lite project outside this repository, write tests first, confirm RED, implement the minimal Node.js logic, confirm GREEN, then copy only generated VibeLog records into `examples/reading-card-lite/`.",
+      "prompt_type": "build",
+      "prompt_visibility": "summary",
+      "recording_mode": "reconstructed",
+      "result": "Scratch tests passed and generated VibeLog records were created.",
+      "reuse_notes": "This is a reusable agent dogfood prompt pattern for future examples.",
+      "timestamp": "2026-05-26"
+    }
+  ],
+  "handoff_state": {
+    "blockers": [
+      "No blockers."
+    ],
+    "completed": [
+      "Scratch folder created outside the repository.",
+      "Scratch tests written first.",
+      "RED run observed before implementation.",
+      "Scratch implementation added.",
+      "GREEN run observed with 3 passing tests.",
+      "Example Markdown generated."
+    ],
+    "context_for_next_agent": [
+      "Scratch source remains at `C:\\Users\\HXW\\Documents\\vibelog-scratch\\reading-card-lite`.",
+      "Do not copy scratch source into this repository.",
+      "This example validates process recording, not a production reading-card product."
+    ],
+    "current_state": "Reading Card Lite exists as a local scratch project used to verify VibeLog dogfood behavior. The VibeLog repository contains only generated example records.",
+    "in_progress": [
+      "Exporting and validating example JSON.",
+      "Running repository integrity tests."
+    ],
+    "next_actions": [
+      "Export example JSON.",
+      "Validate example JSON.",
+      "Run example integrity tests and full repository tests.",
+      "Confirm repository boundary contains only generated VibeLog artifacts."
+    ],
+    "pending": [
+      "Complete full Slice 4 verification.",
+      "Update root VibeLog and Slice 4 reports."
+    ],
+    "project_progress_snapshot": "Project Progress: 12 / 100\n\nChange This Task: +2\n\nCurrent Phase: Agent dogfood verification\n\nNext Unlock: Hook / adapter automatic recording\n\nMain Risk: Hook automation has not been implemented yet\n\nConfidence: medium"
+  },
+  "human_in_the_loop": [
+    {
+      "agent_proposal": "Build Slice 4 around agent-run dogfood verification, with human review focused on direction and evidence rather than manual chore checking.",
+      "final_decision": "The dogfood run should be agent-verified first.",
+      "human_input": "原则是可以vibe验证就不要手动验证，slice4开始之前还要准备什么？",
+      "impact": "The repository now includes a repeatable dogfood protocol and example integrity test.",
+      "timestamp": "2026-05-26",
+      "type": "direction",
+      "why_it_mattered": "This shaped the verification philosophy for the VibeLog skill and future VibeHub workflow."
+    },
+    {
+      "agent_proposal": "Store only generated VibeLog artifacts in `examples/`, while scratch source remains local and outside the repo.",
+      "final_decision": "Example source code is excluded from this repository.",
+      "human_input": "作为案例上传，明确只是上传这次工程执行下自动生成的vibelog，而不是工程源码。",
+      "impact": "Reading Card Lite source remains at `C:\\Users\\HXW\\Documents\\vibelog-scratch\\reading-card-lite`.",
+      "timestamp": "2026-05-26",
+      "type": "scope",
+      "why_it_mattered": "It protects the skill-first structure and keeps the repository reusable."
+    }
+  ],
+  "idea_evolution": [
+    {
+      "after": "Create Reading Card Lite as a scratch project outside the repository to verify VibeLog with a small but real coding task.",
+      "before": "Slice 4 needed agent-run dogfood verification, but no real unfinished project was available.",
+      "confidence": "high",
+      "reason": "The project needed proof that VibeLog can be used without asking the human to manually prepare a project.",
+      "source": "implementation plan and current execution",
+      "timestamp": "2026-05-26",
+      "type": "initial"
+    },
+    {
+      "after": "Preserve input order for generated cards while sorting grouped Markdown output by theme.",
+      "before": "Generate study cards from notes.",
+      "confidence": "high",
+      "reason": "This makes duplicate example handling easier to verify in tests while keeping the exported review material organized.",
+      "source": "test behavior during dogfood execution",
+      "timestamp": "2026-05-26",
+      "type": "refinement"
+    }
+  ],
+  "idea_expansion": {
+    "assumptions": [
+      "notes are already extracted; each note has a theme",
+      "concept",
+      "explanation",
+      "and example."
+    ],
+    "core_features": [
+      "theme grouping",
+      "normalized text",
+      "review question generation",
+      "duplicate example handling",
+      "Markdown export."
+    ],
+    "core_value": "Turn reading notes into structured recall material.",
+    "non_goals": [
+      "spaced repetition scheduling",
+      "accounts",
+      "storage",
+      "sync",
+      "rich editor",
+      "mobile UI",
+      "AI summarization."
+    ],
+    "product_hypothesis": "A small transformation core is enough to prove the review-card idea before any UI exists.",
+    "use_cases": [
+      "summarize an article",
+      "prepare review cards after reading",
+      "group concepts by theme",
+      "hand off notes to another study tool."
+    ],
+    "why_it_matters": [
+      "The project has real enough behavior to test implementation",
+      "validation",
+      "and handoff without bloating the VibeLog repository."
+    ]
+  },
+  "implementation_status": {
+    "blocked": [
+      "No blockers."
+    ],
+    "completed": [
+      "Created scratch project at `C:\\Users\\HXW\\Documents\\vibelog-scratch\\reading-card-lite`.",
+      "Wrote tests first in `test/reading-card-lite.test.mjs`.",
+      "Confirmed RED with `ERR_MODULE_NOT_FOUND` before implementation.",
+      "Implemented `src/reading-card-lite.mjs`.",
+      "Confirmed GREEN with 3 passing scratch tests.",
+      "Generated this VibeLog Markdown."
+    ],
+    "current_state": "Reading Card Lite is a local scratch project with tested note grouping, card creation, duplicate example handling, and Markdown export logic. This repository contains only the generated VibeLog example.",
+    "important_context_for_next_agent": [
+      "Do not copy scratch `src/`, `test/`, or `package.json` into this repository.",
+      "The scratch app is evidence for VibeLog verification, not a product being shipped here.",
+      "The important reusable artifact is the process record."
+    ],
+    "in_progress": [
+      "Exporting and validating generated JSON.",
+      "Running repository example integrity tests."
+    ],
+    "next_actions": [
+      "Export `examples/reading-card-lite/vibe-log.json`.",
+      "Validate example JSON.",
+      "Run drift check and full repository tests.",
+      "Confirm repository boundary."
+    ],
+    "pending": [
+      "Final repository verification.",
+      "Root VibeLog update.",
+      "Slice 4 bilingual report."
+    ]
+  },
+  "one_line_vibe": "A tiny study-card generator that turns reading notes into grouped review cards.",
+  "open_questions": [
+    "Should future examples be fully bilingual or use English content plus Chinese README notes?",
+    "Should the next slice implement automatic hook-style recording before adding more examples?",
+    "Should scratch project paths be redacted in future public exports?"
+  ],
+  "process_level": "core",
+  "project_context": {
+    "do_not_change": [
+      "Do not add scratch source files to the VibeLog repository.",
+      "Do not present Reading Card Lite as a shipped product."
+    ],
+    "important_files": [
+      "`package.json`: scratch test script.",
+      "`test/reading-card-lite.test.mjs`: behavior tests.",
+      "`src/reading-card-lite.mjs`: scratch implementation.",
+      "`examples/reading-card-lite/vibe-log.md`: generated VibeLog record in this repository.",
+      "`examples/reading-card-lite/vibe-log.json`: generated JSON export in this repository."
+    ],
+    "known_issues": [
+      "This is a scratch utility, not a production reading app.",
+      "The example does not include screenshots because the scratch project has no UI."
+    ],
+    "repo_workspace": "`C:\\Users\\HXW\\Documents\\vibelog-scratch\\reading-card-lite`",
+    "run_test_commands": [
+      "`npm test`",
+      "`node scripts/export-vibelog.mjs examples/reading-card-lite/vibe-log.md --out examples/reading-card-lite/vibe-log.json`",
+      "`node scripts/validate-vibelog.mjs examples/reading-card-lite/vibe-log.json`",
+      "`node --test test/vibelog-examples.test.mjs`",
+      "`node --test`"
+    ]
+  },
+  "prompt_visibility": "summary",
+  "public_private_projection": {
+    "code_visibility": "hidden",
+    "collaboration_status": "closed",
+    "license_usage_note": "no license selected",
+    "prompt_visibility": "summary",
+    "public_summary": "Reading Card Lite is a scratch dogfood example showing how VibeLog records an agent-run mini project from tests to handoff.",
+    "remix_permission": "unknown"
+  },
+  "public_summary": "Reading Card Lite is a scratch dogfood example showing that VibeLog can record an agent-run mini project from idea through test design, RED/GREEN implementation, incident thinking, verification evidence, artifact boundaries, and handoff. The source code stays outside the VibeLog skill repository; only generated VibeLog records are included here.",
+  "schema": "vibelog@0.2-draft",
+  "stage": "prototype",
+  "tags": [
+    "reading",
+    "study-cards",
+    "dogfood",
+    "vibelog",
+    "agent-verification"
+  ],
+  "title": "Reading Card Lite",
+  "tools": [
+    "Codex",
+    "Node.js",
+    "node:test",
+    "VibeLog"
+  ],
+  "updated_at": "2026-05-26",
+  "validation_design": {
+    "automated_test_strategy": [
+      "Use `npm test` in the scratch project.",
+      "Use `node scripts/export-vibelog.mjs` for JSON export.",
+      "Use `node scripts/validate-vibelog.mjs` for JSON validation.",
+      "Use `node --test test/vibelog-examples.test.mjs` for repository-boundary and example-integrity checks.",
+      "Use `node --test` for the full repository test suite."
+    ],
+    "core_user_paths": [
+      "Provide reading notes.",
+      "Group notes by theme.",
+      "Generate study cards with review questions.",
+      "Avoid duplicate example text across cards.",
+      "Export grouped cards as Markdown."
+    ],
+    "edge_cases": [
+      "Duplicate examples across different themes.",
+      "Extra whitespace in notes.",
+      "Output grouping order.",
+      "Missing future UI or storage should not affect core record validity."
+    ],
+    "manual_test_steps": [
+      "Read `examples/reading-card-lite/vibe-log.md`.",
+      "Confirm the log explains the idea, status, evidence, and handoff.",
+      "Confirm the example directory contains generated VibeLog records only."
+    ],
+    "regression_points": [
+      "Do not add scratch source code to `examples/reading-card-lite/`.",
+      "Do not let `vibe-log.json` drift from `vibe-log.md`.",
+      "Do not drop required VibeLog sections from generated examples."
+    ],
+    "risks_safety_privacy_checks": [
+      "No real personal reading notes are used.",
+      "The scratch source path is local-only.",
+      "The example is private by default until the human chooses a publication policy."
+    ],
+    "success_criteria": [
+      "Agent can run a scratch project without human manual setup.",
+      "Scratch tests prove behavior before and after implementation.",
+      "VibeLog records the idea, changes, human decisions, exact engineering prompt, development work, incident thinking, validation, verification, artifacts, and handoff.",
+      "Example JSON validates.",
+      "Example Markdown and JSON stay synchronized.",
+      "Example directory contains generated records only."
+    ]
+  },
+  "verification_evidence": [
+    {
+      "confidence": "high",
+      "details": "Node reported `ERR_MODULE_NOT_FOUND` for `src/reading-card-lite.mjs`.",
+      "evidence_ref": "`npm test` in `C:\\Users\\HXW\\Documents\\vibelog-scratch\\reading-card-lite`",
+      "residual_risk": "This proves the tests caught missing implementation, not final behavior.",
+      "result": "failed",
+      "source": "command output",
+      "summary": "Watched scratch tests fail before implementation because `src/reading-card-lite.mjs` did not exist.",
+      "timestamp": "2026-05-26",
+      "type": "test_result"
+    },
+    {
+      "confidence": "high",
+      "details": "3 tests passed: grouping notes by normalized theme, creating cards without duplicate examples, and exporting grouped Markdown cards.",
+      "evidence_ref": "`npm test` in `C:\\Users\\HXW\\Documents\\vibelog-scratch\\reading-card-lite`",
+      "residual_risk": "The scratch product is intentionally small and does not cover UI, storage, sync, or AI note extraction.",
+      "result": "passed",
+      "source": "command output",
+      "summary": "Scratch tests passed after implementing the reading-card logic.",
+      "timestamp": "2026-05-26",
+      "type": "test_result"
+    }
+  ],
+  "vibe_intake": {
+    "current_stage": "prototype",
+    "desired_outcome": "Convert notes into grouped review cards that are easy to scan.",
+    "problem": "Reading notes often remain scattered and are hard to review later.",
+    "target_users": [
+      "readers",
+      "students",
+      "self-learners",
+      "researchers"
+    ],
+    "tools_agents": [
+      "Codex",
+      "Node.js",
+      "node:test",
+      "VibeLog"
+    ]
+  },
+  "vibe_progress": [
+    {
+      "confidence": "high",
+      "next": "Export JSON, validate example, run integrity tests, update root VibeLog, and write Slice 4 report.",
+      "problems": "Needed a repeatable verification scenario without asking the human to manually supply a new unfinished project.",
+      "source": "current work session",
+      "stage": "prototype",
+      "timestamp": "2026-05-26",
+      "tools_used": [
+        "Codex",
+        "Node.js",
+        "node:test",
+        "VibeLog"
+      ],
+      "what_happened": "Ran Reading Card Lite as a scratch agent dogfood project to verify VibeLog recording."
+    }
+  ],
+  "visibility": "private"
+}

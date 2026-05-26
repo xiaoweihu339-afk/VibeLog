@@ -106,16 +106,23 @@ See [Claude Code adapter notes](skills/vibelog/references/claude-code-hooks-adap
 |           `-- vibelog-format.md
 |-- docs/
 |   |-- guides/
+|   |   |-- agent-dogfood-protocol.md
+|   |   |-- agent-dogfood-protocol.zh.md
 |   |   |-- export-json.md
 |   |   |-- progress-reporting.md
 |   |   |-- progress-reporting.zh.md
 |   |   |-- quickstart.md
 |   |   |-- manual-test-guide.md
 |   |   |-- example-scenario.md
+|   |   |-- vibe-verification-guide.md
+|   |   |-- vibe-verification-guide.zh.md
 |   |   `-- validation-checklist.md
 |   |-- product/
 |   |   |-- vibelog-studio-mvp-requirements.md
 |   |   `-- vibehub-long-term-product-document.md
+|   |-- reports/
+|   |   |-- slice-4-vibe-verification-report.md
+|   |   `-- slice-4-vibe-verification-report.zh.md
 |   |-- releases/
 |   |   `-- v0.2-draft.md
 |   `-- superpowers/
@@ -126,7 +133,11 @@ See [Claude Code adapter notes](skills/vibelog/references/claude-code-hooks-adap
 |   |   |-- README.md
 |   |   |-- vibe-log.md
 |   |   `-- vibe-log.json
-|   `-- billmate-lite/
+|   |-- billmate-lite/
+|   |   |-- README.md
+|   |   |-- vibe-log.md
+|   |   `-- vibe-log.json
+|   `-- reading-card-lite/
 |       |-- README.md
 |       |-- vibe-log.md
 |       `-- vibe-log.json
@@ -135,7 +146,8 @@ See [Claude Code adapter notes](skills/vibelog/references/claude-code-hooks-adap
 |   `-- validate-vibelog.mjs
 |-- test/
 |   |-- export-vibelog.test.mjs
-|   `-- validate-vibelog.test.mjs
+|   |-- validate-vibelog.test.mjs
+|   `-- vibelog-examples.test.mjs
 |-- vibe-log.md
 `-- vibe-log.json
 ```
@@ -215,6 +227,10 @@ Practical guides for using and testing the skill:
 - [Export JSON](docs/guides/export-json.md)
 - [Project progress reporting](docs/guides/progress-reporting.md)
 - [项目进度汇报机制](docs/guides/progress-reporting.zh.md)
+- [Vibe verification guide](docs/guides/vibe-verification-guide.md)
+- [Vibe 验证指南](docs/guides/vibe-verification-guide.zh.md)
+- [Agent dogfood protocol](docs/guides/agent-dogfood-protocol.md)
+- [Agent Dogfood 协议](docs/guides/agent-dogfood-protocol.zh.md)
 - [Manual test guide](docs/guides/manual-test-guide.md)
 - [Example scenario](docs/guides/example-scenario.md)
 - [Validation checklist](docs/guides/validation-checklist.md)
@@ -224,12 +240,20 @@ Practical guides for using and testing the skill:
 
 Human-readable version notes.
 
+### `docs/reports/`
+
+User-review reports for completed slices:
+
+- [Slice 4 vibe verification report](docs/reports/slice-4-vibe-verification-report.md)
+- [Slice 4 Vibe 验证报告](docs/reports/slice-4-vibe-verification-report.zh.md)
+
 ### `examples/`
 
 Generated VibeLog examples from real or dogfood sessions. These examples show process records, not app source code.
 
 - `examples/vibelog-studio/`: generated log from the earlier VibeLog Studio dogfood session.
 - `examples/billmate-lite/`: generated log from an agent-simulated billing project dogfood test.
+- `examples/reading-card-lite/`: generated log from an agent-run scratch project dogfood test.
 
 ## Current Status
 
