@@ -422,6 +422,17 @@
       "prompt_text": "???????????????skill?",
       "result": "Upgraded VibeLog skill, template, schema, format reference, Claude Code adapter notes, README, and project VibeLog toward the v0.2 draft automatic process record standard.",
       "reuse_notes": "Future Claude Code work should use the updated VibeLog skill as the process source of truth."
+    },
+    {
+      "timestamp": "2026-05-26",
+      "agent_or_tool": "Codex",
+      "prompt_type": "docs",
+      "prompt_visibility": "summary",
+      "recording_mode": "exact",
+      "prompt_summary": "User approved starting two tasks: create a local Slice 1.5 corrective commit and start the Slice 2 design document.",
+      "prompt_text": "开始这两个",
+      "result": "Created local commit edd7b9e for Slice 1.5 and drafted docs/superpowers/specs/2026-05-26-vibelog-skill-usability-slice-2-design.md.",
+      "reuse_notes": "Future agents should treat Slice 2 as skill usability documentation and manual validation work, not website or app source work."
     }
   ],
   "development_log": [
@@ -600,6 +611,29 @@
       ],
       "source": "current work session",
       "confidence": "high"
+    },
+    {
+      "timestamp": "2026-05-26",
+      "type": "docs",
+      "summary": "Drafted the Slice 2 skill usability design.",
+      "files_changed": [
+        "docs/superpowers/specs/2026-05-26-vibelog-skill-usability-slice-2-design.md",
+        "vibe-log.md",
+        "vibe-log.json"
+      ],
+      "artifacts_changed": [
+        "docs/superpowers/specs/2026-05-26-vibelog-skill-usability-slice-2-design.md"
+      ],
+      "details": "Defined Slice 2 as a skill usability pack focused on quickstart guidance, manual testing, a reusable example scenario, validation checklist, and agent usage reference. The design explicitly keeps the repository skill-first and excludes website or app source work.",
+      "bug_symptom": "not applicable",
+      "root_cause": "not applicable",
+      "fix": "not applicable",
+      "verification": "Passed local design review. Checked the design doc for TBD, TODO, PLACEHOLDER, FIXME, and ??; confirmed the design doc exists; parsed vibe-log.json and skills/vibelog/assets/vibe-log.schema.json; ran git diff --check with no whitespace errors.",
+      "follow_up": [
+        "Review the Slice 2 design with the user before writing an implementation plan."
+      ],
+      "source": "current work session",
+      "confidence": "high"
     }
   ],
   "vibe_progress": [
@@ -748,6 +782,24 @@
       ],
       "source": "current work session",
       "confidence": "high"
+    },
+    {
+      "timestamp": "2026-05-26",
+      "stage": "prototype",
+      "what_happened": "Created the Slice 2 skill usability design after locally committing the Slice 1.5 repository correction.",
+      "tools_used": [
+        "Codex",
+        "VibeLog"
+      ],
+      "problems": [
+        "Needed to keep Slice 2 focused on skill usability and manual validation rather than drifting back into website or app source work."
+      ],
+      "next": [
+        "Review the Slice 2 design.",
+        "Create an implementation plan if approved."
+      ],
+      "source": "current work session",
+      "confidence": "high"
     }
   ],
   "public_summary": "VibeLog is a Markdown-first, hook-friendly skill and process record standard for vibe-built products. It records ideas, human and agent decisions, execution prompts, implementation status, validation design, verification evidence, artifacts, handoff state, and progress so future agents and VibeHub can continue from structured project memory.",
@@ -826,6 +878,16 @@
       "residual_risk": "This verifies local repository shape and JSON syntax only. It does not validate the example JSON against the schema because there is not yet a deterministic schema validation command in the repo.",
       "source": "current work session",
       "confidence": "high"
+    },
+    {
+      "timestamp": "2026-05-26",
+      "type": "review",
+      "summary": "Verified the Slice 2 skill usability design document.",
+      "evidence_ref": "Select-String -Path docs\\superpowers\\specs\\2026-05-26-vibelog-skill-usability-slice-2-design.md -Pattern \"TBD|TODO|PLACEHOLDER|FIXME|\\?\\?\"; Test-Path docs\\superpowers\\specs\\2026-05-26-vibelog-skill-usability-slice-2-design.md; node -e \"for (const f of ['vibe-log.json','skills/vibelog/assets/vibe-log.schema.json']) { JSON.parse(require('fs').readFileSync(f,'utf8')); console.log('OK '+f); }\"; git diff --check",
+      "result": "passed",
+      "residual_risk": "The design is reviewed locally but still needs user review before implementation planning.",
+      "source": "current work session",
+      "confidence": "high"
     }
   ],
   "artifact_index": [
@@ -863,11 +925,18 @@
       "ref": "examples/vibelog-studio/",
       "visibility": "private",
       "notes": "Generated VibeLog files from the dogfood engineering session; app source code is intentionally omitted."
+    },
+    {
+      "type": "document",
+      "name": "Slice 2 skill usability design",
+      "ref": "docs/superpowers/specs/2026-05-26-vibelog-skill-usability-slice-2-design.md",
+      "visibility": "private",
+      "notes": "Design for the guide pack that will make VibeLog easier to use, manually test, validate, and hand off before any website work resumes."
     }
   ],
   "bugfix_incident_log": [],
   "handoff_state": {
-    "current_state": "The local repository is corrected toward a skill-first shape. VibeLog Studio is represented only as generated example VibeLog files under examples/vibelog-studio/.",
+    "current_state": "VibeLog is a v0.2 draft process record skill. Slice 1.5 has been committed locally as edd7b9e, correcting the repository back to a skill-first shape. Slice 2 design is now focused on making the skill easier to use, manually test, validate, and hand off without rebuilding website or app source code.",
     "completed": [
       "Updated the VibeLog skill for automatic hook-friendly process recording.",
       "Added v0.2 draft template and schema fields.",
@@ -876,30 +945,34 @@
       "Recorded the update in this VibeLog.",
       "Moved VibeLog Studio generated VibeLog into examples/vibelog-studio/.",
       "Removed local app source from the repository structure.",
-      "Updated README and example README to clarify the boundary."
+      "Updated README and example README to clarify the boundary.",
+      "Created the local Slice 1.5 corrective commit edd7b9e.",
+      "Drafted the Slice 2 skill usability design document."
     ],
     "in_progress": [
-      "Awaiting user review of the local diff."
+      "Reviewing the Slice 2 design before writing an implementation plan."
     ],
     "pending": [
-      "Claude Code adapter implementation plan.",
+      "Slice 2 implementation plan for quickstart, manual test guide, example scenario, validation checklist, and agent usage guide.",
       "Deterministic Markdown-to-JSON exporter.",
       "Example Vibe Repo generated by the adapter.",
-      "User decision on whether to push the corrective structure change."
+      "Any GitHub push requires a separate explicit user request."
     ],
     "blockers": [
       "No deterministic exporter exists yet, so vibe-log.json must still be maintained manually or generated later."
     ],
     "next_actions": [
-      "Review local diff.",
-      "If approved, commit locally and ask separately before pushing to GitHub."
+      "Review the Slice 2 design document.",
+      "If approved, create a Slice 2 implementation plan.",
+      "Implement the skill usability guide pack and validate individual plus combined manual flows."
     ],
     "context_for_next_agent": [
       "Do not build the VibeHub website yet.",
-      "First prove the VibeLog skill and Claude Code hook adapter.",
+      "First prove the VibeLog skill can be used and tested manually without a website.",
       "Keep vibe-log.md as source of truth and regenerate JSON after Markdown changes.",
       "Do not push to GitHub without explicit user approval.",
-      "This repository is skill-first; examples contain generated logs only."
+      "This repository is skill-first; examples contain generated logs only.",
+      "Do not include VibeLog Studio application source code in this skill repo unless the user explicitly changes repository strategy."
     ]
   },
   "public_private_projection": {
