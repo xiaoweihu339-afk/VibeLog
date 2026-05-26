@@ -9,8 +9,9 @@ Markdown should be concise enough for humans to read. JSON should be structured 
 ## Core Formula
 
 ```txt
-Vibe Repo = VibeLog + Project Artifacts
+Vibe Repo = VibeLog + Git code repository references + Project Artifacts
 VibeLog = process memory
+Git code repository references = code history and branch state
 Project Artifacts = product evidence
 ```
 
@@ -35,6 +36,7 @@ Recommended sections:
 ## Validation Design
 ## Verification Evidence
 ## Project Context
+## Code Repositories
 ## Artifact Index
 ## Execution Prompts
 ## Development Log
@@ -239,6 +241,55 @@ dataset
 prompt_library
 agent_config
 other
+```
+
+`code_repositories.provider`:
+
+```txt
+github
+gitlab
+bitbucket
+local
+vibehub_future
+other
+```
+
+`code_repositories.sync_status`:
+
+```txt
+unlinked
+local_only
+linked
+pushed
+mirrored
+hosted
+```
+
+Use `code_repositories` to connect the VibeLog process layer to the code layer. VibeLog does not replace Git. It records the Git repositories, branches, commits, demos, and artifacts that belong to the vibe project.
+
+Example:
+
+```json
+{
+  "provider": "github",
+  "url": "https://github.com/user/project",
+  "remote_name": "origin",
+  "default_branch": "main",
+  "current_branch": "main",
+  "latest_commit_sha": "abc123",
+  "sync_status": "pushed",
+  "code_visibility": "open_source",
+  "demo_url": "https://project.example.com",
+  "linked_commits": [
+    {
+      "sha": "abc123",
+      "branch": "main",
+      "message": "Add export flow",
+      "summary": "Implemented Markdown and JSON export.",
+      "vibelog_entry_ref": "development_log:2026-05-26-export-flow"
+    }
+  ]
+}
 ```
 
 ## Process Levels

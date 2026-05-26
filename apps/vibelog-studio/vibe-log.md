@@ -199,6 +199,26 @@ Complete Slice 1 of VibeLog Studio MVP: create, view, update, export, persist, a
 
 **Confidence:** high
 
+### 2026-05-26
+
+**Decision:** Slice 2 will focus on file round-trip, schema validation, and Git Link Lite.
+
+**Why:** This strengthens the Vibe Repo foundation without jumping ahead to cloud sync, community, or built-in Git hosting.
+
+**Source:** user confirmation and agent recommendation
+
+**Confidence:** high
+
+### 2026-05-26
+
+**Decision:** Add `code_repositories` as an optional VibeLog schema field.
+
+**Why:** Git should own code history while VibeLog records process memory and links to the relevant code repository, branch, commit, demo, and artifact state.
+
+**Source:** user direction
+
+**Confidence:** high
+
 ## Human-in-the-Loop
 
 ### 2026-05-26
@@ -255,18 +275,37 @@ Complete Slice 1 of VibeLog Studio MVP: create, view, update, export, persist, a
 
 **Confidence:** high
 
+### 2026-05-26
+
+**Type:** approval
+
+**Human Input:** The user confirmed Slice 2 and asked Codex to start the four preparation steps.
+
+**Agent Proposal:** First commit and push Slice 1, then prepare the VibeLog schema, JSON import direction, and Slice 2 design document.
+
+**Final Decision:** Execute the four preparation steps before implementation.
+
+**Why It Mattered:** It preserves the step-by-step rhythm and keeps Slice 2 grounded in a stable Slice 1 milestone.
+
+**Impact:** Slice 1 was pushed to GitHub, `code_repositories` was added to the schema, JSON import was fixed as the first import target, and a Slice 2 design doc was created.
+
+**Source:** user approval
+
+**Confidence:** high
+
 ## Open Questions
 
-- Should the first working slice be committed and pushed to GitHub now, or reviewed locally first?
 - Should the `npm audit --omit=dev` moderate PostCSS/Next advisory be handled immediately or tracked until a non-breaking Next update is available?
-- Should Slice 2 prioritize file import/export downloads, schema validation UX, or hook automation?
 - Should the UI become bilingual before public sharing?
+- Should imported repos keep their original id, or receive a new local id to avoid overwriting existing data?
+- Should Slice 2 UI show one primary Git link while the data model supports multiple links?
+- Should downloads use fixed filenames or repo-title-prefixed filenames?
 
 ## Implementation Status
 
 ### Current State
 
-Slice 1 is implemented locally. The app can create, display, update, export, and persist a Vibe Repo. Tests and browser flow pass. The work is not yet committed or pushed in this session.
+Slice 1 is implemented, verified, committed, and pushed to GitHub. Slice 2 preparation is underway: the schema now supports Git repository links, JSON import is the confirmed import priority, and the Slice 2 design document exists.
 
 ### Completed
 
@@ -281,17 +320,20 @@ Slice 1 is implemented locally. The app can create, display, update, export, and
 - Fixed E2E runner process cleanup on Windows.
 - Ran desktop and mobile browser visual checks.
 - Updated VibeLog source and JSON export.
+- Committed and pushed Slice 1 as `5111e72 Add VibeLog Studio slice 1`.
+- Added `code_repositories` to the VibeLog JSON schema.
+- Created the Slice 2 design document.
 
 ### In Progress
 
-- Preparing final handoff to the user.
+- Preparing Slice 2 implementation planning.
 
 ### Pending
 
-- Decide whether to commit and push this slice.
 - Decide whether to address or track the moderate `npm audit` advisory.
 - Add download/import features for real files.
 - Add schema validation feedback in the app.
+- Add Git Link Lite editing and export support.
 - Add hook-based automatic VibeLog updates in a later slice.
 
 ### Blocked
@@ -301,9 +343,9 @@ Slice 1 is implemented locally. The app can create, display, update, export, and
 
 ### Next Actions
 
-- Review the local app and generated VibeLog.
-- Decide commit/push timing.
-- Choose Slice 2 priority.
+- Review the Slice 2 design document.
+- Write the Slice 2 implementation plan after approval.
+- Start Slice 2 implementation with the same two-layer test rule.
 
 ### Important Context for Next Agent
 
@@ -574,6 +616,24 @@ Unit tests cover domain defaults, update rules, Markdown export, JSON export, me
 
 **Reuse Notes:** Treat short human approvals as execution prompts when they release an agent to perform engineering work.
 
+### 2026-05-26
+
+**Agent / Tool:** Codex
+
+**Prompt Type:** docs
+
+**Prompt Visibility:** summary
+
+**Recording Mode:** exact
+
+**Prompt Summary:** User confirmed Slice 2 and authorized four preparation steps before implementation.
+
+**Prompt Text:** 确认，你先开工四个准备
+
+**Result:** Committed and pushed Slice 1, added `code_repositories` to the VibeLog schema, fixed JSON import as the Slice 2 import priority, and wrote the Slice 2 design document.
+
+**Reuse Notes:** This prompt is an engineering execution prompt because it authorized repository, schema, and documentation work.
+
 ## Development Log
 
 ### 2026-05-26
@@ -708,6 +768,34 @@ Unit tests cover domain defaults, update rules, Markdown export, JSON export, me
 
 **Follow-up:** Consider avoiding shell args warning in the runner later.
 
+### 2026-05-26
+
+**Type:** release
+
+**Summary:** Committed and pushed Slice 1 to GitHub.
+
+**Files Changed:** Slice 1 app, tests, plan, `.gitignore`, and dogfood VibeLog files.
+
+**Details:** Created commit `5111e72 Add VibeLog Studio slice 1` and pushed it to `origin/master`.
+
+**Verification:** `npm run test` passed with 5 files and 8 tests; `npm run e2e` passed with 1 browser test before commit.
+
+**Follow-up:** Use this as the rollback point before Slice 2 implementation.
+
+### 2026-05-26
+
+**Type:** docs
+
+**Summary:** Prepared Slice 2 design and Git link schema foundation.
+
+**Files Changed:** `skills/vibelog/assets/vibe-log.schema.json`, `skills/vibelog/references/vibelog-format.md`, `docs/superpowers/specs/2026-05-26-vibelog-studio-slice-2-design.md`
+
+**Details:** Added optional `code_repositories` to the VibeLog schema, documented the Git code repository reference model, and wrote the Slice 2 design around file round-trip, schema validation, and Git Link Lite.
+
+**Verification:** Schema JSON and dogfood VibeLog JSON parsed successfully; `npm run test` passed with 5 files and 8 tests; `npm run e2e` passed with 1 browser test.
+
+**Follow-up:** Write the Slice 2 implementation plan after user review.
+
 ## Bugfix / Incident Log
 
 ### 2026-05-26
@@ -750,7 +838,7 @@ Unit tests cover domain defaults, update rules, Markdown export, JSON export, me
 
 ### Current State
 
-VibeLog Studio Slice 1 works locally. The user can run it, create a Vibe Repo, append an update, preview Markdown/JSON, and refresh without losing data. Tests pass. Files are currently local and uncommitted in this session.
+VibeLog Studio Slice 1 works locally and has been pushed to GitHub. Slice 2 preparation files are local and ready for review: schema support for `code_repositories`, format documentation, and a Slice 2 design doc.
 
 ### Completed
 
@@ -762,17 +850,19 @@ VibeLog Studio Slice 1 works locally. The user can run it, create a Vibe Repo, a
 - Memory/localStorage repositories implemented.
 - UI implemented.
 - Unit, integration, E2E, build, and visual QA completed.
+- Slice 1 committed and pushed as `5111e72`.
+- Slice 2 design document created.
+- VibeLog schema prepared for Git repository references.
 
 ### In Progress
 
-- Final reporting to the user.
+- Finalizing Slice 2 preparation handoff.
 
 ### Pending
 
-- Commit and push decision.
 - Dependency audit decision.
-- Slice 2 prioritization.
 - Download/import and schema validation UX.
+- Git Link Lite implementation.
 - Hook automation design after the manual loop is stronger.
 
 ### Blockers
@@ -782,14 +872,16 @@ VibeLog Studio Slice 1 works locally. The user can run it, create a Vibe Repo, a
 
 ### Next Actions
 
-- Let the user review the slice.
-- Commit/push if approved.
-- Choose Slice 2.
+- Let the user review the Slice 2 design.
+- Write a detailed Slice 2 implementation plan after approval.
+- Implement Slice 2 with two-layer testing.
 
 ### Context For Next Agent
 
 - Work in `apps/vibelog-studio`.
 - Run `npm run test` and `npm run e2e` from `apps/vibelog-studio`.
+- Slice 1 rollback point is commit `5111e72`.
+- Slice 2 design lives at `docs/superpowers/specs/2026-05-26-vibelog-studio-slice-2-design.md`.
 - Do not skip VibeLog updates after meaningful work.
 - Record engineering execution prompts, not idea-chat transcripts.
 - Keep privacy defaults private until the human changes them.
@@ -840,6 +932,22 @@ VibeLog Studio Slice 1 works locally. The user can run it, create a Vibe Repo, a
 **Problems:** E2E runner needed Windows process-tree cleanup; broad Playwright text selectors conflicted with export preview content; dependency audit reports moderate Next/PostCSS advisory.
 
 **Next:** Review locally, decide commit/push, and choose Slice 2 priority.
+
+**Source:** current work session
+
+**Confidence:** high
+
+### 2026-05-26
+
+**Stage:** prototype
+
+**What Happened:** Completed Slice 2 preparation: pushed Slice 1, added Git repository link support to the VibeLog schema, and wrote the Slice 2 design doc.
+
+**Tools Used:** Codex, VibeLog, Git
+
+**Problems:** Slice 2 must stay focused on file portability and Git metadata, not expand into cloud sync or Git hosting yet.
+
+**Next:** Review the Slice 2 design, then write an implementation plan.
 
 **Source:** current work session
 

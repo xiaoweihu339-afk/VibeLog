@@ -262,6 +262,52 @@
       },
       "additionalProperties": false
     },
+    "code_repositories": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "provider": {
+            "enum": ["github", "gitlab", "bitbucket", "local", "vibehub_future", "other"]
+          },
+          "url": { "type": "string" },
+          "remote_name": { "type": "string" },
+          "default_branch": { "type": "string" },
+          "current_branch": { "type": "string" },
+          "latest_commit_sha": { "type": "string" },
+          "sync_status": {
+            "enum": ["unlinked", "local_only", "linked", "pushed", "mirrored", "hosted"]
+          },
+          "code_visibility": {
+            "enum": ["hidden", "open_source", "team_only", "not_applicable"]
+          },
+          "demo_url": { "type": "string" },
+          "artifact_urls": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "linked_commits": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "sha": { "type": "string" },
+                "branch": { "type": "string" },
+                "message": { "type": "string" },
+                "timestamp": { "type": "string" },
+                "summary": { "type": "string" },
+                "vibelog_entry_ref": { "type": "string" }
+              },
+              "required": ["sha"],
+              "additionalProperties": false
+            }
+          },
+          "notes": { "type": "string" }
+        },
+        "required": ["provider"],
+        "additionalProperties": false
+      }
+    },
     "artifact_index": {
       "type": "array",
       "items": {
