@@ -42,6 +42,14 @@ skills/vibelog/assets/claude-code-hooks.settings.example.json
 
 只有在你检查并调整本地项目路径之后，才把相关命令复制到 Claude Code settings。
 
+更安全的项目级设置方式是先使用默认 dry-run 的 generator：
+
+```powershell
+node scripts/configure-claude-code-vibelog-hooks.mjs --project "C:\path\to\project" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs"
+```
+
+只有在 review 生成的 settings 之后，才添加 `--write`。
+
 ## 验证
 
 运行：
@@ -58,6 +66,8 @@ node scripts/verify-claude-code-live-hook.mjs --workspace "C:\Users\HXW\Document
 ```
 
 详见 [Live Hook 验证指南](live-hook-verification.zh.md)。
+
+项目级设置详见 [Claude Code Opt-In 安装指南](claude-code-opt-in-install.zh.md)。
 
 ## 当前限制
 

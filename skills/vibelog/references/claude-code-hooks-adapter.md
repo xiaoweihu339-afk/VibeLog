@@ -157,6 +157,16 @@ node scripts/verify-claude-code-live-hook.mjs --workspace "C:\Users\HXW\Document
 
 The live verifier uses Claude Code `stream-json` output with `--include-hook-events` so it can confirm that hook responses happened. It still does not install hooks into a real project or modify global settings.
 
+## Opt-In Project Install Generator
+
+Slice 8 adds a safer project-local settings generator:
+
+```powershell
+node scripts/configure-claude-code-vibelog-hooks.mjs --project "C:\path\to\project" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs"
+```
+
+The generator is dry-run by default. It reports the generated settings without writing files. Add `--write` only after reviewing the output. It writes only `<project>/.claude/settings.json`, preserves unrelated settings, avoids duplicate VibeLog hook commands, and blocks write mode when `vibe-log.md` is missing unless `--allow-missing-log` is provided.
+
 ## Success Test
 
 A fresh agent should be able to read the generated VibeLog and answer:

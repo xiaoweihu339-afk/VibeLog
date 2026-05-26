@@ -84,6 +84,12 @@ The scratch-local live hook verifier is:
 node scripts/verify-claude-code-live-hook.mjs --workspace "C:\Users\HXW\Documents\vibelog-scratch\claude-live-hook-test-live" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs" --live --prompt "Reply with OK. Do not use tools." --max-budget-usd 0.05
 ```
 
+The project-local opt-in hook settings generator is:
+
+```powershell
+node scripts/configure-claude-code-vibelog-hooks.mjs --project "C:\path\to\project" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs"
+```
+
 ## Repository Identity
 
 This repository is skill-first. Its primary purpose is to make the `vibelog` skill, schema, and documentation easy for others to reuse.
@@ -171,12 +177,14 @@ See [Claude Code adapter notes](skills/vibelog/references/claude-code-hooks-adap
 |       `-- vibe-log.json
 |-- scripts/
 |   |-- claude-code-hook-adapter.mjs
+|   |-- configure-claude-code-vibelog-hooks.mjs
 |   |-- export-vibelog.mjs
 |   |-- record-vibelog-event.mjs
 |   |-- verify-claude-code-live-hook.mjs
 |   `-- validate-vibelog.mjs
 |-- test/
 |   |-- claude-code-hook-adapter.test.mjs
+|   |-- configure-claude-code-vibelog-hooks.test.mjs
 |   |-- export-vibelog.test.mjs
 |   |-- record-vibelog-event.test.mjs
 |   |-- verify-claude-code-live-hook.test.mjs
@@ -253,6 +261,8 @@ For setup notes, see [Claude Code Adapter](docs/guides/claude-code-adapter.md) a
 
 For scratch-local live verification, see [Live Hook Verification](docs/guides/live-hook-verification.md).
 
+For project-local opt-in setup, see [Claude Code Opt-In Install](docs/guides/claude-code-opt-in-install.md).
+
 ## Files
 
 ### `vibe-log.md`
@@ -274,6 +284,7 @@ Dependency-free Node.js tools for deterministic Markdown-to-JSON export and ligh
 - `export-vibelog.mjs`: regenerate JSON from Markdown.
 - `record-vibelog-event.mjs`: apply one structured Vibe Event JSON file to Markdown and optionally regenerate JSON.
 - `claude-code-hook-adapter.mjs`: map Claude Code hook JSON input to Vibe Event JSON and call the recorder core.
+- `configure-claude-code-vibelog-hooks.mjs`: dry-run-first generator for project-local Claude Code VibeLog hook settings.
 - `verify-claude-code-live-hook.mjs`: create scratch Claude Code settings, run fixture hook payloads, and optionally verify a tiny live Claude Code hook session.
 - `validate-vibelog.mjs`: lightweight VibeLog JSON validator.
 
@@ -288,6 +299,8 @@ Practical guides for using and testing the skill:
 - [Quickstart](docs/guides/quickstart.md)
 - [Claude Code Adapter](docs/guides/claude-code-adapter.md)
 - [Claude Code Adapter 指南](docs/guides/claude-code-adapter.zh.md)
+- [Claude Code Opt-In Install](docs/guides/claude-code-opt-in-install.md)
+- [Claude Code Opt-In 安装指南](docs/guides/claude-code-opt-in-install.zh.md)
 - [Export JSON](docs/guides/export-json.md)
 - [Project progress reporting](docs/guides/progress-reporting.md)
 - [项目进度汇报机制](docs/guides/progress-reporting.zh.md)
@@ -320,6 +333,8 @@ User-review reports for completed slices:
 - [Slice 6 Claude Code Adapter 报告](docs/reports/slice-6-claude-code-adapter-report.zh.md)
 - [Slice 7 live hook verification report](docs/reports/slice-7-live-hook-verification-report.md)
 - [Slice 7 Live Hook 验证报告](docs/reports/slice-7-live-hook-verification-report.zh.md)
+- [Slice 8 opt-in hook install report](docs/reports/slice-8-opt-in-hook-install-report.md)
+- [Slice 8 Opt-In Hook 安装报告](docs/reports/slice-8-opt-in-hook-install-report.zh.md)
 
 ### `examples/`
 
@@ -339,16 +354,17 @@ This repository contains the VibeLog v0.2 draft prototype:
 - format reference
 - Claude Code hook adapter notes
 - scratch-local live Claude Code hook verifier
+- project-local opt-in Claude Code hook settings generator
 - deterministic Markdown-to-JSON exporter
 - lightweight JSON validator
 - design spec
 - self-recorded project VibeLog
 
-It is ready for local testing, generated example review, and scratch-local Claude Code hook verification. It is not yet a polished public package.
+It is ready for local testing, generated example review, scratch-local Claude Code hook verification, and dry-run project-local hook settings generation. It is not yet a polished public package.
 
 ## Next Steps
 
-- Add a real-project opt-in install guide for Claude Code hooks.
+- Test the opt-in hook generator across real user projects.
 - Add full JSON Schema validation.
 - Install and test the skill in real agent sessions.
 - Add adapters for other agent environments, such as Codex hooks, Cursor rules, or AGENTS.md.

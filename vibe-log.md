@@ -403,7 +403,7 @@ The long-term product may become VibeHub, a GitHub-like platform around Vibe Rep
 
 ### Current State
 
-The VibeLog skill now has a deterministic Markdown-to-JSON exporter, lightweight validator, recorder core, Claude Code hook adapter, and scratch-local live hook verifier. Slice 7 proved that generated local Claude Code settings can trigger the adapter in a real `claude -p` session and update a scratch VibeLog through the `Stop` hook.
+The VibeLog skill now has a deterministic Markdown-to-JSON exporter, lightweight validator, recorder core, Claude Code hook adapter, scratch-local live hook verifier, and dry-run-first project-local hook settings generator. Slice 8 adds the first safe adoption path for enabling VibeLog hooks in a real project without touching global Claude Code settings.
 
 ### Completed
 
@@ -441,26 +441,28 @@ The VibeLog skill now has a deterministic Markdown-to-JSON exporter, lightweight
 - Added scratch-local live hook verification for Claude Code.
 - Verified the live hook path using Claude Code `stream-json` output with `--include-hook-events`.
 - Added bilingual Slice 7 live hook verification guide and report.
+- Added a dry-run-first Claude Code VibeLog hook settings generator.
+- Added bilingual Slice 8 opt-in install guide and report.
 
 ### In Progress
 
-- Final repository verification and local commit for Slice 7.
+- Final repository verification and local commit for Slice 8.
 
 ### Pending
 
 - Review the updated VibeLog v0.2 draft skill standard.
-- Add a real-project opt-in install guide for Claude Code hooks.
+- Test the opt-in hook generator across real user projects.
 - Add full JSON Schema validation.
 - Add richer example Vibe Repos after the adapter exists.
 
 ### Blocked
 
-- No current Slice 7 blocker. Historical note: `skill-creator` quick validation could not run because the current Python environment is missing the `yaml` package.
+- No current Slice 8 blocker. Historical note: `skill-creator` quick validation could not run because the current Python environment is missing the `yaml` package.
 
 ### Next Actions
 
-- Finish full repository verification and commit Slice 7 locally.
-- Draft the real-project opt-in Claude Code hook install guide.
+- Finish full repository verification and commit Slice 8 locally.
+- Run a future real-project opt-in install verification only after explicit user approval.
 - Add full JSON Schema validation.
 - Decide whether to install the skill locally or keep iterating inside the repository first.
 
@@ -762,6 +764,42 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 
 **Confidence:** high
 
+### 2026-05-27
+
+**Type:** test_result
+
+**Summary:** Verified the Slice 8 dry-run-first opt-in hook settings generator.
+
+**Evidence Ref:** `node --test test\configure-claude-code-vibelog-hooks.test.mjs`; `node scripts\configure-claude-code-vibelog-hooks.mjs --project "C:\Users\HXW\Documents\vibelog-scratch\slice-8-install-test" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs"`; `node scripts\configure-claude-code-vibelog-hooks.mjs --project "C:\Users\HXW\Documents\vibelog-scratch\slice-8-install-test" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs" --write`; `node scripts\configure-claude-code-vibelog-hooks.mjs --project "C:\Users\HXW\Documents\vibelog-scratch\slice-8-missing-log-test" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs" --write`
+
+**Result:** passed
+
+**Details:** Targeted tests passed with 5 tests. Dry-run returned generated settings without writing files. Write mode created only scratch project `.claude/settings.json`. Missing `vibe-log.md` blocked write mode as expected.
+
+**Residual Risk:** This verifies generator behavior and scratch CLI use, not a broad set of real user projects.
+
+**Source:** current work session
+
+**Confidence:** high
+
+### 2026-05-27
+
+**Type:** test_result
+
+**Summary:** Ran final Slice 8 repository verification after documentation and VibeLog updates.
+
+**Evidence Ref:** `node --test`; `node scripts\validate-vibelog.mjs vibe-log.json`; `node scripts\export-vibelog.mjs vibe-log.md --out vibe-log.json --check`; `node scripts\validate-vibelog.mjs examples\reading-card-lite\vibe-log.json`; `node scripts\export-vibelog.mjs examples\reading-card-lite\vibe-log.md --out examples\reading-card-lite\vibe-log.json --check`; `git diff --check`; placeholder scan for Slice 8 design, plan, guide, and report files.
+
+**Result:** passed
+
+**Details:** Full `node --test` passed with 39 tests. Root and Reading Card Lite VibeLog JSON validated and matched Markdown. `git diff --check` produced no output. Placeholder scan produced no matches.
+
+**Residual Risk:** The generator is still local-first and project-level. Real shared projects need explicit approval and review before enabling hooks.
+
+**Source:** current work session
+
+**Confidence:** high
+
 ## Project Context
 
 ### Repo / Workspace
@@ -786,6 +824,8 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 - `docs/product/vibehub-long-term-product-document.md`: long-term VibeHub product document.
 - `docs/guides/`: practical guide pack for starting, testing, validating, and handing off VibeLog.
 - `docs/guides/export-json.md`: deterministic export and validation guide.
+- `docs/guides/claude-code-opt-in-install.md`: English guide for project-local opt-in Claude Code hook setup.
+- `docs/guides/claude-code-opt-in-install.zh.md`: Chinese guide for project-local opt-in Claude Code hook setup.
 - `docs/guides/vibe-verification-guide.md`: English guide for agent-run VibeLog verification.
 - `docs/guides/vibe-verification-guide.zh.md`: Chinese guide for agent-run VibeLog verification.
 - `docs/guides/live-hook-verification.md`: English guide for scratch-local Claude Code live hook verification.
@@ -800,17 +840,21 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 - `docs/reports/slice-4-vibe-verification-report.zh.md`: Chinese Slice 4 verification report.
 - `docs/reports/slice-7-live-hook-verification-report.md`: English Slice 7 live hook verification report.
 - `docs/reports/slice-7-live-hook-verification-report.zh.md`: Chinese Slice 7 live hook verification report.
+- `docs/reports/slice-8-opt-in-hook-install-report.md`: English Slice 8 opt-in hook install report.
+- `docs/reports/slice-8-opt-in-hook-install-report.zh.md`: Chinese Slice 8 opt-in hook install report.
 - `examples/reading-card-lite/`: generated VibeLog dogfood example only.
 - `scripts/export-vibelog.mjs`: deterministic Markdown-to-JSON exporter.
 - `scripts/validate-vibelog.mjs`: lightweight VibeLog JSON validator.
 - `scripts/record-vibelog-event.mjs`: platform-neutral Vibe Event recorder.
 - `scripts/claude-code-hook-adapter.mjs`: Claude Code hook adapter.
 - `scripts/verify-claude-code-live-hook.mjs`: scratch-local Claude Code hook verifier.
+- `scripts/configure-claude-code-vibelog-hooks.mjs`: dry-run-first project-local Claude Code hook settings generator.
 - `test/export-vibelog.test.mjs`: exporter regression tests.
 - `test/validate-vibelog.test.mjs`: validator regression tests.
 - `test/record-vibelog-event.test.mjs`: recorder core tests.
 - `test/claude-code-hook-adapter.test.mjs`: Claude Code adapter tests.
 - `test/verify-claude-code-live-hook.test.mjs`: live hook verifier tests.
+- `test/configure-claude-code-vibelog-hooks.test.mjs`: opt-in hook settings generator tests.
 - `test/vibelog-examples.test.mjs`: generated example integrity and repository-boundary tests.
 
 ### Run / Test Commands
@@ -825,6 +869,8 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 - `node --test test/verify-claude-code-live-hook.test.mjs`
 - `node scripts/verify-claude-code-live-hook.mjs --workspace "C:\Users\HXW\Documents\vibelog-scratch\claude-live-hook-test" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs"`
 - `node scripts/verify-claude-code-live-hook.mjs --workspace "C:\Users\HXW\Documents\vibelog-scratch\claude-live-hook-test-live" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs" --live --prompt "Reply with OK. Do not use tools." --max-budget-usd 0.05`
+- `node --test test/configure-claude-code-vibelog-hooks.test.mjs`
+- `node scripts/configure-claude-code-vibelog-hooks.mjs --project "C:\Users\HXW\Documents\vibelog-scratch\slice-8-install-test" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs"`
 - `node --test test/vibelog-examples.test.mjs`
 - `rg -n "[^\\x00-\\x7F]" docs skills vibe-log.md vibe-log.json`
 
@@ -1209,6 +1255,46 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 
 **Notes:** Bilingual report for Slice 7 scratch-local live hook verification and progress snapshot.
 
+### Claude Code opt-in hook settings generator
+
+**Type:** script
+
+**Ref:** `scripts/configure-claude-code-vibelog-hooks.mjs`
+
+**Visibility:** private
+
+**Notes:** Dry-run-first generator for project-local Claude Code VibeLog hook settings. It writes only with `--write` and rejects global Claude settings paths.
+
+### Claude Code opt-in hook settings generator tests
+
+**Type:** test
+
+**Ref:** `test/configure-claude-code-vibelog-hooks.test.mjs`
+
+**Visibility:** private
+
+**Notes:** Tests dry-run behavior, write behavior, settings merge behavior, missing VibeLog blocking, and global Claude settings path rejection.
+
+### Claude Code opt-in install guides
+
+**Type:** document
+
+**Ref:** `docs/guides/claude-code-opt-in-install.md`, `docs/guides/claude-code-opt-in-install.zh.md`
+
+**Visibility:** private
+
+**Notes:** Bilingual guide for safely enabling VibeLog hooks in a real project with project-local settings.
+
+### Slice 8 opt-in hook install reports
+
+**Type:** report
+
+**Ref:** `docs/reports/slice-8-opt-in-hook-install-report.md`, `docs/reports/slice-8-opt-in-hook-install-report.zh.md`
+
+**Visibility:** private
+
+**Notes:** Bilingual report for Slice 8 opt-in hook settings generator and progress snapshot.
+
 ## Execution Prompts
 
 ### 2026-05-25
@@ -1570,6 +1656,24 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 **Result:** Implemented the scratch-local verifier, ran fixture and live Claude Code hook verification, and added bilingual guides and reports.
 
 **Reuse Notes:** Treat this as authorization for Slice 7 only. It does not authorize GitHub push or real-project hook installation.
+
+### 2026-05-27
+
+**Agent / Tool:** Codex
+
+**Prompt Type:** build
+
+**Prompt Visibility:** summary
+
+**Recording Mode:** exact
+
+**Prompt Summary:** User authorized executing Slice 8, focused on a safe opt-in Claude Code hook setup path.
+
+**Prompt Text:** 执行s8
+
+**Result:** Added a dry-run-first project-local Claude Code VibeLog hook settings generator, tests, bilingual opt-in install guide, and bilingual report.
+
+**Reuse Notes:** Treat this as authorization for the S8 generator and docs only. It does not authorize installing hooks into a real user project or pushing to GitHub.
 
 ## Development Log
 
@@ -1992,6 +2096,40 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 
 **Confidence:** high
 
+### 2026-05-27
+
+**Type:** feature
+
+**Summary:** Added dry-run-first Claude Code opt-in hook settings generator.
+
+**Files Changed:**
+- `scripts/configure-claude-code-vibelog-hooks.mjs`
+- `test/configure-claude-code-vibelog-hooks.test.mjs`
+- `docs/guides/claude-code-opt-in-install.md`
+- `docs/guides/claude-code-opt-in-install.zh.md`
+- `docs/reports/slice-8-opt-in-hook-install-report.md`
+- `docs/reports/slice-8-opt-in-hook-install-report.zh.md`
+- `docs/superpowers/specs/2026-05-27-claude-code-opt-in-hook-install-slice-8-design.md`
+- `docs/superpowers/specs/2026-05-27-claude-code-opt-in-hook-install-slice-8-design.zh.md`
+- `docs/superpowers/plans/2026-05-27-claude-code-opt-in-hook-install-slice-8.md`
+- `docs/superpowers/plans/2026-05-27-claude-code-opt-in-hook-install-slice-8.zh.md`
+- `README.md`
+- `docs/guides/claude-code-adapter.md`
+- `docs/guides/claude-code-adapter.zh.md`
+- `skills/vibelog/references/claude-code-hooks-adapter.md`
+
+**Details:** Added a safe project-local generator that previews Claude Code VibeLog hook settings by default, writes only with `--write`, blocks missing `vibe-log.md` by default, rejects global `.claude` paths, preserves unrelated settings, and avoids duplicate VibeLog hook commands.
+
+**Verification:** Targeted generator tests passed with 5 tests. Scratch dry-run and write CLI checks behaved as expected, and missing-log write mode failed safely.
+
+**Follow-up:**
+- `Test the opt-in generator on a real project only after explicit user approval.`
+- `Consider packaging the generator with the VibeLog skill once install paths are stable.`
+
+**Source:** current work session
+
+**Confidence:** high
+
 ## Bugfix / Incident Log
 
 ### 2026-05-26
@@ -2026,16 +2164,16 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 
 ### Current State
 
-Slice 7 implemented and verified the scratch-local Claude Code live hook path. The adapter now has fixture command-path verification and a live verifier that confirms hook lifecycle responses through Claude Code `stream-json` output.
+Slice 8 added a dry-run-first project-local Claude Code hook settings generator. The project now has a safer path from scratch live-hook proof to real-project opt-in setup, while still avoiding global settings changes.
 
 ### Project Progress Snapshot
 
-- Project Progress: 20 / 100
+- Project Progress: 22 / 100
 - Change This Task: +2
-- Current Phase: live hook verification
-- Completed This Task: Verified Claude Code hook adapter through fixture and live scratch hook paths
-- Next Unlock: real-project opt-in hook installation guide
-- Main Risk: live hooks are proven only in scratch workspace, not yet packaged for normal users
+- Current Phase: safe adoption path
+- Completed This Task: Added dry-run-first project-local Claude Code hook settings generator
+- Next Unlock: real project opt-in install verification and packaging path
+- Main Risk: generator is verified locally but not yet tested across many real user projects
 - Confidence: medium
 
 ### Completed
@@ -2043,14 +2181,16 @@ Slice 7 implemented and verified the scratch-local Claude Code live hook path. T
 - Claude Code hook event captured
 - Scratch-local live Claude Code hook verification passed
 - Bilingual Slice 7 guide and report added
+- Dry-run-first opt-in hook settings generator added
+- Bilingual Slice 8 guide and report added
 
 ### In Progress
 
-- Local commit for Slice 7
+- Local commit for Slice 8
 
 ### Pending
 
-- Add a real-project opt-in hook installation guide
+- Test opt-in hook setup on a real project after explicit approval
 - Add stronger schema validation
 - Decide packaging/install path for normal users
 
@@ -2060,12 +2200,12 @@ Slice 7 implemented and verified the scratch-local Claude Code live hook path. T
 
 ### Next Actions
 
-- Commit Slice 7 locally
-- Plan the real-project hook install guide before touching any non-scratch Claude Code settings
+- Commit Slice 8 locally
+- Plan a real-project opt-in install acceptance test before touching any non-scratch Claude Code settings
 
 ### Context For Next Agent
 
-- Session: slice-7-codex
+- Session: slice-8-codex
 - Stop hook active: false
 ## Public / Private Projection
 
@@ -2366,6 +2506,21 @@ Slice 7 implemented and verified the scratch-local Claude Code live hook path. T
 **Problems:** Needed to prove the adapter works through real local Claude Code hook settings without modifying global settings or installing hooks into a real project.
 
 **Next:** Finish full repository verification, commit locally, then design the real-project opt-in hook installation guide.
+
+**Source:** current work session
+
+**Confidence:** high
+
+### 2026-05-27
+**Stage:** prototype
+
+**What Happened:** Added a dry-run-first Claude Code opt-in hook settings generator.
+
+**Tools Used:** Codex, Node.js, VibeLog
+
+**Problems:** Needed a safe bridge from scratch hook verification to real-project adoption without changing global Claude Code settings or silently enabling hooks.
+
+**Next:** Finish full repository verification, commit locally, then test opt-in setup on a real project only after explicit user approval.
 
 **Source:** current work session
 

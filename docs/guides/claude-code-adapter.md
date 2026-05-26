@@ -42,6 +42,14 @@ skills/vibelog/assets/claude-code-hooks.settings.example.json
 
 Copy the relevant commands into your Claude Code settings only after reviewing paths for your local project.
 
+For safer project-local setup, prefer the dry-run-first generator:
+
+```powershell
+node scripts/configure-claude-code-vibelog-hooks.mjs --project "C:\path\to\project" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs"
+```
+
+Add `--write` only after reviewing the generated settings.
+
 ## Verification
 
 Run:
@@ -58,6 +66,8 @@ node scripts/verify-claude-code-live-hook.mjs --workspace "C:\Users\HXW\Document
 ```
 
 See [Live Hook Verification](live-hook-verification.md).
+
+For project-local setup, see [Claude Code Opt-In Install](claude-code-opt-in-install.md).
 
 ## Current Limits
 
