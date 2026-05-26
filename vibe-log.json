@@ -455,6 +455,17 @@
       "prompt_text": "必须得我手动吗？你不可以模拟一个小项目，做一个账单啥的小项目去测试吗？",
       "result": "Created a local scratch BillMate Lite project, followed a test-first flow, generated VibeLog files, and copied only the generated logs into examples/billmate-lite/.",
       "reuse_notes": "Agent-simulated scratch projects are a good way to dogfood VibeLog before asking the user to provide real unfinished work."
+    },
+    {
+      "timestamp": "2026-05-26",
+      "agent_or_tool": "Codex",
+      "prompt_type": "design",
+      "prompt_visibility": "summary",
+      "recording_mode": "exact",
+      "prompt_summary": "User approved moving to the Slice 3 exporter design.",
+      "prompt_text": "可以",
+      "result": "Created English and Chinese Slice 3 design documents for a deterministic Markdown-to-JSON exporter.",
+      "reuse_notes": "Future agents should implement the exporter only after the design is reviewed and an implementation plan is written."
     }
   ],
   "development_log": [
@@ -715,6 +726,31 @@
       ],
       "source": "current work session",
       "confidence": "high"
+    },
+    {
+      "timestamp": "2026-05-26",
+      "type": "docs",
+      "summary": "Drafted the Slice 3 Markdown-to-JSON exporter design.",
+      "files_changed": [
+        "docs/superpowers/specs/2026-05-26-vibelog-exporter-slice-3-design.md",
+        "docs/superpowers/specs/2026-05-26-vibelog-exporter-slice-3-design.zh.md",
+        "vibe-log.md",
+        "vibe-log.json"
+      ],
+      "artifacts_changed": [
+        "docs/superpowers/specs/2026-05-26-vibelog-exporter-slice-3-design.md",
+        "docs/superpowers/specs/2026-05-26-vibelog-exporter-slice-3-design.zh.md"
+      ],
+      "details": "Defined the first deterministic exporter scope: parse VibeLog frontmatter and the known Markdown subset used by examples/billmate-lite/, preserve Unicode prompt text, generate stable JSON, add a lightweight validation script, document export usage, and test with Node's built-in test runner.",
+      "bug_symptom": "not applicable",
+      "root_cause": "not applicable",
+      "fix": "not applicable",
+      "verification": "Passed design self-review: placeholder scan returned no output, root JSON/example JSON/schema parsed, both design files exist, and git diff --check returned no output.",
+      "follow_up": [
+        "Ask the user to review the Slice 3 design before creating the implementation plan."
+      ],
+      "source": "current work session",
+      "confidence": "high"
     }
   ],
   "vibe_progress": [
@@ -919,6 +955,24 @@
       ],
       "source": "current work session",
       "confidence": "high"
+    },
+    {
+      "timestamp": "2026-05-26",
+      "stage": "prototype",
+      "what_happened": "Drafted the Slice 3 deterministic Markdown-to-JSON exporter design.",
+      "tools_used": [
+        "Codex",
+        "VibeLog"
+      ],
+      "problems": [
+        "The dogfood examples showed that Markdown and JSON are still manually synchronized, which is too fragile for hooks and future upload."
+      ],
+      "next": [
+        "Review the design.",
+        "Create an implementation plan if approved."
+      ],
+      "source": "current work session",
+      "confidence": "high"
     }
   ],
   "public_summary": "VibeLog is a Markdown-first, hook-friendly skill and process record standard for vibe-built products. It records ideas, human and agent decisions, execution prompts, implementation status, validation design, verification evidence, artifacts, handoff state, and progress so future agents and VibeHub can continue from structured project memory.",
@@ -1027,6 +1081,16 @@
       "residual_risk": "The scratch project is intentionally tiny and does not test a deterministic Markdown-to-JSON exporter yet.",
       "source": "current work session",
       "confidence": "high"
+    },
+    {
+      "timestamp": "2026-05-26",
+      "type": "review",
+      "summary": "Verified the Slice 3 exporter design documents.",
+      "evidence_ref": "Select-String placeholder scan for docs/superpowers/specs/2026-05-26-vibelog-exporter-slice-3-design.md and .zh.md; node -e JSON parse for vibe-log.json, examples/billmate-lite/vibe-log.json, and skills/vibelog/assets/vibe-log.schema.json; git diff --check; Test-Path for both Slice 3 design files.",
+      "result": "passed",
+      "residual_risk": "This is design verification only. The exporter still needs an implementation plan and test-first implementation.",
+      "source": "current work session",
+      "confidence": "high"
     }
   ],
   "artifact_index": [
@@ -1106,11 +1170,25 @@
       "ref": "examples/billmate-lite/",
       "visibility": "private",
       "notes": "Generated VibeLog files from an agent-simulated billing project dogfood test. Scratch source code is intentionally omitted."
+    },
+    {
+      "type": "document",
+      "name": "Slice 3 exporter design",
+      "ref": "docs/superpowers/specs/2026-05-26-vibelog-exporter-slice-3-design.md",
+      "visibility": "private",
+      "notes": "Design for the first deterministic Markdown-to-JSON exporter."
+    },
+    {
+      "type": "document",
+      "name": "Slice 3 exporter design Chinese translation",
+      "ref": "docs/superpowers/specs/2026-05-26-vibelog-exporter-slice-3-design.zh.md",
+      "visibility": "private",
+      "notes": "Chinese translation of the Slice 3 exporter design for user review."
     }
   ],
   "bugfix_incident_log": [],
   "handoff_state": {
-    "current_state": "VibeLog is a v0.2 draft process record skill. The repository is skill-first and now includes a BillMate Lite generated example from an agent-simulated scratch project. No scratch app source is included in the repository.",
+    "current_state": "VibeLog is a v0.2 draft process record skill. The next proposed slice is a deterministic Markdown-to-JSON exporter, now designed in English and Chinese for user review.",
     "completed": [
       "Updated the VibeLog skill for automatic hook-friendly process recording.",
       "Added v0.2 draft template and schema fields.",
@@ -1127,12 +1205,14 @@
       "Added skills/vibelog/references/agent-usage-guide.md.",
       "Linked the new guides from README.md and skills/vibelog/SKILL.md.",
       "Ran an agent-simulated BillMate Lite dogfood test outside the repository.",
-      "Added examples/billmate-lite/ with generated VibeLog files only."
+      "Added examples/billmate-lite/ with generated VibeLog files only.",
+      "Drafted Slice 3 exporter design in English and Chinese."
     ],
     "in_progress": [
-      "Ready to commit the BillMate Lite generated example locally."
+      "Reviewing Slice 3 exporter design before implementation planning."
     ],
     "pending": [
+      "Slice 3 implementation plan.",
       "Deterministic Markdown-to-JSON exporter.",
       "Example Vibe Repo generated by an adapter.",
       "Any GitHub push requires a separate explicit user request."
@@ -1141,16 +1221,16 @@
       "No deterministic exporter exists yet, so vibe-log.json must still be maintained manually or generated later."
     ],
     "next_actions": [
-      "Commit the BillMate Lite generated example locally.",
-      "Decide whether the next slice should be deterministic Markdown-to-JSON exporter or agent hook automation."
+      "Review the Slice 3 exporter design.",
+      "If approved, create the Slice 3 implementation plan.",
+      "Implement the exporter with test-first development."
     ],
     "context_for_next_agent": [
       "Do not build the VibeHub website yet.",
       "Keep the repository skill-first.",
-      "Examples should contain generated logs only, not app source.",
       "Do not push to GitHub without explicit user approval.",
-      "examples/billmate-lite/ should contain README.md, vibe-log.md, and vibe-log.json only.",
-      "The scratch source path is C:\\Users\\HXW\\Documents\\vibelog-scratch\\billmate-lite."
+      "Slice 3 should start with examples/billmate-lite/ as the canonical exporter fixture.",
+      "Exporter must preserve Unicode prompt text."
     ]
   },
   "public_private_projection": {

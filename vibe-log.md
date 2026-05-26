@@ -469,6 +469,21 @@ No deterministic exporter exists yet. For now, validate JSON syntax and use manu
 
 **Confidence:** high
 
+### 2026-05-26
+**Type:** review
+
+**Summary:** Verified the Slice 3 exporter design documents.
+
+**Evidence Ref:** `Select-String` placeholder scan for `docs/superpowers/specs/2026-05-26-vibelog-exporter-slice-3-design.md` and `.zh.md`; `node -e "for (const f of ['vibe-log.json','examples/billmate-lite/vibe-log.json','skills/vibelog/assets/vibe-log.schema.json']) { JSON.parse(require('fs').readFileSync(f,'utf8')); console.log('OK '+f); }"`; `git diff --check`; `Test-Path` for both Slice 3 design files.
+
+**Result:** passed
+
+**Residual Risk:** This is design verification only. The exporter still needs an implementation plan and test-first implementation.
+
+**Source:** current work session
+
+**Confidence:** high
+
 ## Project Context
 
 ### Repo / Workspace
@@ -609,6 +624,26 @@ No deterministic exporter exists yet. For now, validate JSON syntax and use manu
 **Visibility:** private
 
 **Notes:** Operational guide for agents that call VibeLog during real project sessions.
+
+### Slice 3 exporter design
+
+**Type:** document
+
+**Ref:** `docs/superpowers/specs/2026-05-26-vibelog-exporter-slice-3-design.md`
+
+**Visibility:** private
+
+**Notes:** Design for the first deterministic Markdown-to-JSON exporter.
+
+### Slice 3 exporter design Chinese translation
+
+**Type:** document
+
+**Ref:** `docs/superpowers/specs/2026-05-26-vibelog-exporter-slice-3-design.zh.md`
+
+**Visibility:** private
+
+**Notes:** Chinese translation of the Slice 3 exporter design for user review.
 
 ## Execution Prompts
 
@@ -798,6 +833,23 @@ No deterministic exporter exists yet. For now, validate JSON syntax and use manu
 **Result:** Created a local scratch BillMate Lite project, followed a test-first flow, generated VibeLog files, and copied only the generated logs into `examples/billmate-lite/`.
 
 **Reuse Notes:** Agent-simulated scratch projects are a good way to dogfood VibeLog before asking the user to provide real unfinished work.
+
+### 2026-05-26
+**Agent / Tool:** Codex
+
+**Prompt Type:** design
+
+**Prompt Visibility:** summary
+
+**Recording Mode:** exact
+
+**Prompt Summary:** User approved moving to the Slice 3 exporter design.
+
+**Prompt Text:** 可以
+
+**Result:** Created English and Chinese Slice 3 design documents for a deterministic Markdown-to-JSON exporter.
+
+**Reuse Notes:** Future agents should implement the exporter only after the design is reviewed and an implementation plan is written.
 
 ## Development Log
 
@@ -991,6 +1043,25 @@ No deterministic exporter exists yet. For now, validate JSON syntax and use manu
 
 **Follow-up:** Use this result to decide whether the next slice should be deterministic Markdown-to-JSON export.
 
+### 2026-05-26
+**Type:** docs
+
+**Summary:** Drafted the Slice 3 Markdown-to-JSON exporter design.
+
+**Files Changed:** `docs/superpowers/specs/2026-05-26-vibelog-exporter-slice-3-design.md`, `docs/superpowers/specs/2026-05-26-vibelog-exporter-slice-3-design.zh.md`, `vibe-log.md`, `vibe-log.json`
+
+**Details:** Defined the first deterministic exporter scope: parse VibeLog frontmatter and the known Markdown subset used by `examples/billmate-lite/`, preserve Unicode prompt text, generate stable JSON, add a lightweight validation script, document export usage, and test with Node's built-in test runner.
+
+**Bug Symptom:** not applicable
+
+**Root Cause:** not applicable
+
+**Fix:** not applicable
+
+**Verification:** Passed design self-review: placeholder scan returned no output, root JSON/example JSON/schema parsed, both design files exist, and `git diff --check` returned no output.
+
+**Follow-up:** Ask the user to review the Slice 3 design before creating the implementation plan.
+
 ## Bugfix / Incident Log
 
 No bugfix or incident entry for this update.
@@ -1018,10 +1089,11 @@ VibeLog is a v0.2 draft process record skill. Slice 1.5 has been committed local
 - Linked the new guides from `README.md` and `skills/vibelog/SKILL.md`.
 - Ran an agent-simulated BillMate Lite dogfood test outside the repository.
 - Added `examples/billmate-lite/` with generated VibeLog files only.
+- Drafted Slice 3 exporter design in English and Chinese.
 
 ### In Progress
 
-- Ready to commit the BillMate Lite generated example locally.
+- Reviewing Slice 3 exporter design before implementation planning.
 
 ### Pending
 
@@ -1035,8 +1107,9 @@ VibeLog is a v0.2 draft process record skill. Slice 1.5 has been committed local
 
 ### Next Actions
 
-- Commit the BillMate Lite generated example locally.
-- Decide whether the next slice should be deterministic Markdown-to-JSON exporter or agent hook automation.
+- Review the Slice 3 exporter design.
+- If approved, create the Slice 3 implementation plan.
+- Implement the exporter with test-first development.
 
 ### Context For Next Agent
 
@@ -1243,6 +1316,21 @@ VibeLog is a v0.2 draft process record skill. Slice 1.5 has been committed local
 **Problems:** Needed to prove VibeLog can record a realistic agent-led mini project without requiring the human to manually provide project material.
 
 **Next:** Verify and commit the generated example locally, then consider deterministic Markdown-to-JSON export as the next slice.
+
+**Source:** current work session
+
+**Confidence:** high
+
+### 2026-05-26
+**Stage:** prototype
+
+**What Happened:** Drafted the Slice 3 deterministic Markdown-to-JSON exporter design.
+
+**Tools Used:** Codex, VibeLog
+
+**Problems:** The dogfood examples showed that Markdown and JSON are still manually synchronized, which is too fragile for hooks and future upload.
+
+**Next:** Review the design, then create an implementation plan if approved.
 
 **Source:** current work session
 
