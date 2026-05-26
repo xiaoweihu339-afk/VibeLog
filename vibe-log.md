@@ -703,6 +703,24 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 
 **Confidence:** high
 
+### 2026-05-26T15:02:51.129Z
+
+**Type:** test_result
+
+**Summary:** Claude Code ran Bash: node --test test/claude-code-hook-adapter.test.mjs
+
+**Evidence Ref:** node --test test/claude-code-hook-adapter.test.mjs
+
+**Result:** passed
+
+**Details:** tests 9 pass 9 fail 0
+
+**Residual Risk:** Captured from hook payload; review full command output if the result is unclear.
+
+**Source:** Claude Code PostToolUse hook
+
+**Confidence:** medium
+
 ## Project Context
 
 ### Repo / Workspace
@@ -1067,6 +1085,36 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 
 **Notes:** Bilingual report for Slice 5 recorder core implementation and progress snapshot.
 
+### Claude Code hook adapter
+
+**Type:** script
+
+**Ref:** `scripts/claude-code-hook-adapter.mjs`
+
+**Visibility:** private
+
+**Notes:** Fixture-verified Claude Code hook adapter that maps hook JSON input to Vibe Event JSON and records through the recorder core.
+
+### Claude Code hook adapter guides
+
+**Type:** document
+
+**Ref:** `docs/guides/claude-code-adapter.md`, `docs/guides/claude-code-adapter.zh.md`, `skills/vibelog/assets/claude-code-hooks.settings.example.json`
+
+**Visibility:** private
+
+**Notes:** Bilingual guide and example settings for the Claude Code hook adapter.
+
+### Slice 6 Claude Code adapter reports
+
+**Type:** report
+
+**Ref:** `docs/reports/slice-6-claude-code-adapter-report.md`, `docs/reports/slice-6-claude-code-adapter-report.zh.md`
+
+**Visibility:** private
+
+**Notes:** Bilingual report for Slice 6 Claude Code adapter implementation and progress snapshot.
+
 ## Execution Prompts
 
 ### 2026-05-25
@@ -1392,6 +1440,24 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 **Result:** Codex designed and implemented the first VibeLog recorder core.
 
 **Reuse Notes:** Treat this as authorization to move from the Slice 5 plan into local implementation without pushing.
+
+### 2026-05-26T15:02:50.702Z
+
+**Agent / Tool:** Claude Code
+
+**Prompt Type:** build
+
+**Prompt Visibility:** summary
+
+**Recording Mode:** exact
+
+**Prompt Summary:** 执行s6
+
+**Prompt Text:** 执行s6
+
+**Result:** Captured from Claude Code UserPromptSubmit hook.
+
+**Reuse Notes:** Session: slice-6-local
 
 ## Development Log
 
@@ -1762,6 +1828,26 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 
 **Confidence:** high
 
+### 2026-05-26T15:02:50.906Z
+
+**Type:** feature
+
+**Summary:** Claude Code used Write.
+
+**Files Changed:**
+- `scripts/claude-code-hook-adapter.mjs`
+
+**Details:** Write completed with result passed. Files: scripts/claude-code-hook-adapter.mjs.
+
+**Verification:** passed
+
+**Follow-up:**
+- `Review whether this tool use changed VibeLog-relevant project state.`
+
+**Source:** Claude Code PostToolUse hook
+
+**Confidence:** medium
+
 ## Bugfix / Incident Log
 
 ### 2026-05-26
@@ -1782,26 +1868,21 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 
 ### Current State
 
-VibeLog is a v0.2 draft process record skill with a deterministic exporter, validator, agent dogfood verification, and the first platform-neutral recorder core. The recorder accepts one Vibe Event JSON file, updates Markdown, and can regenerate JSON.
+Implemented the Claude Code hook adapter with fixture verification, docs, example settings, and VibeLog updates.
 
 ### Project Progress Snapshot
 
-- Project Progress: 15 / 100
+- Project Progress: 18 / 100
 - Change This Task: +3
-- Current Phase: Recorder core
-- Completed This Task: Implemented event-to-Markdown recorder core
-- Next Unlock: Hook / adapter automatic recording
-- Main Risk: No lifecycle hook integration has been implemented yet
+- Current Phase: Claude Code hook adapter
+- Completed This Task: Mapped Claude Code hook payloads to Vibe Event JSON
+- Next Unlock: Live hook installation and real-session verification
+- Main Risk: This adapter is fixture-verified but not installed into a live Claude Code settings file
 - Confidence: medium
 
 ### Completed
 
-- Slice 1.5 skill-first repository correction
-- Slice 2 guide pack
-- BillMate Lite generated dogfood example
-- Slice 3 Markdown-to-JSON exporter and validator
-- Slice 4 Reading Card Lite agent dogfood verification
-- Slice 5 VibeLog recorder core
+- Claude Code hook event captured
 
 ### In Progress
 
@@ -1809,10 +1890,8 @@ VibeLog is a v0.2 draft process record skill with a deterministic exporter, vali
 
 ### Pending
 
-- Hook / adapter automatic recording
-- Full JSON Schema validation
-- Example Vibe Repo generated through an adapter
-- GitHub push only after separate explicit user approval
+- Review generated VibeLog updates
+- Run live Claude Code hook verification when ready
 
 ### Blockers
 
@@ -1820,17 +1899,13 @@ VibeLog is a v0.2 draft process record skill with a deterministic exporter, vali
 
 ### Next Actions
 
-- Design the first hook adapter around Vibe Event JSON
-- Decide whether Claude Code or Codex should be the first adapter target
-- Keep generated examples source-free unless repository strategy changes
+- Inspect VibeLog changes
+- Continue with live hook installation only after user approval
 
 ### Context For Next Agent
 
-- Do not push without explicit user approval.
-- Markdown remains the source of truth.
-- Use scripts/record-vibelog-event.mjs for structured event updates.
-- Use skills/vibelog/references/vibe-event-format.md as adapter contract.
-- Every user-review artifact should be bilingual.
+- Session: slice-6-local
+- Stop hook active: false
 ## Public / Private Projection
 
 - Public summary: VibeLog is a Markdown-first, hook-friendly process record skill for vibe-built products.

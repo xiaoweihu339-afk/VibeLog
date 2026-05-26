@@ -209,6 +209,27 @@
       "ref": "`docs/reports/slice-5-recorder-core-report.md`, `docs/reports/slice-5-recorder-core-report.zh.md`",
       "type": "report",
       "visibility": "private"
+    },
+    {
+      "name": "Claude Code hook adapter",
+      "notes": "Fixture-verified Claude Code hook adapter that maps hook JSON input to Vibe Event JSON and records through the recorder core.",
+      "ref": "`scripts/claude-code-hook-adapter.mjs`",
+      "type": "script",
+      "visibility": "private"
+    },
+    {
+      "name": "Claude Code hook adapter guides",
+      "notes": "Bilingual guide and example settings for the Claude Code hook adapter.",
+      "ref": "`docs/guides/claude-code-adapter.md`, `docs/guides/claude-code-adapter.zh.md`, `skills/vibelog/assets/claude-code-hooks.settings.example.json`",
+      "type": "document",
+      "visibility": "private"
+    },
+    {
+      "name": "Slice 6 Claude Code adapter reports",
+      "notes": "Bilingual report for Slice 6 Claude Code adapter implementation and progress snapshot.",
+      "ref": "`docs/reports/slice-6-claude-code-adapter-report.md`, `docs/reports/slice-6-claude-code-adapter-report.zh.md`",
+      "type": "report",
+      "visibility": "private"
     }
   ],
   "branch_remix_readiness": {
@@ -650,6 +671,21 @@
       "timestamp": "2026-05-26",
       "type": "feature",
       "verification": "Recorder-specific tests passed with 8 tests after the expected red run."
+    },
+    {
+      "confidence": "medium",
+      "details": "Write completed with result passed. Files: scripts/claude-code-hook-adapter.mjs.",
+      "files_changed": [
+        "`scripts/claude-code-hook-adapter.mjs`"
+      ],
+      "follow_up": [
+        "`Review whether this tool use changed VibeLog-relevant project state.`"
+      ],
+      "source": "Claude Code PostToolUse hook",
+      "summary": "Claude Code used Write.",
+      "timestamp": "2026-05-26T15:02:50.906Z",
+      "type": "feature",
+      "verification": "passed"
     }
   ],
   "execution_prompts": [
@@ -861,6 +897,17 @@
       "result": "Codex designed and implemented the first VibeLog recorder core.",
       "reuse_notes": "Treat this as authorization to move from the Slice 5 plan into local implementation without pushing.",
       "timestamp": "2026-05-26"
+    },
+    {
+      "agent_or_tool": "Claude Code",
+      "prompt_summary": "执行s6",
+      "prompt_text": "执行s6",
+      "prompt_type": "build",
+      "prompt_visibility": "summary",
+      "recording_mode": "exact",
+      "result": "Captured from Claude Code UserPromptSubmit hook.",
+      "reuse_notes": "Session: slice-6-local",
+      "timestamp": "2026-05-26T15:02:50.702Z"
     }
   ],
   "handoff_state": {
@@ -868,42 +915,31 @@
       "none"
     ],
     "completed": [
-      "Slice 1.5 skill-first repository correction",
-      "Slice 2 guide pack",
-      "BillMate Lite generated dogfood example",
-      "Slice 3 Markdown-to-JSON exporter and validator",
-      "Slice 4 Reading Card Lite agent dogfood verification",
-      "Slice 5 VibeLog recorder core"
+      "Claude Code hook event captured"
     ],
     "context_for_next_agent": [
-      "Do not push without explicit user approval.",
-      "Markdown remains the source of truth.",
-      "Use scripts/record-vibelog-event.mjs for structured event updates.",
-      "Use skills/vibelog/references/vibe-event-format.md as adapter contract.",
-      "Every user-review artifact should be bilingual."
+      "Session: slice-6-local",
+      "Stop hook active: false"
     ],
-    "current_state": "VibeLog is a v0.2 draft process record skill with a deterministic exporter, validator, agent dogfood verification, and the first platform-neutral recorder core. The recorder accepts one Vibe Event JSON file, updates Markdown, and can regenerate JSON.",
+    "current_state": "Implemented the Claude Code hook adapter with fixture verification, docs, example settings, and VibeLog updates.",
     "in_progress": [
       "none"
     ],
     "next_actions": [
-      "Design the first hook adapter around Vibe Event JSON",
-      "Decide whether Claude Code or Codex should be the first adapter target",
-      "Keep generated examples source-free unless repository strategy changes"
+      "Inspect VibeLog changes",
+      "Continue with live hook installation only after user approval"
     ],
     "pending": [
-      "Hook / adapter automatic recording",
-      "Full JSON Schema validation",
-      "Example Vibe Repo generated through an adapter",
-      "GitHub push only after separate explicit user approval"
+      "Review generated VibeLog updates",
+      "Run live Claude Code hook verification when ready"
     ],
     "project_progress_snapshot": [
-      "Project Progress: 15 / 100",
+      "Project Progress: 18 / 100",
       "Change This Task: +3",
-      "Current Phase: Recorder core",
-      "Completed This Task: Implemented event-to-Markdown recorder core",
-      "Next Unlock: Hook / adapter automatic recording",
-      "Main Risk: No lifecycle hook integration has been implemented yet",
+      "Current Phase: Claude Code hook adapter",
+      "Completed This Task: Mapped Claude Code hook payloads to Vibe Event JSON",
+      "Next Unlock: Live hook installation and real-session verification",
+      "Main Risk: This adapter is fixture-verified but not installed into a live Claude Code settings file",
       "Confidence: medium"
     ]
   },
@@ -1464,6 +1500,17 @@
       "source": "command output",
       "summary": "Recorder core tests passed after implementation.",
       "timestamp": "2026-05-26",
+      "type": "test_result"
+    },
+    {
+      "confidence": "medium",
+      "details": "tests 9 pass 9 fail 0",
+      "evidence_ref": "node --test test/claude-code-hook-adapter.test.mjs",
+      "residual_risk": "Captured from hook payload; review full command output if the result is unclear.",
+      "result": "passed",
+      "source": "Claude Code PostToolUse hook",
+      "summary": "Claude Code ran Bash: node --test test/claude-code-hook-adapter.test.mjs",
+      "timestamp": "2026-05-26T15:02:51.129Z",
       "type": "test_result"
     }
   ],

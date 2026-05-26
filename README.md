@@ -72,6 +72,12 @@ The first platform-neutral recording path is the recorder core:
 node scripts/record-vibelog-event.mjs --event event.json --log vibe-log.md --json vibe-log.json
 ```
 
+The first hook adapter target is Claude Code:
+
+```powershell
+node scripts/claude-code-hook-adapter.mjs --log vibe-log.md --json vibe-log.json --event-dir .vibelog-events
+```
+
 ## Repository Identity
 
 This repository is skill-first. Its primary purpose is to make the `vibelog` skill, schema, and documentation easy for others to reuse.
@@ -105,6 +111,7 @@ See [Claude Code adapter notes](skills/vibelog/references/claude-code-hooks-adap
 |       |-- agents/
 |       |   `-- openai.yaml
 |       |-- assets/
+|       |   |-- claude-code-hooks.settings.example.json
 |       |   |-- vibe-log-template.md
 |       |   `-- vibe-log.schema.json
 |       `-- references/
@@ -115,6 +122,8 @@ See [Claude Code adapter notes](skills/vibelog/references/claude-code-hooks-adap
 |   |-- guides/
 |   |   |-- agent-dogfood-protocol.md
 |   |   |-- agent-dogfood-protocol.zh.md
+|   |   |-- claude-code-adapter.md
+|   |   |-- claude-code-adapter.zh.md
 |   |   |-- export-json.md
 |   |   |-- progress-reporting.md
 |   |   |-- progress-reporting.zh.md
@@ -133,7 +142,9 @@ See [Claude Code adapter notes](skills/vibelog/references/claude-code-hooks-adap
 |   |   |-- slice-4-vibe-verification-report.md
 |   |   |-- slice-4-vibe-verification-report.zh.md
 |   |   |-- slice-5-recorder-core-report.md
-|   |   `-- slice-5-recorder-core-report.zh.md
+|   |   |-- slice-5-recorder-core-report.zh.md
+|   |   |-- slice-6-claude-code-adapter-report.md
+|   |   `-- slice-6-claude-code-adapter-report.zh.md
 |   |-- releases/
 |   |   `-- v0.2-draft.md
 |   `-- superpowers/
@@ -153,10 +164,12 @@ See [Claude Code adapter notes](skills/vibelog/references/claude-code-hooks-adap
 |       |-- vibe-log.md
 |       `-- vibe-log.json
 |-- scripts/
+|   |-- claude-code-hook-adapter.mjs
 |   |-- export-vibelog.mjs
 |   |-- record-vibelog-event.mjs
 |   `-- validate-vibelog.mjs
 |-- test/
+|   |-- claude-code-hook-adapter.test.mjs
 |   |-- export-vibelog.test.mjs
 |   |-- record-vibelog-event.test.mjs
 |   |-- validate-vibelog.test.mjs
@@ -220,6 +233,16 @@ node scripts/record-vibelog-event.mjs --event event.json --log vibe-log.md --jso
 
 See [Recorder Core](docs/guides/recorder-core.md) and [Vibe Event Format](skills/vibelog/references/vibe-event-format.md).
 
+## Claude Code Adapter
+
+Use the Claude Code adapter when a Claude Code hook should record Vibe Events automatically:
+
+```powershell
+node scripts/claude-code-hook-adapter.mjs --log vibe-log.md --json vibe-log.json --event-dir .vibelog-events
+```
+
+For setup notes, see [Claude Code Adapter](docs/guides/claude-code-adapter.md) and the example settings file at [claude-code-hooks.settings.example.json](skills/vibelog/assets/claude-code-hooks.settings.example.json).
+
 ## Files
 
 ### `vibe-log.md`
@@ -240,6 +263,7 @@ Dependency-free Node.js tools for deterministic Markdown-to-JSON export and ligh
 
 - `export-vibelog.mjs`: regenerate JSON from Markdown.
 - `record-vibelog-event.mjs`: apply one structured Vibe Event JSON file to Markdown and optionally regenerate JSON.
+- `claude-code-hook-adapter.mjs`: map Claude Code hook JSON input to Vibe Event JSON and call the recorder core.
 - `validate-vibelog.mjs`: lightweight VibeLog JSON validator.
 
 ### `docs/product/`
@@ -251,6 +275,8 @@ Product strategy and MVP requirements for the future VibeHub / VibeLog Studio di
 Practical guides for using and testing the skill:
 
 - [Quickstart](docs/guides/quickstart.md)
+- [Claude Code Adapter](docs/guides/claude-code-adapter.md)
+- [Claude Code Adapter 指南](docs/guides/claude-code-adapter.zh.md)
 - [Export JSON](docs/guides/export-json.md)
 - [Project progress reporting](docs/guides/progress-reporting.md)
 - [项目进度汇报机制](docs/guides/progress-reporting.zh.md)
@@ -277,6 +303,8 @@ User-review reports for completed slices:
 - [Slice 4 Vibe 验证报告](docs/reports/slice-4-vibe-verification-report.zh.md)
 - [Slice 5 recorder core report](docs/reports/slice-5-recorder-core-report.md)
 - [Slice 5 Recorder Core 报告](docs/reports/slice-5-recorder-core-report.zh.md)
+- [Slice 6 Claude Code adapter report](docs/reports/slice-6-claude-code-adapter-report.md)
+- [Slice 6 Claude Code Adapter 报告](docs/reports/slice-6-claude-code-adapter-report.zh.md)
 
 ### `examples/`
 

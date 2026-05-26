@@ -121,6 +121,32 @@ Add `SessionStart` after the updater can produce concise context safely.
 
 Add `PreCompact` and `PostCompact` after the basic loop is reliable.
 
+## Current Local Adapter
+
+This repository now includes the first local adapter:
+
+```powershell
+node scripts/claude-code-hook-adapter.mjs --log vibe-log.md --json vibe-log.json --event-dir .vibelog-events
+```
+
+The adapter reads Claude Code hook JSON from stdin. For local fixture testing, pass `--input hook.json`.
+
+Useful commands:
+
+```powershell
+node scripts/claude-code-hook-adapter.mjs --input hook.json --print-events
+node scripts/claude-code-hook-adapter.mjs --input hook.json --log vibe-log.md --json vibe-log.json --event-dir .vibelog-events
+node --test test/claude-code-hook-adapter.test.mjs
+```
+
+Example settings live at:
+
+```txt
+skills/vibelog/assets/claude-code-hooks.settings.example.json
+```
+
+Do not copy the example settings into a real project without reviewing paths and confirming that local automatic recording is desired.
+
 ## Success Test
 
 A fresh agent should be able to read the generated VibeLog and answer:
