@@ -16,7 +16,7 @@ tags:
   - agent-skill
   - vibe-coding
 created_at: "2026-05-25"
-updated_at: "2026-05-25"
+updated_at: "2026-05-26"
 ---
 
 # VibeLog
@@ -297,9 +297,26 @@ The long-term product may become VibeHub, a GitHub-like platform around Vibe Rep
 
 **Confidence:** high
 
+### 2026-05-26
+**Type:** approval
+
+**Human Input:** The user chose approach B and asked to start implementation.
+
+**Agent Proposal:** Implement the strict VibeLog Markdown subset parser first, instead of starting with a broader general Markdown parser or full JSON Schema validator.
+
+**Final Decision:** Build Slice 3 as a conservative deterministic exporter plus lightweight validator.
+
+**Why It Mattered:** This keeps the foundation practical for hooks and future upload while avoiding premature parser complexity.
+
+**Impact:** The agent started a test-first Slice 3 implementation around `scripts/export-vibelog.mjs`, `scripts/validate-vibelog.mjs`, and focused Node.js tests.
+
+**Source:** user approval
+
+**Confidence:** high
+
 ## Open Questions
 
-- Should a future exporter script generate `vibe-log.json` deterministically from Markdown?
+- Should the next validator use the existing JSON Schema file directly or keep the lightweight validator as the default fast path?
 - Should the skill be installed immediately into the user's Codex skill directory or kept as a distributable repo package first?
 - Which agent ecosystem should get the next adapter after Codex: Claude Code, Cursor rules, or AGENTS.md?
 
@@ -307,7 +324,7 @@ The long-term product may become VibeHub, a GitHub-like platform around Vibe Rep
 
 ### Current State
 
-The VibeLog skill has been upgraded into a v0.2 draft process record standard for Vibe Repos. It now treats creation mode, validation design, verification evidence, artifact index, handoff state, and Claude Code hook automation as first-class concerns, while preserving the original Markdown-first and JSON-exportable design.
+The VibeLog skill has a first deterministic Markdown-to-JSON exporter and lightweight validator for Slice 3. The repository remains skill-first: examples contain generated VibeLog records only, while scripts make `vibe-log.md` the source of truth and regenerate `vibe-log.json` for upload, search, handoff, or future VibeHub use.
 
 ### Completed
 
@@ -329,27 +346,35 @@ The VibeLog skill has been upgraded into a v0.2 draft process record standard fo
 - Added `creation_mode`, `process_level`, validation, verification, artifact, handoff, and remix fields to the template and schema.
 - Added Claude Code hook adapter notes.
 - Updated README and skill metadata to match the v0.2 draft direction.
+- Added the Slice 2 guide pack for manual use and agent handoff.
+- Added the BillMate Lite generated VibeLog example.
+- Drafted Slice 3 exporter design in English and Chinese.
+- Added the Slice 3 exporter implementation plan.
+- Added test-first coverage for Markdown export, Unicode prompt preservation, JSON drift detection, frontmatter block arrays, and lightweight validation.
+- Added `scripts/export-vibelog.mjs` for deterministic Markdown-to-JSON export.
+- Added `scripts/validate-vibelog.mjs` for practical JSON validation.
+- Added `docs/guides/export-json.md` and linked it from `README.md`.
 
 ### In Progress
 
-- Validating that the v0.2 draft skill package is coherent and ready for Claude Code adapter work.
+- No active implementation in Slice 3 after exporter and validator verification.
 
 ### Pending
 
 - Review the updated VibeLog v0.2 draft skill standard.
 - Ask Claude Code to design and implement the first hook adapter around the updated standard.
-- Add a deterministic JSON exporter if needed.
+- Add full JSON Schema validation.
 - Add richer example Vibe Repos after the adapter exists.
 
 ### Blocked
 
-- `skill-creator` quick validation could not run because the current Python environment is missing the `yaml` package.
+- No current blocker for Slice 3. Historical note: `skill-creator` quick validation could not run because the current Python environment is missing the `yaml` package.
 
 ### Next Actions
 
-- Validate the updated schema and skill references.
-- Hand Claude Code a focused prompt to implement the hook adapter.
-- Use the adapter on this repository to test automatic VibeLog updates.
+- Use the exporter as a foundation for a future hook adapter.
+- Add full JSON Schema validation.
+- Decide whether to install the skill locally or keep iterating inside the repository first.
 
 ### Important Context for Next Agent
 
@@ -360,6 +385,8 @@ The VibeLog skill has been upgraded into a v0.2 draft process record standard fo
 - Public visibility changes require explicit user confirmation.
 - VibeLog is now being shaped as a bottom-layer, hook-friendly process recorder for Vibe Repos.
 - Claude Code is the preferred first execution environment because its hooks can update VibeLog automatically during the vibe process.
+- Do not push to GitHub without separate explicit user approval.
+- `scripts/export-vibelog.mjs` supports the current strict Markdown subset and should stay conservative until more examples justify expansion.
 
 ## Validation Design
 
@@ -385,7 +412,7 @@ The VibeLog skill has been upgraded into a v0.2 draft process record standard fo
 
 ### Automated Test Strategy
 
-No deterministic exporter exists yet. For now, validate JSON syntax and use manual review. Future work should add schema validation for exported `vibe-log.json`.
+Use Node's built-in test runner for the deterministic exporter and lightweight validator. Exporter tests cover frontmatter parsing, core section export, Unicode prompt preservation, JSON writing, and drift detection. Validator tests cover valid generated logs and common failures. Future work should add full JSON Schema validation.
 
 ### Edge Cases
 
@@ -484,6 +511,21 @@ No deterministic exporter exists yet. For now, validate JSON syntax and use manu
 
 **Confidence:** high
 
+### 2026-05-26
+**Type:** test_result
+
+**Summary:** Verified the Slice 3 exporter and validator implementation.
+
+**Evidence Ref:** `node --test`; `node scripts/export-vibelog.mjs examples/billmate-lite/vibe-log.md --out tmp/billmate-lite.vibe-log.json`; `node scripts/validate-vibelog.mjs tmp/billmate-lite.vibe-log.json`; `node scripts/export-vibelog.mjs examples/billmate-lite/vibe-log.md --out tmp/billmate-lite.vibe-log.json --check`; `node -e "for (const f of ['vibe-log.json','skills/vibelog/assets/vibe-log.schema.json']) { JSON.parse(require('fs').readFileSync(f,'utf8')); console.log('OK '+f); }"`; `git diff --check`
+
+**Result:** passed
+
+**Residual Risk:** The validator is intentionally lightweight and does not yet perform full JSON Schema validation.
+
+**Source:** current work session
+
+**Confidence:** high
+
 ## Project Context
 
 ### Repo / Workspace
@@ -507,11 +549,21 @@ No deterministic exporter exists yet. For now, validate JSON syntax and use manu
 - `docs/product/vibelog-studio-mvp-requirements.md`: first product requirements document for the VibeLog Studio MVP.
 - `docs/product/vibehub-long-term-product-document.md`: long-term VibeHub product document.
 - `docs/guides/`: practical guide pack for starting, testing, validating, and handing off VibeLog.
+- `docs/guides/export-json.md`: deterministic export and validation guide.
 - `docs/releases/v0.2-draft.md`: release notes for the second draft version.
+- `docs/superpowers/plans/2026-05-26-vibelog-exporter-slice-3.md`: Slice 3 implementation plan.
+- `scripts/export-vibelog.mjs`: deterministic Markdown-to-JSON exporter.
+- `scripts/validate-vibelog.mjs`: lightweight VibeLog JSON validator.
+- `test/export-vibelog.test.mjs`: exporter regression tests.
+- `test/validate-vibelog.test.mjs`: validator regression tests.
 
 ### Run / Test Commands
 
 - `node -e "const fs=require('fs'); JSON.parse(fs.readFileSync('skills/vibelog/assets/vibe-log.schema.json','utf8')); console.log('schema json ok')"`
+- `node --test`
+- `node scripts/export-vibelog.mjs vibe-log.md --out vibe-log.json`
+- `node scripts/export-vibelog.mjs vibe-log.md --out vibe-log.json --check`
+- `node scripts/validate-vibelog.mjs vibe-log.json`
 - `rg -n "[^\\x00-\\x7F]" docs skills vibe-log.md vibe-log.json`
 
 ### Known Issues
@@ -644,6 +696,66 @@ No deterministic exporter exists yet. For now, validate JSON syntax and use manu
 **Visibility:** private
 
 **Notes:** Chinese translation of the Slice 3 exporter design for user review.
+
+### Slice 3 exporter implementation plan
+
+**Type:** document
+
+**Ref:** `docs/superpowers/plans/2026-05-26-vibelog-exporter-slice-3.md`
+
+**Visibility:** private
+
+**Notes:** Task-by-task implementation plan for the deterministic exporter and validator.
+
+### VibeLog exporter script
+
+**Type:** code
+
+**Ref:** `scripts/export-vibelog.mjs`
+
+**Visibility:** private
+
+**Notes:** Dependency-free Node.js script that parses the supported VibeLog Markdown subset and writes stable JSON.
+
+### VibeLog validator script
+
+**Type:** code
+
+**Ref:** `scripts/validate-vibelog.mjs`
+
+**Visibility:** private
+
+**Notes:** Lightweight validation gate for required core fields, key arrays, and execution prompt recording modes.
+
+### VibeLog exporter tests
+
+**Type:** test
+
+**Ref:** `test/export-vibelog.test.mjs`
+
+**Visibility:** private
+
+**Notes:** Node.js tests for Markdown export, Unicode prompt preservation, frontmatter arrays, file export, and drift detection.
+
+### VibeLog validator tests
+
+**Type:** test
+
+**Ref:** `test/validate-vibelog.test.mjs`
+
+**Visibility:** private
+
+**Notes:** Node.js tests for valid generated logs and common validation failures.
+
+### VibeLog export guide
+
+**Type:** document
+
+**Ref:** `docs/guides/export-json.md`
+
+**Visibility:** private
+
+**Notes:** User-facing guide for exporting JSON, validating JSON, checking drift, and understanding current parser limits.
 
 ## Execution Prompts
 
@@ -850,6 +962,23 @@ No deterministic exporter exists yet. For now, validate JSON syntax and use manu
 **Result:** Created English and Chinese Slice 3 design documents for a deterministic Markdown-to-JSON exporter.
 
 **Reuse Notes:** Future agents should implement the exporter only after the design is reviewed and an implementation plan is written.
+
+### 2026-05-26
+**Agent / Tool:** Codex
+
+**Prompt Type:** build
+
+**Prompt Visibility:** summary
+
+**Recording Mode:** exact
+
+**Prompt Summary:** User chose approach B and authorized starting Slice 3 implementation.
+
+**Prompt Text:** 选择方案B开始
+
+**Result:** Started the strict-subset Markdown-to-JSON exporter and lightweight validator implementation with test-first coverage.
+
+**Reuse Notes:** Treat this as the execution authorization for Slice 3 implementation. Keep the scope conservative and do not push to GitHub without separate explicit approval.
 
 ## Development Log
 
@@ -1062,6 +1191,25 @@ No deterministic exporter exists yet. For now, validate JSON syntax and use manu
 
 **Follow-up:** Ask the user to review the Slice 3 design before creating the implementation plan.
 
+### 2026-05-26
+**Type:** feature
+
+**Summary:** Implemented the Slice 3 deterministic Markdown-to-JSON exporter and lightweight validator.
+
+**Files Changed:** `docs/superpowers/plans/2026-05-26-vibelog-exporter-slice-3.md`, `scripts/export-vibelog.mjs`, `scripts/validate-vibelog.mjs`, `test/export-vibelog.test.mjs`, `test/validate-vibelog.test.mjs`, `docs/guides/export-json.md`, `README.md`, `vibe-log.md`, `vibe-log.json`
+
+**Details:** Added a dependency-free Node.js exporter for the supported VibeLog Markdown subset, a practical validator for core JSON shape checks, tests for exporter and validator behavior, an export guide, and README links.
+
+**Bug Symptom:** Markdown and JSON had to be kept in sync manually.
+
+**Root Cause:** The repo had a schema and examples but no deterministic local script to regenerate JSON from Markdown.
+
+**Fix:** Added `scripts/export-vibelog.mjs` and `scripts/validate-vibelog.mjs`, then used tests to cover export, validation, Unicode prompt preservation, block-array frontmatter, and drift detection.
+
+**Verification:** Passed. `node --test` ran 9 tests successfully; BillMate Lite exported to temp JSON, validated successfully, and passed drift check; root JSON and schema parsed; `git diff --check` returned no output.
+
+**Follow-up:** Add full JSON Schema validation after the lightweight validator proves useful.
+
 ## Bugfix / Incident Log
 
 No bugfix or incident entry for this update.
@@ -1070,7 +1218,7 @@ No bugfix or incident entry for this update.
 
 ### Current State
 
-VibeLog is a v0.2 draft process record skill. Slice 1.5 has been committed locally as `edd7b9e`, correcting the repository back to a skill-first shape. Slice 2 implementation has added a local guide pack so the skill can be started, manually tested, validated, and used by future agents without rebuilding website or app source code.
+VibeLog is a v0.2 draft process record skill. Slice 1.5, Slice 2, and the BillMate Lite dogfood example are committed locally. Slice 3 now adds a deterministic Markdown-to-JSON exporter and lightweight validator so Markdown can remain the source of truth while JSON can be regenerated for tools, handoff, and future upload.
 
 ### Completed
 
@@ -1090,26 +1238,32 @@ VibeLog is a v0.2 draft process record skill. Slice 1.5 has been committed local
 - Ran an agent-simulated BillMate Lite dogfood test outside the repository.
 - Added `examples/billmate-lite/` with generated VibeLog files only.
 - Drafted Slice 3 exporter design in English and Chinese.
+- Added the Slice 3 implementation plan.
+- Implemented `scripts/export-vibelog.mjs`.
+- Implemented `scripts/validate-vibelog.mjs`.
+- Added exporter and validator tests under `test/`.
+- Added `docs/guides/export-json.md`.
+- Linked export usage from `README.md`.
 
 ### In Progress
 
-- Reviewing Slice 3 exporter design before implementation planning.
+- No active implementation in Slice 3 after exporter and validator verification.
 
 ### Pending
 
-- Deterministic Markdown-to-JSON exporter.
+- Full JSON Schema validation.
 - Example Vibe Repo generated by the adapter.
 - Any GitHub push requires a separate explicit user request.
 
 ### Blockers
 
-- No deterministic exporter exists yet, so `vibe-log.json` must still be maintained manually or generated later.
+- No current blocker.
 
 ### Next Actions
 
-- Review the Slice 3 exporter design.
-- If approved, create the Slice 3 implementation plan.
-- Implement the exporter with test-first development.
+- Use the exporter in the future Claude Code or Codex hook adapter.
+- Add full JSON Schema validation.
+- Decide whether to install the skill locally or keep iterating inside the repository first.
 
 ### Context For Next Agent
 
@@ -1121,6 +1275,8 @@ VibeLog is a v0.2 draft process record skill. Slice 1.5 has been committed local
 - Do not push to GitHub without separate explicit user approval.
 - Use `docs/guides/manual-test-guide.md` and `docs/guides/validation-checklist.md` for the next usability test.
 - `examples/billmate-lite/` should contain generated logs only, not scratch source code.
+- Markdown is the source of truth; regenerate JSON with `scripts/export-vibelog.mjs`.
+- Validate generated JSON with `scripts/validate-vibelog.mjs`.
 
 ## Public / Private Projection
 
@@ -1331,6 +1487,21 @@ VibeLog is a v0.2 draft process record skill. Slice 1.5 has been committed local
 **Problems:** The dogfood examples showed that Markdown and JSON are still manually synchronized, which is too fragile for hooks and future upload.
 
 **Next:** Review the design, then create an implementation plan if approved.
+
+**Source:** current work session
+
+**Confidence:** high
+
+### 2026-05-26
+**Stage:** prototype
+
+**What Happened:** Implemented the first deterministic Markdown-to-JSON exporter and lightweight validator for VibeLog.
+
+**Tools Used:** Codex, Node.js, VibeLog
+
+**Problems:** Needed to keep parser scope conservative while still supporting the current root VibeLog and BillMate Lite example.
+
+**Next:** Verify tests and CLI commands, regenerate `vibe-log.json`, commit locally, then use the exporter as the foundation for hook automation.
 
 **Source:** current work session
 

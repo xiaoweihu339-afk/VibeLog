@@ -105,6 +105,12 @@ See [Claude Code adapter notes](skills/vibelog/references/claude-code-hooks-adap
 |           |-- claude-code-hooks-adapter.md
 |           `-- vibelog-format.md
 |-- docs/
+|   |-- guides/
+|   |   |-- export-json.md
+|   |   |-- quickstart.md
+|   |   |-- manual-test-guide.md
+|   |   |-- example-scenario.md
+|   |   `-- validation-checklist.md
 |   |-- product/
 |   |   |-- vibelog-studio-mvp-requirements.md
 |   |   `-- vibehub-long-term-product-document.md
@@ -114,10 +120,20 @@ See [Claude Code adapter notes](skills/vibelog/references/claude-code-hooks-adap
 |       `-- specs/
 |           `-- 2026-05-25-vibelog-v0.1-design.md
 |-- examples/
-|   `-- vibelog-studio/
+|   |-- vibelog-studio/
+|   |   |-- README.md
+|   |   |-- vibe-log.md
+|   |   `-- vibe-log.json
+|   `-- billmate-lite/
 |       |-- README.md
 |       |-- vibe-log.md
 |       `-- vibe-log.json
+|-- scripts/
+|   |-- export-vibelog.mjs
+|   `-- validate-vibelog.mjs
+|-- test/
+|   |-- export-vibelog.test.mjs
+|   `-- validate-vibelog.test.mjs
 |-- vibe-log.md
 `-- vibe-log.json
 ```
@@ -145,6 +161,28 @@ vibe-log.json
 
 For an existing project, it reads current files, docs, git history, and conversation context to reconstruct prior idea and implementation history before appending new progress.
 
+## Export JSON
+
+`vibe-log.md` is the source of truth. Regenerate JSON when a website, tool, or future VibeHub upload flow needs structured data:
+
+```powershell
+node scripts/export-vibelog.mjs vibe-log.md --out vibe-log.json
+```
+
+Validate the generated JSON:
+
+```powershell
+node scripts/validate-vibelog.mjs vibe-log.json
+```
+
+Check whether an existing JSON export is stale:
+
+```powershell
+node scripts/export-vibelog.mjs vibe-log.md --out vibe-log.json --check
+```
+
+See [Export JSON](docs/guides/export-json.md) for the supported Markdown subset and current limitations.
+
 ## Files
 
 ### `vibe-log.md`
@@ -159,6 +197,10 @@ The structured export format. Future websites or tools can use it for upload, se
 
 The JSON schema for VibeLog v0.2 draft exports.
 
+### `scripts/`
+
+Dependency-free Node.js tools for deterministic Markdown-to-JSON export and lightweight validation.
+
 ### `docs/product/`
 
 Product strategy and MVP requirements for the future VibeHub / VibeLog Studio direction.
@@ -168,6 +210,7 @@ Product strategy and MVP requirements for the future VibeHub / VibeLog Studio di
 Practical guides for using and testing the skill:
 
 - [Quickstart](docs/guides/quickstart.md)
+- [Export JSON](docs/guides/export-json.md)
 - [Manual test guide](docs/guides/manual-test-guide.md)
 - [Example scenario](docs/guides/example-scenario.md)
 - [Validation checklist](docs/guides/validation-checklist.md)
@@ -193,6 +236,8 @@ This repository contains the VibeLog v0.2 draft prototype:
 - JSON schema
 - format reference
 - Claude Code hook adapter notes
+- deterministic Markdown-to-JSON exporter
+- lightweight JSON validator
 - design spec
 - self-recorded project VibeLog
 
@@ -200,8 +245,8 @@ It is ready for local testing and Claude Code adapter implementation. It is not 
 
 ## Next Steps
 
-- Add a deterministic Markdown-to-JSON exporter.
 - Build and test a Claude Code hook adapter.
+- Add full JSON Schema validation.
 - Install and test the skill in real agent sessions.
 - Add adapters for other agent environments, such as Codex hooks, Cursor rules, or AGENTS.md.
 - Add more generated VibeLog examples produced by real agent sessions.

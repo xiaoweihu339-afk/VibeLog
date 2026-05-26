@@ -1,478 +1,225 @@
 {
-  "schema": "vibelog@0.2-draft",
-  "title": "VibeLog",
-  "one_line_vibe": "I want to create a Markdown-first, hook-friendly skill that automatically records vibe ideas, human and agent decisions, prompts, implementation progress, validation, artifacts, and handoff state so any agent can continue the work.",
-  "stage": "prototype",
-  "visibility": "private",
-  "code_visibility": "hidden",
-  "prompt_visibility": "summary",
-  "collaboration_status": "closed",
-  "tools": [
-    "Codex"
-  ],
-  "tags": [
-    "vibelog",
-    "agent-skill",
-    "vibe-coding"
-  ],
-  "created_at": "2026-05-25",
-  "updated_at": "2026-05-26",
-  "current_idea": "VibeLog is a reusable, skill-first process record standard. The repository should keep core skill, schema, and docs as the primary surface. Dogfood projects such as VibeLog Studio should appear only as generated VibeLog examples, not as application source code.",
-  "idea_expansion": {
-    "problem": "Vibe builders often have scattered ideas, midstream pivots, and AI execution prompts that disappear across chats, tools, and agents.",
-    "target_users": [
-      "AI-assisted builders",
-      "vibe coders",
-      "non-technical product creators",
-      "agent users"
-    ],
-    "why_it_matters": "A structured log lets people preserve idea evolution, resume work later, hand off to another agent, and optionally publish progress in the future.",
-    "core_features": [
-      "one-line idea",
-      "idea expansion",
-      "idea evolution",
-      "human-in-the-loop decisions",
-      "implementation status",
-      "project context",
-      "execution prompts",
-      "development log",
-      "bug fix records",
-      "vibe progress",
-      "JSON export"
-    ],
-    "use_cases": [
-      "starting a new vibe product",
-      "joining a product midstream",
-      "reconstructing prior thinking",
-      "recording implementation state",
-      "preparing future upload content"
-    ],
-    "product_hypothesis": "Vibe coding needs a portable process memory layer that records idea evolution, human judgment, prompts, validation, artifacts, and handoff state.",
-    "core_value": "Make vibe-built projects understandable, verifiable, and transferable across agents and future platforms.",
-    "non_goals": [
-      "Do not build the VibeHub website before the skill and adapter are proven."
-    ],
-    "assumptions": [
-      "Hook-based agents can update VibeLog continuously during normal vibe coding."
-    ]
-  },
-  "idea_evolution": [
+  "artifact_index": [
     {
-      "timestamp": "2026-05-24",
-      "type": "initial",
-      "before": "none",
-      "after": "A website where vibe coding people can share their vibe-built works.",
-      "reason": "The initial desire was to create a place for vibe coding creators to show what they made.",
-      "source": "reconstructed from conversation",
-      "confidence": "high"
+      "name": "skills/vibelog",
+      "notes": "The distributable VibeLog skill package.",
+      "ref": "`skills/vibelog/`",
+      "type": "agent_config",
+      "visibility": "private"
     },
     {
-      "timestamp": "2026-05-24",
-      "type": "expansion",
-      "before": "A vibe coding product showcase website.",
-      "after": "A broader platform where both completed vibe products and early ideas can be shared, discussed, and used for collaboration.",
-      "reason": "Existing showcase sites cover product discovery, but the stronger opportunity is idea sharing and co-creation.",
-      "source": "reconstructed from conversation",
-      "confidence": "high"
+      "name": "VibeLog schema",
+      "notes": "JSON schema for the v0.2 draft process record.",
+      "ref": "`skills/vibelog/assets/vibe-log.schema.json`",
+      "type": "document",
+      "visibility": "private"
     },
     {
-      "timestamp": "2026-05-25",
-      "type": "refinement",
-      "before": "Public idea sharing might require approval before others can work from an idea.",
-      "after": "Private ideas stay private; once an idea is published to Public Idea Space, others may create their own vibe branches from it.",
-      "reason": "Public-by-choice keeps private ideas protected while keeping public collaboration fluid.",
-      "source": "reconstructed from conversation",
-      "confidence": "high"
+      "name": "Claude Code adapter notes",
+      "notes": "Guidance for implementing the first hook-based adapter.",
+      "ref": "`skills/vibelog/references/claude-code-hooks-adapter.md`",
+      "type": "document",
+      "visibility": "private"
     },
     {
-      "timestamp": "2026-05-25",
-      "type": "pivot",
-      "before": "Build the website first.",
-      "after": "Build the VibeLog skill first, independent of the website.",
-      "reason": "The skill validates the core behavior before community cold start.",
-      "source": "reconstructed from conversation",
-      "confidence": "high"
+      "name": "VibeLog v0.2 draft release notes",
+      "notes": "Human-readable notes explaining the second version.",
+      "ref": "`docs/releases/v0.2-draft.md`",
+      "type": "document",
+      "visibility": "public"
     },
     {
-      "timestamp": "2026-05-25",
-      "type": "expansion",
-      "before": "VibeLog records one-line ideas, idea expansion, changes, and progress.",
-      "after": "VibeLog also supports mid-project invocation, historical reconstruction, implementation handoff state, and execution prompt logging.",
-      "reason": "A vibe product may switch agents midstream; the next agent needs historical context, current status, and key prompt directions.",
-      "source": "user request",
-      "confidence": "high"
+      "name": "VibeLog Studio generated example",
+      "notes": "Generated VibeLog files from the dogfood engineering session; app source code is intentionally omitted.",
+      "ref": "`examples/vibelog-studio/`",
+      "type": "document",
+      "visibility": "private"
     },
     {
-      "timestamp": "2026-05-25",
-      "type": "expansion",
-      "before": "VibeLog records vibe progress and implementation status, but normal project development events are not first-class entries.",
-      "after": "VibeLog includes a Development Log section for features, bug fixes, refactors, tests, docs, chores, releases, and config changes.",
-      "reason": "Real vibe products still need normal development history. Bug fixes especially need symptom, root cause, fix, and verification so another agent can continue safely.",
-      "source": "user request",
-      "confidence": "high"
+      "name": "BillMate Lite dogfood example",
+      "notes": "Generated VibeLog files from an agent-simulated billing project dogfood test. Scratch source code is intentionally omitted.",
+      "ref": "`examples/billmate-lite/`",
+      "type": "document",
+      "visibility": "private"
     },
     {
-      "timestamp": "2026-05-25",
-      "type": "expansion",
-      "before": "VibeLog records decisions but does not explicitly separate human judgment from general decisions.",
-      "after": "VibeLog includes a Human-in-the-Loop section for human direction, scope, taste, tradeoff, approval, rejection, risk, naming, and prioritization decisions.",
-      "reason": "In vibe coding, the human often creates value by steering the AI: choosing direction, taste, scope, risk, and acceptance. Future agents should know where the human intentionally shaped the product.",
-      "source": "user request",
-      "confidence": "high"
+      "name": "Slice 2 skill usability design",
+      "notes": "Design for the guide pack that will make VibeLog easier to use, manually test, validate, and hand off before any website work resumes.",
+      "ref": "`docs/superpowers/specs/2026-05-26-vibelog-skill-usability-slice-2-design.md`",
+      "type": "document",
+      "visibility": "private"
     },
     {
-      "timestamp": "2026-05-25",
-      "type": "refinement",
-      "before": "Execution prompts could be recorded as summaries, while idea chat and execution instructions were not sharply separated.",
-      "after": "Engineering execution prompts must be strictly recorded in Execution Prompts, preferably with exact text. Chat-like idea exploration should only be distilled into idea changes, human-in-the-loop records, decisions, or open questions.",
-      "reason": "VibeLog should preserve prompts that actually drive engineering execution without turning ordinary product conversation into a transcript dump.",
-      "source": "user request",
-      "confidence": "high"
+      "name": "Slice 2 implementation plan",
+      "notes": "Implementation plan for the Slice 2 skill usability guide pack.",
+      "ref": "`docs/superpowers/plans/2026-05-26-vibelog-skill-usability-slice-2.md`",
+      "type": "document",
+      "visibility": "private"
     },
     {
-      "timestamp": "2026-05-25",
-      "type": "expansion",
-      "before": "VibeLog was a manual Markdown-first logging skill with idea, prompt, development, and handoff sections.",
-      "after": "VibeLog is a hook-friendly automatic process record skill for Vibe Repos, with creation mode, process level, validation design, verification evidence, artifact index, handoff state, and Claude Code adapter guidance.",
-      "reason": "The user decided to use Claude Code for execution and wanted the needed skill updated first so hooks can automatically maintain VibeLog during normal vibe coding.",
-      "source": "user request",
-      "confidence": "high"
+      "name": "VibeLog guide pack",
+      "notes": "Quickstart, manual test guide, example scenario, and validation checklist for using and testing VibeLog without a website.",
+      "ref": "`docs/guides/`",
+      "type": "document",
+      "visibility": "private"
+    },
+    {
+      "name": "VibeLog agent usage guide",
+      "notes": "Operational guide for agents that call VibeLog during real project sessions.",
+      "ref": "`skills/vibelog/references/agent-usage-guide.md`",
+      "type": "document",
+      "visibility": "private"
+    },
+    {
+      "name": "Slice 3 exporter design",
+      "notes": "Design for the first deterministic Markdown-to-JSON exporter.",
+      "ref": "`docs/superpowers/specs/2026-05-26-vibelog-exporter-slice-3-design.md`",
+      "type": "document",
+      "visibility": "private"
+    },
+    {
+      "name": "Slice 3 exporter design Chinese translation",
+      "notes": "Chinese translation of the Slice 3 exporter design for user review.",
+      "ref": "`docs/superpowers/specs/2026-05-26-vibelog-exporter-slice-3-design.zh.md`",
+      "type": "document",
+      "visibility": "private"
+    },
+    {
+      "name": "Slice 3 exporter implementation plan",
+      "notes": "Task-by-task implementation plan for the deterministic exporter and validator.",
+      "ref": "`docs/superpowers/plans/2026-05-26-vibelog-exporter-slice-3.md`",
+      "type": "document",
+      "visibility": "private"
+    },
+    {
+      "name": "VibeLog exporter script",
+      "notes": "Dependency-free Node.js script that parses the supported VibeLog Markdown subset and writes stable JSON.",
+      "ref": "`scripts/export-vibelog.mjs`",
+      "type": "code",
+      "visibility": "private"
+    },
+    {
+      "name": "VibeLog validator script",
+      "notes": "Lightweight validation gate for required core fields, key arrays, and execution prompt recording modes.",
+      "ref": "`scripts/validate-vibelog.mjs`",
+      "type": "code",
+      "visibility": "private"
+    },
+    {
+      "name": "VibeLog exporter tests",
+      "notes": "Node.js tests for Markdown export, Unicode prompt preservation, frontmatter arrays, file export, and drift detection.",
+      "ref": "`test/export-vibelog.test.mjs`",
+      "type": "test",
+      "visibility": "private"
+    },
+    {
+      "name": "VibeLog validator tests",
+      "notes": "Node.js tests for valid generated logs and common validation failures.",
+      "ref": "`test/validate-vibelog.test.mjs`",
+      "type": "test",
+      "visibility": "private"
+    },
+    {
+      "name": "VibeLog export guide",
+      "notes": "User-facing guide for exporting JSON, validating JSON, checking drift, and understanding current parser limits.",
+      "ref": "`docs/guides/export-json.md`",
+      "type": "document",
+      "visibility": "private"
     }
   ],
+  "branch_remix_readiness": {
+    "attribution_requirements": "pending license decision.",
+    "remix_allowed": "unknown",
+    "suggested_contribution_areas": [
+      "Claude Code adapter",
+      "deterministic exporter",
+      "sample Vibe Repos",
+      "schema validation."
+    ],
+    "what_can_be_reused": "VibeLog ideas and public documentation after a license is selected.",
+    "what_should_not_be_reused": [
+      "private prompts",
+      "private project context",
+      "or hidden code."
+    ]
+  },
+  "bugfix_incident_log": [],
+  "code_repositories": [],
+  "code_visibility": "hidden",
+  "collaboration_status": "closed",
+  "created_at": "2026-05-25",
+  "creation_mode": "human_ai_co_created",
+  "current_idea": "VibeLog is an independent agent skill and process record standard. It is useful before any website exists. It records a vibe product's one-line idea, expanded idea, human judgment, direction changes, implementation status, validation design, verification evidence, artifact references, handoff context, normal development work, bug fixes, and vibecoding execution prompts in a human-readable Markdown file that can later be exported to JSON.\n\nThe long-term product may become VibeHub, a GitHub-like platform around Vibe Repos. The current focus is to make the standalone VibeLog skill strong enough to serve as the bottom-layer automatic process recorder, especially for a Claude Code hook adapter.",
   "decisions": [
     {
-      "timestamp": "2026-05-25",
       "decision": "Make Markdown the source of truth and JSON the export format.",
+      "timestamp": "2026-05-25",
       "why": "Markdown is easy for humans and agents to read; JSON is better for future upload and integration."
     },
     {
-      "timestamp": "2026-05-25",
       "decision": "Build the standalone VibeLog skill before building the website.",
+      "timestamp": "2026-05-25",
       "why": "The skill can be useful without the site and can create future upload-ready content."
     },
     {
-      "timestamp": "2026-05-25",
       "decision": "Record execution prompts separately from general progress.",
-      "why": "Vibecoding prompts are operational context for future agents, but they need visibility controls."
+      "timestamp": "2026-05-25",
+      "why": "Vibecoding prompts are operational context for future agents, but they need visibility controls to avoid leaking sensitive details."
     },
     {
+      "decision": "Add `Development Log` as a first-class section rather than overloading `Vibe Progress`.",
       "timestamp": "2026-05-25",
-      "decision": "Add Development Log as a first-class section rather than overloading Vibe Progress.",
-      "why": "Vibe Progress captures product and creative movement, while Development Log captures concrete engineering events such as bug fixes, refactors, tests, docs, releases, and chores."
+      "why": "`Vibe Progress` captures product and creative movement, while `Development Log` captures concrete engineering events such as bug fixes, refactors, tests, docs, releases, and chores."
     },
     {
+      "decision": "Add `Human-in-the-Loop` as a first-class section rather than relying only on `Decisions`.",
       "timestamp": "2026-05-25",
-      "decision": "Add Human-in-the-Loop as a first-class section rather than relying only on Decisions.",
       "why": "Some decisions are specifically valuable because a human made or corrected them. The log should preserve human steering, not just final outcomes."
     },
     {
-      "timestamp": "2026-05-25",
       "decision": "Upgrade the skill standard before building the Claude Code adapter.",
-      "why": "The adapter should implement a stable VibeLog process record instead of inventing hook behavior ad hoc.",
-      "source": "user request",
-      "confidence": "high"
+      "timestamp": "2026-05-25",
+      "why": "The adapter should implement a stable VibeLog process record instead of inventing hook behavior ad hoc."
     },
     {
-      "timestamp": "2026-05-25",
       "decision": "Treat validation design, verification evidence, artifact index, and handoff state as first-class VibeLog sections.",
-      "why": "Vibe coding can look complete without being verified or handoff-ready; future agents need process memory and product evidence.",
-      "source": "user request",
-      "confidence": "high"
+      "timestamp": "2026-05-25",
+      "why": "Vibe coding can look complete without being verified or handoff-ready; future agents need process memory and product evidence."
     },
     {
-      "timestamp": "2026-05-26",
+      "confidence": "high",
       "decision": "Keep this repository skill-first and publish VibeLog Studio only as generated VibeLog example output, not as application source code.",
-      "why": "VibeLog is intended for others to reuse as a skill. Including the dogfood app source in the main repository makes the repository look like an app project instead of a reusable skill package.",
       "source": "user correction",
-      "confidence": "high"
-    }
-  ],
-  "human_in_the_loop": [
-    {
-      "timestamp": "2026-05-25",
-      "type": "direction",
-      "human_input": "The user clarified that VibeLog should especially record human-in-the-loop moments: which points were decided by the human during the vibe process.",
-      "agent_proposal": "The agent had been recording general decisions, implementation status, prompts, and development logs.",
-      "final_decision": "Add a dedicated Human-in-the-Loop section and JSON field.",
-      "why_it_mattered": "This makes VibeLog better at showing how human judgment shapes AI-assisted creation.",
-      "impact": "Updated the standard, skill workflow, reference docs, template, schema, and project log to record human steering events explicitly.",
-      "source": "user request",
-      "confidence": "high"
-    },
-    {
-      "timestamp": "2026-05-25",
-      "type": "scope",
-      "human_input": "The user clarified that all engineering execution prompts in vibecoding must be strictly recorded, while chat-like idea discussion should only contribute extracted idea changes.",
-      "agent_proposal": "The agent had been recording prompt summaries and sometimes hiding prompt text.",
-      "final_decision": "Add strict prompt ledger rules for engineering execution prompts and a separate distillation rule for idea chat.",
-      "why_it_mattered": "This keeps VibeLog useful for agent handoff and auditability without making it a noisy chat transcript.",
-      "impact": "Updated Execution Prompts rules, schema fields, template, and project log entries.",
-      "source": "user request",
-      "confidence": "high"
-    },
-    {
-      "timestamp": "2026-05-25",
-      "type": "direction",
-      "human_input": "The user asked to write the first MVP requirements document for VibeLog Studio.",
-      "agent_proposal": "The agent had recommended using GitHub's repository-first growth pattern as a model and starting with the Vibe Project object.",
-      "final_decision": "Create a requirements document for a route-A simplified MVP: a local-first VibeLog Studio that can later grow into a community platform.",
-      "why_it_mattered": "This turns the product discussion into an implementation-ready product artifact while preserving the long-term architecture direction.",
-      "impact": "Added a product requirements document under docs/product/.",
-      "source": "user request",
-      "confidence": "high"
-    },
-    {
-      "timestamp": "2026-05-25",
-      "type": "direction",
-      "human_input": "The user decided to use Claude Code for engineering execution and keep Codex as the product discussion and idea partner, then asked to update the needed skill first.",
-      "agent_proposal": "Codex suggested Claude Code for hook-first implementation and Codex for product thinking, prompt design, and review.",
-      "final_decision": "Update the VibeLog skill first, then let Claude Code build the adapter around the updated standard.",
-      "why_it_mattered": "It separates product thinking from hook-based execution while proving that VibeLog can coordinate multiple agents around one Vibe Repo.",
-      "impact": "VibeLog skill now includes hook-friendly automatic recording rules and Claude Code adapter notes.",
-      "source": "user request",
-      "confidence": "high"
-    },
-    {
       "timestamp": "2026-05-26",
-      "type": "scope",
-      "human_input": "The user clarified that VibeLog Studio should be uploaded only as the VibeLog generated during this engineering session, not as engineering source code.",
-      "agent_proposal": "The agent proposed a local corrective restructuring that removes app source from the repository and keeps only examples/vibelog-studio/vibe-log.md and examples/vibelog-studio/vibe-log.json as the dogfood case.",
-      "final_decision": "Keep the repository as a reusable VibeLog skill repo; move the dogfood process record into examples/vibelog-studio/; remove app source and temporary implementation docs from the local tree.",
-      "why_it_mattered": "This protects the public reuse path for the skill while still preserving a real generated VibeLog example.",
-      "impact": "The repository structure is being corrected locally before any further push decision.",
-      "source": "user correction",
-      "confidence": "high"
-    }
-  ],
-  "open_questions": [
-    "Should a future exporter script generate vibe-log.json deterministically from Markdown?",
-    "Should the skill be installed immediately into the user's Codex skill directory or kept as a distributable repo package first?",
-    "Which agent ecosystem should get the next adapter after Codex: Claude Code, Cursor rules, or AGENTS.md?"
-  ],
-  "implementation_status": {
-    "current_state": "VibeLog is a v0.2 draft process record skill. The local repository is being corrected back to a skill-first shape: core skill files remain under skills/vibelog/, while the VibeLog Studio dogfood case is represented only by generated VibeLog files under examples/vibelog-studio/.",
-    "completed": [
-      "Created the VibeLog v0.1 design document.",
-      "Added mid-project reconstruction and execution prompt logging to the standard.",
-      "Created skills/vibelog/SKILL.md.",
-      "Created skills/vibelog/references/vibelog-format.md.",
-      "Created skills/vibelog/assets/vibe-log-template.md.",
-      "Created skills/vibelog/assets/vibe-log.schema.json.",
-      "Created skills/vibelog/agents/openai.yaml.",
-      "Created project-level vibe-log.md and vibe-log.json.",
-      "Added Development Log support to the standard, skill, template, schema, and project example.",
-      "Added Human-in-the-Loop support to the standard, skill, template, schema, and project example.",
-      "Strengthened execution prompt logging so engineering execution prompts are recorded strictly, while idea chat is distilled into idea changes and human judgment records.",
-      "Added a GitHub-ready README.md, .gitignore, and .gitattributes.",
-      "Added the first VibeLog Studio MVP requirements document.",
-      "Added a long-term VibeHub product document.",
-      "Upgraded VibeLog skill for automatic hook-friendly process recording.",
-      "Added v0.2 draft template and schema fields.",
-      "Added Claude Code hook adapter notes.",
-      "Updated README and skill metadata.",
-      "Moved the VibeLog Studio dogfood case to examples/vibelog-studio/ as generated VibeLog output only.",
-      "Removed app source from the local repository structure.",
-      "Updated README to clarify the repository is skill-first."
-    ],
-    "in_progress": [
-      "Reviewing the local structure correction before any further GitHub push decision."
-    ],
-    "pending": [
-      "Claude Code adapter implementation plan.",
-      "Deterministic Markdown-to-JSON exporter.",
-      "Example Vibe Repo generated by the adapter.",
-      "User decision on whether to push the local structure correction to GitHub."
-    ],
-    "blocked": [
-      "No deterministic exporter exists yet, so JSON must still be maintained manually or generated later."
-    ],
-    "next_actions": [
-      "Give Claude Code a focused prompt to implement the adapter.",
-      "Use the adapter on this repo.",
-      "Validate that another agent can continue from the generated VibeLog.",
-      "Review the local diff and decide whether to push the skill-first correction to GitHub."
-    ],
-    "important_context_for_next_agent": [
-      "Do not build the VibeHub website yet.",
-      "First prove the VibeLog skill and Claude Code hook adapter.",
-      "Keep vibe-log.md as source of truth and regenerate JSON after Markdown changes.",
-      "Do not include VibeLog Studio application source code in this skill repo unless the user explicitly changes repository strategy.",
-      "Examples should contain generated VibeLog records, not app source."
-    ]
-  },
-  "project_context": {
-    "repo_url": "",
-    "workspace_path": "C:\\Users\\HXW\\Documents\\vibecoding",
-    "important_files": [
-      "docs/superpowers/specs/2026-05-25-vibelog-v0.1-design.md",
-      "skills/vibelog/SKILL.md",
-      "skills/vibelog/references/vibelog-format.md",
-      "skills/vibelog/assets/vibe-log-template.md",
-      "skills/vibelog/assets/vibe-log.schema.json",
-      "skills/vibelog/agents/openai.yaml",
-      "vibe-log.md",
-      "vibe-log.json",
-      "README.md",
-      ".gitignore",
-      ".gitattributes",
-      "docs/product/vibelog-studio-mvp-requirements.md",
-      "examples/vibelog-studio/README.md",
-      "examples/vibelog-studio/vibe-log.md",
-      "examples/vibelog-studio/vibe-log.json"
-    ],
-    "run_commands": [],
-    "test_commands": [
-      "node -e \"const fs=require('fs'); JSON.parse(fs.readFileSync('skills/vibelog/assets/vibe-log.schema.json','utf8')); console.log('schema json ok')\"",
-      "rg -n \"[^\\\\x00-\\\\x7F]\" docs skills vibe-log.md vibe-log.json"
-    ],
-    "known_issues": [
-      "quick_validate.py from skill-creator needs PyYAML, which is not available in the current Python environment."
-    ],
-    "do_not_change": [
-      "Do not shift focus back to the website before the standalone skill is usable.",
-      "Do not make public upload behavior required for v0.1.",
-      "Do not add dogfood application source code back into this skill-first repository without explicit user approval."
-    ]
-  },
-  "execution_prompts": [
-    {
-      "timestamp": "2026-05-25",
-      "agent_or_tool": "Codex",
-      "prompt_type": "design",
-      "prompt_visibility": "summary",
-      "recording_mode": "summary_only",
-      "prompt_summary": "User asked to define VibeLog v0.1 as a Markdown-first standard with JSON export for future website upload.",
-      "prompt_text": "hidden",
-      "result": "Created and committed the VibeLog v0.1 design document.",
-      "reuse_notes": "Use this direction when aligning future skill and website schema work."
-    },
-    {
-      "timestamp": "2026-05-25",
-      "agent_or_tool": "Codex",
-      "prompt_type": "build",
-      "prompt_visibility": "summary",
-      "recording_mode": "summary_only",
-      "prompt_summary": "User asked to detach from the website and build the skill first, adding mid-project invocation, historical reconstruction, and vibecoding execution prompt logging.",
-      "prompt_text": "hidden",
-      "result": "Created the first VibeLog skill package and reconstructed project log.",
-      "reuse_notes": "Future agents should continue from the standalone skill package and keep website work secondary."
-    },
-    {
-      "timestamp": "2026-05-25",
-      "agent_or_tool": "Codex",
-      "prompt_type": "design",
-      "prompt_visibility": "summary",
-      "recording_mode": "summary_only",
-      "prompt_summary": "User asked to add bug fix logging and make VibeLog able to contain normal project development logs.",
-      "prompt_text": "hidden",
-      "result": "Added Development Log as a first-class section covering features, bug fixes, refactors, tests, docs, chores, releases, and config changes.",
-      "reuse_notes": "Future agents should use Development Log for engineering history and reserve Vibe Progress for product-level timeline updates."
-    },
-    {
-      "timestamp": "2026-05-25",
-      "agent_or_tool": "Codex",
-      "prompt_type": "design",
-      "prompt_visibility": "summary",
-      "recording_mode": "summary_only",
-      "prompt_summary": "User asked to record human-in-the-loop decisions, meaning the moments where human judgment steered the vibe process.",
-      "prompt_text": "hidden",
-      "result": "Added Human-in-the-Loop as a first-class section and schema field.",
-      "reuse_notes": "Future agents should record human steering separately from routine decisions."
-    },
-    {
-      "timestamp": "2026-05-25",
-      "agent_or_tool": "Codex",
-      "prompt_type": "design",
-      "prompt_visibility": "summary",
-      "recording_mode": "exact",
-      "prompt_summary": "User clarified that engineering execution prompts must be strictly recorded, while chat-like idea discussion should only be distilled into idea changes.",
-      "prompt_text": "记住，所有vibecoding中agent下达的工程执行的提示词需要严格记录，类似于聊天的想法只用抽取出idea变化就行",
-      "result": "Strengthened the Execution Prompts rules and separated engineering execution prompt logging from chat idea distillation.",
-      "reuse_notes": "Future agents must treat engineering prompts as a strict ledger and treat ordinary idea chat as distilled product context."
-    },
-    {
-      "timestamp": "2026-05-25",
-      "agent_or_tool": "Codex",
-      "prompt_type": "docs",
-      "prompt_visibility": "summary",
-      "recording_mode": "exact",
-      "prompt_summary": "User asked to prepare the repository for GitHub upload by filling in README and related files.",
-      "prompt_text": "我要上传github，你补齐readme等",
-      "result": "Added README.md, .gitignore, and .gitattributes.",
-      "reuse_notes": "Future agents should keep GitHub-facing docs aligned with the actual skill package and avoid adding a license without a user decision."
-    },
-    {
-      "timestamp": "2026-05-25",
-      "agent_or_tool": "Codex",
-      "prompt_type": "docs",
-      "prompt_visibility": "summary",
-      "recording_mode": "exact",
-      "prompt_summary": "User asked to write the first MVP requirements document.",
-      "prompt_text": "好先写第一版mvp需求文档",
-      "result": "Created docs/product/vibelog-studio-mvp-requirements.md with product thesis, GitHub-inspired model, MVP scope, user stories, screens, data model, architecture, tech stack, risks, success criteria, and open questions.",
-      "reuse_notes": "Future implementation planning should use this requirements document as the product source of truth."
-    },
-    {
-      "timestamp": "2026-05-25",
-      "agent_or_tool": "Codex",
-      "prompt_type": "docs",
-      "prompt_visibility": "summary",
-      "recording_mode": "exact",
-      "prompt_summary": "User asked to update the needed skill before asking Claude Code to execute the adapter work.",
-      "prompt_text": "???????????????skill?",
-      "result": "Upgraded VibeLog skill, template, schema, format reference, Claude Code adapter notes, README, and project VibeLog toward the v0.2 draft automatic process record standard.",
-      "reuse_notes": "Future Claude Code work should use the updated VibeLog skill as the process source of truth."
-    },
-    {
-      "timestamp": "2026-05-26",
-      "agent_or_tool": "Codex",
-      "prompt_type": "docs",
-      "prompt_visibility": "summary",
-      "recording_mode": "exact",
-      "prompt_summary": "User approved starting two tasks: create a local Slice 1.5 corrective commit and start the Slice 2 design document.",
-      "prompt_text": "开始这两个",
-      "result": "Created local commit edd7b9e for Slice 1.5 and drafted docs/superpowers/specs/2026-05-26-vibelog-skill-usability-slice-2-design.md.",
-      "reuse_notes": "Future agents should treat Slice 2 as skill usability documentation and manual validation work, not website or app source work."
-    },
-    {
-      "timestamp": "2026-05-26",
-      "agent_or_tool": "Codex",
-      "prompt_type": "docs",
-      "prompt_visibility": "summary",
-      "recording_mode": "exact",
-      "prompt_summary": "User approved executing Slice 2 after reviewing the design translation.",
-      "prompt_text": "确认，可以执行",
-      "result": "Implemented the Slice 2 guide pack: quickstart, manual test guide, example scenario, validation checklist, agent usage guide, README links, implementation plan, and VibeLog updates.",
-      "reuse_notes": "Future agents should use these guides to test VibeLog manually before building website or automation features."
-    },
-    {
-      "timestamp": "2026-05-26",
-      "agent_or_tool": "Codex",
-      "prompt_type": "build",
-      "prompt_visibility": "summary",
-      "recording_mode": "exact",
-      "prompt_summary": "User asked whether the agent could simulate a small billing project instead of requiring the user to manually test VibeLog.",
-      "prompt_text": "必须得我手动吗？你不可以模拟一个小项目，做一个账单啥的小项目去测试吗？",
-      "result": "Created a local scratch BillMate Lite project, followed a test-first flow, generated VibeLog files, and copied only the generated logs into examples/billmate-lite/.",
-      "reuse_notes": "Agent-simulated scratch projects are a good way to dogfood VibeLog before asking the user to provide real unfinished work."
-    },
-    {
-      "timestamp": "2026-05-26",
-      "agent_or_tool": "Codex",
-      "prompt_type": "design",
-      "prompt_visibility": "summary",
-      "recording_mode": "exact",
-      "prompt_summary": "User approved moving to the Slice 3 exporter design.",
-      "prompt_text": "可以",
-      "result": "Created English and Chinese Slice 3 design documents for a deterministic Markdown-to-JSON exporter.",
-      "reuse_notes": "Future agents should implement the exporter only after the design is reviewed and an implementation plan is written."
+      "why": "VibeLog is intended for others to reuse as a skill. Including the dogfood app source in the main repository makes the repository look like an app project instead of a reusable skill package."
     }
   ],
   "development_log": [
     {
-      "timestamp": "2026-05-25",
-      "type": "feature",
+      "bug_symptom": "not applicable",
+      "details": "Added a `Development Log` section for normal project development events. The section supports feature, bugfix, refactor, test, docs, chore, release, and config entries. Bugfix entries include fields for symptom, root cause, fix, verification, and follow-up.",
+      "files_changed": [
+        "docs/superpowers/specs/2026-05-25-vibelog-v0.1-design.md",
+        "skills/vibelog/SKILL.md",
+        "skills/vibelog/references/vibelog-format.md",
+        "skills/vibelog/assets/vibe-log-template.md",
+        "skills/vibelog/assets/vibe-log.schema.json",
+        "vibe-log.md",
+        "vibe-log.json"
+      ],
+      "fix": "not applicable",
+      "follow_up": [
+        "Development Log"
+      ],
+      "root_cause": "not applicable",
       "summary": "Added first-class development logging to VibeLog.",
+      "timestamp": "2026-05-25",
+      "type": "feature",
+      "verification": "Pending final JSON/schema and content scans."
+    },
+    {
+      "bug_symptom": "not applicable",
+      "details": "Added `Human-in-the-Loop` records for moments where a human sets direction, scope, taste, tradeoffs, approval, rejection, risk, naming, or prioritization.",
       "files_changed": [
         "docs/superpowers/specs/2026-05-25-vibelog-v0.1-design.md",
         "skills/vibelog/SKILL.md",
@@ -482,45 +229,17 @@
         "vibe-log.md",
         "vibe-log.json"
       ],
-      "details": "Added a Development Log section for normal project development events. The section supports feature, bugfix, refactor, test, docs, chore, release, and config entries. Bugfix entries include fields for symptom, root cause, fix, verification, and follow-up.",
-      "bug_symptom": "not applicable",
-      "root_cause": "not applicable",
       "fix": "not applicable",
-      "verification": "Pending final JSON/schema and content scans.",
-      "follow_up": [
-        "Consider whether future exporter logic should derive Development Log entries from git commits."
-      ],
-      "source": "current work session",
-      "confidence": "high"
-    },
-    {
-      "timestamp": "2026-05-25",
-      "type": "feature",
+      "follow_up": "Consider whether public website views should display human-in-the-loop moments as a distinct timeline layer.",
+      "root_cause": "not applicable",
       "summary": "Added first-class human-in-the-loop logging to VibeLog.",
-      "files_changed": [
-        "docs/superpowers/specs/2026-05-25-vibelog-v0.1-design.md",
-        "skills/vibelog/SKILL.md",
-        "skills/vibelog/references/vibelog-format.md",
-        "skills/vibelog/assets/vibe-log-template.md",
-        "skills/vibelog/assets/vibe-log.schema.json",
-        "vibe-log.md",
-        "vibe-log.json"
-      ],
-      "details": "Added Human-in-the-Loop records for moments where a human sets direction, scope, taste, tradeoffs, approval, rejection, risk, naming, or prioritization.",
-      "bug_symptom": "not applicable",
-      "root_cause": "not applicable",
-      "fix": "not applicable",
-      "verification": "Pending final JSON/schema and content scans.",
-      "follow_up": [
-        "Consider whether public website views should display human-in-the-loop moments as a distinct timeline layer."
-      ],
-      "source": "current work session",
-      "confidence": "high"
-    },
-    {
       "timestamp": "2026-05-25",
       "type": "feature",
-      "summary": "Strengthened execution prompt logging rules.",
+      "verification": "Pending final JSON/schema and content scans."
+    },
+    {
+      "bug_symptom": "not applicable",
+      "details": "Required engineering execution prompts to be recorded in `Execution Prompts` with exact text by default, while ordinary chat-like idea discussion is distilled into idea evolution, human-in-the-loop, decisions, or open questions.",
       "files_changed": [
         "docs/superpowers/specs/2026-05-25-vibelog-v0.1-design.md",
         "skills/vibelog/SKILL.md",
@@ -530,21 +249,20 @@
         "vibe-log.md",
         "vibe-log.json"
       ],
-      "details": "Required engineering execution prompts to be recorded in Execution Prompts with exact text by default, while ordinary chat-like idea discussion is distilled into idea evolution, human-in-the-loop, decisions, or open questions.",
-      "bug_symptom": "not applicable",
-      "root_cause": "not applicable",
       "fix": "not applicable",
-      "verification": "Pending final JSON/schema and content scans.",
       "follow_up": [
-        "Consider adding an exporter that validates every execution prompt has recording_mode and prompt_text."
+        "recording_mode",
+        "prompt_text"
       ],
-      "source": "current work session",
-      "confidence": "high"
+      "root_cause": "not applicable",
+      "summary": "Strengthened execution prompt logging rules.",
+      "timestamp": "2026-05-25",
+      "type": "feature",
+      "verification": "Pending final JSON/schema and content scans."
     },
     {
-      "timestamp": "2026-05-25",
-      "type": "docs",
-      "summary": "Added GitHub-ready repository documentation.",
+      "bug_symptom": "not applicable",
+      "details": "Added a GitHub-facing README explaining VibeLog's purpose, core records, repository structure, quick start, current status, and next steps. Added `.gitignore` for common local files and `.gitattributes` to normalize line endings.",
       "files_changed": [
         "README.md",
         ".gitignore",
@@ -552,41 +270,33 @@
         "vibe-log.md",
         "vibe-log.json"
       ],
-      "details": "Added a GitHub-facing README explaining VibeLog's purpose, core records, repository structure, quick start, current status, and next steps. Added .gitignore for common local files and .gitattributes to normalize line endings.",
-      "bug_symptom": "not applicable",
-      "root_cause": "not applicable",
       "fix": "not applicable",
-      "verification": "Pending final README review, JSON/schema checks, and git status.",
-      "follow_up": [
-        "Decide on a license before broad public reuse."
-      ],
-      "source": "current work session",
-      "confidence": "high"
-    },
-    {
+      "follow_up": "Decide on a license before broad public reuse.",
+      "root_cause": "not applicable",
+      "summary": "Added GitHub-ready repository documentation.",
       "timestamp": "2026-05-25",
       "type": "docs",
-      "summary": "Added first VibeLog Studio MVP requirements document.",
+      "verification": "Pending final README review, JSON/schema checks, and git status."
+    },
+    {
+      "bug_symptom": "not applicable",
+      "details": "Documented the VibeLog Studio MVP as a local-first workspace inspired by GitHub's repository-first growth model. The requirements cover goals, non-goals, target users, user stories, Vibe Project data model, screens, storage strategy, architecture, tech stack, future hooks, success criteria, risks, and open questions.",
       "files_changed": [
         "docs/product/vibelog-studio-mvp-requirements.md",
         "vibe-log.md",
         "vibe-log.json"
       ],
-      "details": "Documented the VibeLog Studio MVP as a local-first workspace inspired by GitHub's repository-first growth model. The requirements cover goals, non-goals, target users, user stories, Vibe Project data model, screens, storage strategy, architecture, tech stack, future hooks, success criteria, risks, and open questions.",
-      "bug_symptom": "not applicable",
-      "root_cause": "not applicable",
       "fix": "not applicable",
-      "verification": "Pending Markdown review, JSON/schema checks, and git status.",
-      "follow_up": [
-        "Use this requirements document to create the implementation plan before building the app."
-      ],
-      "source": "current work session",
-      "confidence": "high"
-    },
-    {
+      "follow_up": "Use this requirements document to create the implementation plan before building the app.",
+      "root_cause": "not applicable",
+      "summary": "Added first VibeLog Studio MVP requirements document.",
       "timestamp": "2026-05-25",
       "type": "docs",
-      "summary": "Upgraded VibeLog skill to the v0.2 draft automatic process record standard.",
+      "verification": "Pending Markdown review, JSON/schema checks, and git status."
+    },
+    {
+      "bug_symptom": "not applicable",
+      "details": "Reframed VibeLog as a bottom-layer, hook-friendly process recorder for Vibe Repos. Added creation mode, process level, validation design, verification evidence, artifact index, handoff state, public/private projection, branch/remix readiness, and Claude Code hook adapter notes.",
       "files_changed": [
         "skills/vibelog/SKILL.md",
         "skills/vibelog/assets/vibe-log-template.md",
@@ -595,83 +305,57 @@
         "skills/vibelog/references/claude-code-hooks-adapter.md",
         "skills/vibelog/agents/openai.yaml",
         "README.md",
-        "vibe-log.md",
-        "vibe-log.json",
-        "docs/releases/v0.2-draft.md"
+        "docs/releases/v0.2-draft.md",
+        "vibe-log.md"
       ],
-      "artifacts_changed": [
-        "skills/vibelog/",
-        "README.md",
-        "vibe-log.md",
-        "vibe-log.json",
-        "docs/releases/v0.2-draft.md"
-      ],
-      "details": "Reframed VibeLog as a bottom-layer, hook-friendly process recorder for Vibe Repos. Added creation mode, process level, validation design, verification evidence, artifact index, handoff state, public/private projection, branch/remix readiness, and Claude Code hook adapter notes.",
-      "bug_symptom": "not applicable",
-      "root_cause": "not applicable",
       "fix": "not applicable",
-      "verification": "Parsed skills/vibelog/assets/vibe-log.schema.json successfully with Node.js. Full exported sample validation is still pending because no deterministic Markdown-to-JSON exporter exists yet.",
-      "follow_up": [
-        "Ask Claude Code to implement the first hook adapter using the updated skill as source of truth."
-      ],
-      "source": "current work session",
-      "confidence": "high"
+      "follow_up": "Ask Claude Code to implement the first hook adapter using the updated skill as source of truth.",
+      "root_cause": "not applicable",
+      "summary": "Upgraded VibeLog skill to the v0.2 draft automatic process record standard.",
+      "timestamp": "2026-05-25",
+      "type": "docs",
+      "verification": "Parsed `skills/vibelog/assets/vibe-log.schema.json` successfully with Node.js. Full exported sample validation is still pending because no deterministic Markdown-to-JSON exporter exists yet."
     },
     {
-      "timestamp": "2026-05-26",
-      "type": "docs",
-      "summary": "Corrected the local repository structure to keep VibeLog skill-first.",
+      "bug_symptom": "The repository had started to look like a mixed skill/app monorepo after the dogfood app source was added.",
+      "details": "Moved the VibeLog Studio dogfood process record into `examples/vibelog-studio/` and clarified that examples contain generated VibeLog output only, not application source code.",
       "files_changed": [
         "README.md",
         "examples/vibelog-studio/README.md",
         "examples/vibelog-studio/vibe-log.md",
         "examples/vibelog-studio/vibe-log.json",
-        "removed apps/vibelog-studio source files",
-        "removed temporary Slice 1/Slice 2 superpowers docs"
+        "apps/vibelog-studio"
       ],
-      "artifacts_changed": [
-        "examples/vibelog-studio/"
-      ],
-      "details": "Moved the VibeLog Studio dogfood process record into examples/vibelog-studio/ and clarified that examples contain generated VibeLog output only, not application source code.",
-      "bug_symptom": "The repository had started to look like a mixed skill/app monorepo after the dogfood app source was added.",
-      "root_cause": "The push boundary and repository identity were not separated clearly enough before moving the dogfood app into the same repository.",
       "fix": "Locally removed the app source from the repository structure, kept only the generated VibeLog case, and updated documentation to state that this is a skill-first repo.",
-      "verification": "Passed local Slice 1.5 review. git status --short, git diff --name-status, and git diff --stat confirmed the local correction scope; Test-Path confirmed apps/vibelog-studio is absent and examples/vibelog-studio/README.md, vibe-log.md, and vibe-log.json are present; Node.js parsed vibe-log.json, examples/vibelog-studio/vibe-log.json, and skills/vibelog/assets/vibe-log.schema.json.",
       "follow_up": [
-        "Review the local correction report with the user.",
-        "Ask separately whether to create a local corrective commit.",
-        "Ask for separate explicit approval before any GitHub push."
+        "Review the local correction report with the user",
+        "then ask separately whether to create a local corrective commit. Ask for separate explicit approval before any GitHub push."
       ],
-      "source": "current work session",
-      "confidence": "high"
-    },
-    {
+      "root_cause": "The push boundary and repository identity were not separated clearly enough before moving the dogfood app into the same repository.",
+      "summary": "Corrected the local repository structure to keep VibeLog skill-first.",
       "timestamp": "2026-05-26",
       "type": "docs",
-      "summary": "Drafted the Slice 2 skill usability design.",
+      "verification": "Passed local Slice 1.5 review. `git status --short`, `git diff --name-status`, and `git diff --stat` confirmed the local correction scope; `Test-Path` confirmed `apps/vibelog-studio` is absent and `examples/vibelog-studio/README.md`, `vibe-log.md`, and `vibe-log.json` are present; Node.js parsed `vibe-log.json`, `examples/vibelog-studio/vibe-log.json`, and `skills/vibelog/assets/vibe-log.schema.json`."
+    },
+    {
+      "bug_symptom": "not applicable",
+      "details": "Defined Slice 2 as a skill usability pack focused on quickstart guidance, manual testing, a reusable example scenario, validation checklist, and agent usage reference. The design explicitly keeps the repository skill-first and excludes website or app source work.",
       "files_changed": [
         "docs/superpowers/specs/2026-05-26-vibelog-skill-usability-slice-2-design.md",
         "vibe-log.md",
         "vibe-log.json"
       ],
-      "artifacts_changed": [
-        "docs/superpowers/specs/2026-05-26-vibelog-skill-usability-slice-2-design.md"
-      ],
-      "details": "Defined Slice 2 as a skill usability pack focused on quickstart guidance, manual testing, a reusable example scenario, validation checklist, and agent usage reference. The design explicitly keeps the repository skill-first and excludes website or app source work.",
-      "bug_symptom": "not applicable",
-      "root_cause": "not applicable",
       "fix": "not applicable",
-      "verification": "Passed local design review. Checked the design doc for TBD, TODO, PLACEHOLDER, FIXME, and ??; confirmed the design doc exists; parsed vibe-log.json and skills/vibelog/assets/vibe-log.schema.json; ran git diff --check with no whitespace errors.",
-      "follow_up": [
-        "Review the Slice 2 design with the user before writing an implementation plan."
-      ],
-      "source": "current work session",
-      "confidence": "high"
-    },
-    {
+      "follow_up": "Review the Slice 2 design with the user before writing an implementation plan.",
+      "root_cause": "not applicable",
+      "summary": "Drafted the Slice 2 skill usability design.",
       "timestamp": "2026-05-26",
       "type": "docs",
-      "summary": "Implemented the Slice 2 skill usability guide pack.",
+      "verification": "Passed local design review. Checked the design doc for `TBD`, `TODO`, `PLACEHOLDER`, `FIXME`, and `??`; confirmed the design doc exists; parsed `vibe-log.json` and `skills/vibelog/assets/vibe-log.schema.json`; ran `git diff --check` with no whitespace errors."
+    },
+    {
+      "bug_symptom": "not applicable",
+      "details": "Added focused user and agent documentation so VibeLog can be started, manually tested, validated, and handed off without website or app source code. The guide pack includes first-time usage, a realistic fake project scenario, isolated and combined manual tests, a validation checklist, and agent-facing operational rules.",
       "files_changed": [
         "docs/superpowers/plans/2026-05-26-vibelog-skill-usability-slice-2.md",
         "docs/superpowers/specs/2026-05-26-vibelog-skill-usability-slice-2-design.zh.md",
@@ -685,26 +369,17 @@
         "vibe-log.md",
         "vibe-log.json"
       ],
-      "artifacts_changed": [
-        "docs/guides/",
-        "skills/vibelog/references/agent-usage-guide.md",
-        "docs/superpowers/plans/2026-05-26-vibelog-skill-usability-slice-2.md"
-      ],
-      "details": "Added focused user and agent documentation so VibeLog can be started, manually tested, validated, and handed off without website or app source code. The guide pack includes first-time usage, a realistic fake project scenario, isolated and combined manual tests, a validation checklist, and agent-facing operational rules.",
-      "bug_symptom": "not applicable",
-      "root_cause": "not applicable",
       "fix": "not applicable",
-      "verification": "Passed. Confirmed all guide and plan files exist; parsed vibe-log.json and skills/vibelog/assets/vibe-log.schema.json; scanned guide files and the agent usage guide for placeholders with no output; ran git diff --check with no output; confirmed apps/vibelog-studio remains absent.",
-      "follow_up": [
-        "Use the manual test guide on a scratch VibeLog before implementing automation adapters."
-      ],
-      "source": "current work session",
-      "confidence": "high"
+      "follow_up": "Use the manual test guide on a scratch VibeLog before implementing automation adapters.",
+      "root_cause": "not applicable",
+      "summary": "Implemented the Slice 2 skill usability guide pack.",
+      "timestamp": "2026-05-26",
+      "type": "docs",
+      "verification": "Passed. Confirmed all guide and plan files exist; parsed `vibe-log.json` and `skills/vibelog/assets/vibe-log.schema.json`; scanned guide files and the agent usage guide for placeholders with no output; ran `git diff --check` with no output; confirmed `apps/vibelog-studio` remains absent."
     },
     {
-      "timestamp": "2026-05-26",
-      "type": "test",
-      "summary": "Ran an agent-simulated BillMate Lite dogfood test.",
+      "bug_symptom": "not applicable",
+      "details": "Created a scratch billing project outside the repository, wrote failing tests first, implemented a tiny Node.js settlement calculator, generated VibeLog Markdown and JSON for the scratch project, and copied only the generated logs into `examples/billmate-lite/`.",
       "files_changed": [
         "examples/billmate-lite/README.md",
         "examples/billmate-lite/vibe-log.md",
@@ -713,311 +388,605 @@
         "vibe-log.md",
         "vibe-log.json"
       ],
-      "artifacts_changed": [
-        "examples/billmate-lite/"
-      ],
-      "details": "Created a scratch billing project outside the repository, wrote failing tests first, implemented a tiny Node.js settlement calculator, generated VibeLog Markdown and JSON for the scratch project, and copied only the generated logs into examples/billmate-lite/.",
-      "bug_symptom": "not applicable",
-      "root_cause": "not applicable",
       "fix": "not applicable",
-      "verification": "npm test in the scratch project passed with 3 tests; examples/billmate-lite/vibe-log.json, root vibe-log.json, and skills/vibelog/assets/vibe-log.schema.json parsed successfully; examples/billmate-lite/ contains no src, test, or package.json.",
-      "follow_up": [
-        "Use this result to decide whether the next slice should be deterministic Markdown-to-JSON export."
-      ],
-      "source": "current work session",
-      "confidence": "high"
+      "follow_up": "Use this result to decide whether the next slice should be deterministic Markdown-to-JSON export.",
+      "root_cause": "not applicable",
+      "summary": "Ran an agent-simulated BillMate Lite dogfood test.",
+      "timestamp": "2026-05-26",
+      "type": "test",
+      "verification": "`npm test` in the scratch project passed with 3 tests; `examples/billmate-lite/vibe-log.json`, root `vibe-log.json`, and `skills/vibelog/assets/vibe-log.schema.json` parsed successfully; `examples/billmate-lite/` contains no `src`, `test`, or `package.json`."
     },
     {
-      "timestamp": "2026-05-26",
-      "type": "docs",
-      "summary": "Drafted the Slice 3 Markdown-to-JSON exporter design.",
+      "bug_symptom": "not applicable",
+      "details": "Defined the first deterministic exporter scope: parse VibeLog frontmatter and the known Markdown subset used by `examples/billmate-lite/`, preserve Unicode prompt text, generate stable JSON, add a lightweight validation script, document export usage, and test with Node's built-in test runner.",
       "files_changed": [
         "docs/superpowers/specs/2026-05-26-vibelog-exporter-slice-3-design.md",
         "docs/superpowers/specs/2026-05-26-vibelog-exporter-slice-3-design.zh.md",
         "vibe-log.md",
         "vibe-log.json"
       ],
-      "artifacts_changed": [
-        "docs/superpowers/specs/2026-05-26-vibelog-exporter-slice-3-design.md",
-        "docs/superpowers/specs/2026-05-26-vibelog-exporter-slice-3-design.zh.md"
-      ],
-      "details": "Defined the first deterministic exporter scope: parse VibeLog frontmatter and the known Markdown subset used by examples/billmate-lite/, preserve Unicode prompt text, generate stable JSON, add a lightweight validation script, document export usage, and test with Node's built-in test runner.",
-      "bug_symptom": "not applicable",
-      "root_cause": "not applicable",
       "fix": "not applicable",
-      "verification": "Passed design self-review: placeholder scan returned no output, root JSON/example JSON/schema parsed, both design files exist, and git diff --check returned no output.",
-      "follow_up": [
-        "Ask the user to review the Slice 3 design before creating the implementation plan."
+      "follow_up": "Ask the user to review the Slice 3 design before creating the implementation plan.",
+      "root_cause": "not applicable",
+      "summary": "Drafted the Slice 3 Markdown-to-JSON exporter design.",
+      "timestamp": "2026-05-26",
+      "type": "docs",
+      "verification": "Passed design self-review: placeholder scan returned no output, root JSON/example JSON/schema parsed, both design files exist, and `git diff --check` returned no output."
+    },
+    {
+      "bug_symptom": "Markdown and JSON had to be kept in sync manually.",
+      "details": "Added a dependency-free Node.js exporter for the supported VibeLog Markdown subset, a practical validator for core JSON shape checks, tests for exporter and validator behavior, an export guide, and README links.",
+      "files_changed": [
+        "docs/superpowers/plans/2026-05-26-vibelog-exporter-slice-3.md",
+        "scripts/export-vibelog.mjs",
+        "scripts/validate-vibelog.mjs",
+        "test/export-vibelog.test.mjs",
+        "test/validate-vibelog.test.mjs",
+        "docs/guides/export-json.md",
+        "README.md",
+        "vibe-log.md",
+        "vibe-log.json"
       ],
-      "source": "current work session",
-      "confidence": "high"
+      "fix": "Added `scripts/export-vibelog.mjs` and `scripts/validate-vibelog.mjs`, then used tests to cover export, validation, Unicode prompt preservation, block-array frontmatter, and drift detection.",
+      "follow_up": "Add full JSON Schema validation after the lightweight validator proves useful.",
+      "root_cause": "The repo had a schema and examples but no deterministic local script to regenerate JSON from Markdown.",
+      "summary": "Implemented the Slice 3 deterministic Markdown-to-JSON exporter and lightweight validator.",
+      "timestamp": "2026-05-26",
+      "type": "feature",
+      "verification": "Passed. `node --test` ran 9 tests successfully; BillMate Lite exported to temp JSON, validated successfully, and passed drift check; root JSON and schema parsed; `git diff --check` returned no output."
     }
   ],
-  "vibe_progress": [
+  "execution_prompts": [
     {
-      "timestamp": "2026-05-25",
-      "stage": "brief",
-      "what_happened": "Defined VibeLog v0.1 as a Markdown-first standard with JSON export.",
-      "tools_used": [
-        "Codex"
-      ],
-      "problems": [
-        "Needed to keep the standard independent from the future website."
-      ],
-      "next": [
-        "Build the standalone skill."
-      ],
-      "source": "reconstructed from conversation",
-      "confidence": "high"
+      "agent_or_tool": "Codex",
+      "prompt_summary": "User asked to define VibeLog v0.1 as a Markdown-first standard with JSON export for future website upload.",
+      "prompt_text": "hidden",
+      "prompt_type": "design",
+      "prompt_visibility": "summary",
+      "recording_mode": "summary_only",
+      "result": "Created and committed the VibeLog v0.1 design document.",
+      "reuse_notes": "Use this direction when aligning future skill and website schema work.",
+      "timestamp": "2026-05-25"
     },
     {
-      "timestamp": "2026-05-25",
-      "stage": "prototype",
-      "what_happened": "Created the standalone skills/vibelog package and added mid-project reconstruction plus execution prompt logging.",
-      "tools_used": [
-        "Codex"
-      ],
-      "problems": [
-        "quick_validate.py could not run because PyYAML is missing."
-      ],
-      "next": [
-        "Validate manually, review with the user, then decide whether to install locally."
-      ],
-      "source": "current work session",
-      "confidence": "high"
+      "agent_or_tool": "Codex",
+      "prompt_summary": "User asked to detach from the website and build the skill first, adding mid-project invocation, historical reconstruction, and vibecoding execution prompt logging.",
+      "prompt_text": "hidden",
+      "prompt_type": "build",
+      "prompt_visibility": "summary",
+      "recording_mode": "summary_only",
+      "result": "Created the first VibeLog skill package and this reconstructed project log.",
+      "reuse_notes": "Future agents should continue from the standalone skill package and keep website work secondary.",
+      "timestamp": "2026-05-25"
     },
     {
-      "timestamp": "2026-05-25",
-      "stage": "prototype",
-      "what_happened": "Extended VibeLog to include normal project development logs and bug fix records.",
-      "tools_used": [
-        "Codex"
-      ],
-      "problems": [
-        "Needed to keep engineering logs distinct from product-level vibe progress."
-      ],
-      "next": [
-        "Verify schema, example JSON, and scans, then commit the update."
-      ],
-      "source": "current work session",
-      "confidence": "high"
+      "agent_or_tool": "Codex",
+      "prompt_summary": "User asked to add bug fix logging and make VibeLog able to contain normal project development logs.",
+      "prompt_text": "hidden",
+      "prompt_type": "design",
+      "prompt_visibility": "summary",
+      "recording_mode": "summary_only",
+      "result": "Added `Development Log` as a first-class section covering features, bug fixes, refactors, tests, docs, chores, releases, and config changes.",
+      "reuse_notes": "Future agents should use `Development Log` for engineering history and reserve `Vibe Progress` for product-level timeline updates.",
+      "timestamp": "2026-05-25"
     },
     {
-      "timestamp": "2026-05-25",
-      "stage": "prototype",
-      "what_happened": "Extended VibeLog to record human-in-the-loop judgment as a first-class timeline.",
-      "tools_used": [
-        "Codex"
-      ],
-      "problems": [
-        "Needed to distinguish human steering from generic decisions."
-      ],
-      "next": [
-        "Verify schema, example JSON, and scans, then commit the update."
-      ],
-      "source": "current work session",
-      "confidence": "high"
+      "agent_or_tool": "Codex",
+      "prompt_summary": "User asked to record human-in-the-loop decisions, meaning the moments where human judgment steered the vibe process.",
+      "prompt_text": "hidden",
+      "prompt_type": "design",
+      "prompt_visibility": "summary",
+      "recording_mode": "summary_only",
+      "result": "Added `Human-in-the-Loop` as a first-class section and schema field.",
+      "reuse_notes": "Future agents should record human steering separately from routine decisions.",
+      "timestamp": "2026-05-25"
     },
     {
-      "timestamp": "2026-05-25",
-      "stage": "prototype",
-      "what_happened": "Strengthened prompt logging rules so engineering execution prompts are strictly recorded and chat-like idea discussion is only distilled.",
-      "tools_used": [
-        "Codex"
-      ],
-      "problems": [
-        "Needed to preserve exact execution prompts without turning VibeLog into a general chat transcript."
-      ],
-      "next": [
-        "Verify JSON/schema checks, ensure all execution prompt entries include recording mode and prompt text, then commit."
-      ],
-      "source": "current work session",
-      "confidence": "high"
+      "agent_or_tool": "Codex",
+      "prompt_summary": "User clarified that engineering execution prompts must be strictly recorded, while chat-like idea discussion should only be distilled into idea changes.",
+      "prompt_text": "记住，所有vibecoding中agent下达的工程执行的提示词需要严格记录，类似于聊天的想法只用抽取出idea变化就行",
+      "prompt_type": "design",
+      "prompt_visibility": "summary",
+      "recording_mode": "exact",
+      "result": "Strengthened the Execution Prompts rules and separated engineering execution prompt logging from chat idea distillation.",
+      "reuse_notes": "Future agents must treat engineering prompts as a strict ledger and treat ordinary idea chat as distilled product context.",
+      "timestamp": "2026-05-25"
     },
     {
-      "timestamp": "2026-05-25",
-      "stage": "prototype",
-      "what_happened": "Prepared the VibeLog repository for GitHub upload with README and repository hygiene files.",
-      "tools_used": [
-        "Codex"
-      ],
-      "problems": [
-        "No GitHub remote is configured yet, so this step only prepares local repository content."
-      ],
-      "next": [
-        "Verify docs and JSON, commit the update, then configure a GitHub remote when the target repository exists."
-      ],
-      "source": "current work session",
-      "confidence": "high"
+      "agent_or_tool": "Codex",
+      "prompt_summary": "User asked to prepare the repository for GitHub upload by filling in README and related files.",
+      "prompt_text": "我要上传github，你补齐readme等",
+      "prompt_type": "docs",
+      "prompt_visibility": "summary",
+      "recording_mode": "exact",
+      "result": "Added `README.md`, `.gitignore`, and `.gitattributes`.",
+      "reuse_notes": "Future agents should keep GitHub-facing docs aligned with the actual skill package and avoid adding a license without a user decision.",
+      "timestamp": "2026-05-25"
     },
     {
-      "timestamp": "2026-05-25",
-      "stage": "brief",
-      "what_happened": "Wrote the first VibeLog Studio MVP requirements document.",
-      "tools_used": [
-        "Codex"
-      ],
-      "problems": [
-        "Needed to keep MVP simple while preserving long-term platform architecture."
-      ],
-      "next": [
-        "Review the requirements document, then create an implementation plan if approved."
-      ],
-      "source": "current work session",
-      "confidence": "high"
+      "agent_or_tool": "Codex",
+      "prompt_summary": "User asked to write the first MVP requirements document.",
+      "prompt_text": "好先写第一版mvp需求文档",
+      "prompt_type": "docs",
+      "prompt_visibility": "summary",
+      "recording_mode": "exact",
+      "result": "Created `docs/product/vibelog-studio-mvp-requirements.md` with product thesis, GitHub-inspired model, MVP scope, user stories, screens, data model, architecture, tech stack, risks, success criteria, and open questions.",
+      "reuse_notes": "Future implementation planning should use this requirements document as the product source of truth.",
+      "timestamp": "2026-05-25"
     },
     {
-      "timestamp": "2026-05-25",
-      "stage": "prototype",
-      "what_happened": "Upgraded VibeLog toward a v0.2 draft automatic process record standard and added Claude Code hook adapter guidance.",
-      "tools_used": [
-        "Codex"
-      ],
-      "problems": [
-        "Needed to keep the update focused on the underlying skill and avoid starting the VibeHub website too early."
-      ],
-      "next": [
-        "Use Claude Code to design and implement the first hook adapter."
-      ],
-      "source": "current work session",
-      "confidence": "high"
+      "agent_or_tool": "Codex",
+      "prompt_summary": "User asked to update the needed skill before asking Claude Code to execute the adapter work.",
+      "prompt_text": "在此之前，我们先更新我们需要的skill。",
+      "prompt_type": "docs",
+      "prompt_visibility": "summary",
+      "recording_mode": "exact",
+      "result": "Upgraded VibeLog skill, template, schema, format reference, Claude Code adapter notes, README, and project VibeLog toward the v0.2 draft automatic process record standard.",
+      "reuse_notes": "Future Claude Code work should use the updated VibeLog skill as the process source of truth.",
+      "timestamp": "2026-05-25"
     },
     {
-      "timestamp": "2026-05-26",
-      "stage": "prototype",
-      "what_happened": "Locally corrected the repository back to a skill-first structure and kept VibeLog Studio only as generated VibeLog example output.",
-      "tools_used": [
-        "Codex",
-        "VibeLog"
-      ],
-      "problems": [
-        "The previous pushed structure made the repository look like it included an app source project, which could confuse people trying to reuse the skill."
-      ],
-      "next": [
-        "Review the local diff and decide whether to create a local corrective commit.",
-        "Ask separately before any GitHub push."
-      ],
-      "source": "current work session",
-      "confidence": "high"
+      "agent_or_tool": "Codex",
+      "prompt_summary": "User approved starting two tasks: create a local Slice 1.5 corrective commit and start the Slice 2 design document.",
+      "prompt_text": "开始这两个",
+      "prompt_type": "docs",
+      "prompt_visibility": "summary",
+      "recording_mode": "exact",
+      "result": "Created local commit `edd7b9e` for Slice 1.5 and drafted `docs/superpowers/specs/2026-05-26-vibelog-skill-usability-slice-2-design.md`.",
+      "reuse_notes": "Future agents should treat Slice 2 as skill usability documentation and manual validation work, not website or app source work.",
+      "timestamp": "2026-05-26"
     },
     {
-      "timestamp": "2026-05-26",
-      "stage": "prototype",
-      "what_happened": "Created the Slice 2 skill usability design after locally committing the Slice 1.5 repository correction.",
-      "tools_used": [
-        "Codex",
-        "VibeLog"
-      ],
-      "problems": [
-        "Needed to keep Slice 2 focused on skill usability and manual validation rather than drifting back into website or app source work."
-      ],
-      "next": [
-        "Review the Slice 2 design.",
-        "Create an implementation plan if approved."
-      ],
-      "source": "current work session",
-      "confidence": "high"
+      "agent_or_tool": "Codex",
+      "prompt_summary": "User approved executing Slice 2 after reviewing the design translation.",
+      "prompt_text": "确认，可以执行",
+      "prompt_type": "docs",
+      "prompt_visibility": "summary",
+      "recording_mode": "exact",
+      "result": "Implemented the Slice 2 guide pack: quickstart, manual test guide, example scenario, validation checklist, agent usage guide, README links, implementation plan, and VibeLog updates.",
+      "reuse_notes": "Future agents should use these guides to test VibeLog manually before building website or automation features.",
+      "timestamp": "2026-05-26"
     },
     {
-      "timestamp": "2026-05-26",
-      "stage": "prototype",
-      "what_happened": "Implemented the Slice 2 guide pack for VibeLog skill usability.",
-      "tools_used": [
-        "Codex",
-        "VibeLog"
-      ],
-      "problems": [
-        "Needed to prove manual usability without adding app source or starting website work."
-      ],
-      "next": [
-        "Run final verification.",
-        "Commit locally.",
-        "Use the manual test guide on a scratch project before automation adapter work."
-      ],
-      "source": "current work session",
-      "confidence": "high"
+      "agent_or_tool": "Codex",
+      "prompt_summary": "User asked whether the agent could simulate a small billing project instead of requiring the user to manually test VibeLog.",
+      "prompt_text": "必须得我手动吗？你不可以模拟一个小项目，做一个账单啥的小项目去测试吗？",
+      "prompt_type": "build",
+      "prompt_visibility": "summary",
+      "recording_mode": "exact",
+      "result": "Created a local scratch BillMate Lite project, followed a test-first flow, generated VibeLog files, and copied only the generated logs into `examples/billmate-lite/`.",
+      "reuse_notes": "Agent-simulated scratch projects are a good way to dogfood VibeLog before asking the user to provide real unfinished work.",
+      "timestamp": "2026-05-26"
     },
     {
-      "timestamp": "2026-05-26",
-      "stage": "prototype",
-      "what_happened": "Ran an agent-simulated BillMate Lite dogfood test and added generated logs as a repo example.",
-      "tools_used": [
-        "Codex",
-        "Node.js",
-        "VibeLog"
-      ],
-      "problems": [
-        "Needed to prove VibeLog can record a realistic agent-led mini project without requiring the human to manually provide project material."
-      ],
-      "next": [
-        "Verify and commit the generated example locally.",
-        "Consider deterministic Markdown-to-JSON export as the next slice."
-      ],
-      "source": "current work session",
-      "confidence": "high"
+      "agent_or_tool": "Codex",
+      "prompt_summary": "User approved moving to the Slice 3 exporter design.",
+      "prompt_text": "可以",
+      "prompt_type": "design",
+      "prompt_visibility": "summary",
+      "recording_mode": "exact",
+      "result": "Created English and Chinese Slice 3 design documents for a deterministic Markdown-to-JSON exporter.",
+      "reuse_notes": "Future agents should implement the exporter only after the design is reviewed and an implementation plan is written.",
+      "timestamp": "2026-05-26"
     },
     {
-      "timestamp": "2026-05-26",
-      "stage": "prototype",
-      "what_happened": "Drafted the Slice 3 deterministic Markdown-to-JSON exporter design.",
-      "tools_used": [
-        "Codex",
-        "VibeLog"
-      ],
-      "problems": [
-        "The dogfood examples showed that Markdown and JSON are still manually synchronized, which is too fragile for hooks and future upload."
-      ],
-      "next": [
-        "Review the design.",
-        "Create an implementation plan if approved."
-      ],
-      "source": "current work session",
-      "confidence": "high"
+      "agent_or_tool": "Codex",
+      "prompt_summary": "User chose approach B and authorized starting Slice 3 implementation.",
+      "prompt_text": "选择方案B开始",
+      "prompt_type": "build",
+      "prompt_visibility": "summary",
+      "recording_mode": "exact",
+      "result": "Started the strict-subset Markdown-to-JSON exporter and lightweight validator implementation with test-first coverage.",
+      "reuse_notes": "Treat this as the execution authorization for Slice 3 implementation. Keep the scope conservative and do not push to GitHub without separate explicit approval.",
+      "timestamp": "2026-05-26"
     }
   ],
-  "public_summary": "VibeLog is a Markdown-first, hook-friendly skill and process record standard for vibe-built products. It records ideas, human and agent decisions, execution prompts, implementation status, validation design, verification evidence, artifacts, handoff state, and progress so future agents and VibeHub can continue from structured project memory.",
-  "creation_mode": "human_ai_co_created",
-  "process_level": "core",
-  "vibe_intake": {
-    "problem": "Vibe builders often have scattered ideas, midstream pivots, and AI execution prompts that disappear across chats, tools, and agents.",
-    "target_users": [
-      "AI-assisted builders",
-      "vibe coders",
-      "non-technical product creators",
-      "agent users"
+  "handoff_state": {
+    "blockers": [
+      "No current blocker."
     ],
-    "desired_outcome": "Create a portable process record that lets agents and humans continue vibe-built products safely.",
-    "current_stage": "prototype",
-    "tools_or_agents": [
-      "Codex",
-      "Claude Code planned"
+    "completed": [
+      "Updated the VibeLog skill for automatic hook-friendly process recording.",
+      "Added v0.2 draft template and schema fields.",
+      "Added Claude Code hook adapter notes.",
+      "Updated README and skill metadata.",
+      "Recorded the update in this VibeLog.",
+      "Moved the VibeLog Studio dogfood case to `examples/vibelog-studio/` as generated VibeLog output only.",
+      "Removed app source from the local repository structure.",
+      "Created the local Slice 1.5 corrective commit `edd7b9e`.",
+      "Drafted the Slice 2 skill usability design document.",
+      "Added the Slice 2 implementation plan.",
+      "Added Quickstart, Manual Test Guide, Example Scenario, and Validation Checklist under `docs/guides/`.",
+      "Added `skills/vibelog/references/agent-usage-guide.md`.",
+      "Linked the new guides from `README.md` and `skills/vibelog/SKILL.md`.",
+      "Ran an agent-simulated BillMate Lite dogfood test outside the repository.",
+      "Added `examples/billmate-lite/` with generated VibeLog files only.",
+      "Drafted Slice 3 exporter design in English and Chinese.",
+      "Added the Slice 3 implementation plan.",
+      "Implemented `scripts/export-vibelog.mjs`.",
+      "Implemented `scripts/validate-vibelog.mjs`.",
+      "Added exporter and validator tests under `test/`.",
+      "Added `docs/guides/export-json.md`.",
+      "Linked export usage from `README.md`."
+    ],
+    "context_for_next_agent": [
+      "Do not build the VibeHub website yet.",
+      "First prove the VibeLog skill can be used and tested manually without a website.",
+      "Keep `vibe-log.md` as source of truth and regenerate JSON after Markdown changes.",
+      "Do not include VibeLog Studio application source code in this skill repo unless the user explicitly changes repository strategy.",
+      "Examples should contain generated VibeLog records, not app source.",
+      "Do not push to GitHub without separate explicit user approval.",
+      "Use `docs/guides/manual-test-guide.md` and `docs/guides/validation-checklist.md` for the next usability test.",
+      "`examples/billmate-lite/` should contain generated logs only, not scratch source code.",
+      "Markdown is the source of truth; regenerate JSON with `scripts/export-vibelog.mjs`.",
+      "Validate generated JSON with `scripts/validate-vibelog.mjs`."
+    ],
+    "current_state": "VibeLog is a v0.2 draft process record skill. Slice 1.5, Slice 2, and the BillMate Lite dogfood example are committed locally. Slice 3 now adds a deterministic Markdown-to-JSON exporter and lightweight validator so Markdown can remain the source of truth while JSON can be regenerated for tools, handoff, and future upload.",
+    "in_progress": [
+      "No active implementation in Slice 3 after exporter and validator verification."
+    ],
+    "next_actions": [
+      "Use the exporter in the future Claude Code or Codex hook adapter.",
+      "Add full JSON Schema validation.",
+      "Decide whether to install the skill locally or keep iterating inside the repository first."
+    ],
+    "pending": [
+      "Full JSON Schema validation.",
+      "Example Vibe Repo generated by the adapter.",
+      "Any GitHub push requires a separate explicit user request."
     ]
   },
-  "validation_design": {
-    "success_criteria": [
-      "A future Claude Code adapter can use the skill docs to decide which hook events update which VibeLog sections.",
-      "A future agent can read the generated VibeLog and understand the current idea, decisions, prompts, implementation status, validation plan, artifacts, and next actions.",
-      "Markdown remains readable by a human, while JSON can represent the same process record for agents and VibeHub."
+  "human_in_the_loop": [
+    {
+      "agent_proposal": "The agent had been recording general decisions, implementation status, prompts, and development logs.",
+      "confidence": "high",
+      "final_decision": "Add a dedicated `Human-in-the-Loop` section and JSON field.",
+      "human_input": "The user clarified that VibeLog should especially record human-in-the-loop moments: which points were decided by the human during the vibe process.",
+      "impact": "Updated the standard, skill workflow, reference docs, template, schema, and project log to record human steering events explicitly.",
+      "source": "user request",
+      "timestamp": "2026-05-25",
+      "type": "direction",
+      "why_it_mattered": "This makes VibeLog better at showing how human judgment shapes AI-assisted creation."
+    },
+    {
+      "agent_proposal": "The agent proposed a local corrective restructuring that removes app source from the repository and keeps only `examples/vibelog-studio/vibe-log.md` and `examples/vibelog-studio/vibe-log.json` as the dogfood case.",
+      "confidence": "high",
+      "final_decision": "Keep the repository as a reusable VibeLog skill repo; move the dogfood process record into `examples/vibelog-studio/`; remove app source and temporary implementation docs from the local tree.",
+      "human_input": "The user clarified that VibeLog Studio should be uploaded only as the VibeLog generated during this engineering session, not as engineering source code.",
+      "impact": "The repository structure is being corrected locally before any further push decision.",
+      "source": "user correction",
+      "timestamp": "2026-05-26",
+      "type": "scope",
+      "why_it_mattered": "This protects the public reuse path for the skill while still preserving a real generated VibeLog example."
+    },
+    {
+      "agent_proposal": "The agent had been recording prompt summaries and sometimes hiding prompt text.",
+      "confidence": "high",
+      "final_decision": "Add strict prompt ledger rules for engineering execution prompts and a separate distillation rule for idea chat.",
+      "human_input": "The user clarified that all engineering execution prompts in vibecoding must be strictly recorded, while chat-like idea discussion should only contribute extracted idea changes.",
+      "impact": "Updated Execution Prompts rules, schema fields, template, and project log entries.",
+      "source": "user request",
+      "timestamp": "2026-05-25",
+      "type": "scope",
+      "why_it_mattered": "This keeps VibeLog useful for agent handoff and auditability without making it a noisy chat transcript."
+    },
+    {
+      "agent_proposal": "The agent had recommended using GitHub's repository-first growth pattern as a model and starting with the Vibe Project object.",
+      "confidence": "high",
+      "final_decision": "Create a requirements document for a route-A simplified MVP: a local-first VibeLog Studio that can later grow into a community platform.",
+      "human_input": "The user asked to write the first MVP requirements document for VibeLog Studio.",
+      "impact": "Added a product requirements document under `docs/product/`.",
+      "source": "user request",
+      "timestamp": "2026-05-25",
+      "type": "direction",
+      "why_it_mattered": "This turns the product discussion into an implementation-ready product artifact while preserving the long-term architecture direction."
+    },
+    {
+      "agent_proposal": "Codex suggested Claude Code for hook-first implementation and Codex for product thinking, prompt design, and review.",
+      "confidence": "high",
+      "final_decision": "Update the needed VibeLog skill first, then let Claude Code build the adapter around the updated standard.",
+      "human_input": "The user decided to use Claude Code for engineering execution and keep Codex as the product discussion and idea partner.",
+      "impact": "VibeLog skill now includes hook-friendly automatic recording rules and Claude Code adapter notes.",
+      "source": "user request",
+      "timestamp": "2026-05-25",
+      "type": "direction",
+      "why_it_mattered": "It separates product thinking from hook-based execution while proving that VibeLog can coordinate multiple agents around one Vibe Repo."
+    },
+    {
+      "agent_proposal": "Implement the strict VibeLog Markdown subset parser first, instead of starting with a broader general Markdown parser or full JSON Schema validator.",
+      "confidence": "high",
+      "final_decision": "Build Slice 3 as a conservative deterministic exporter plus lightweight validator.",
+      "human_input": "The user chose approach B and asked to start implementation.",
+      "impact": "The agent started a test-first Slice 3 implementation around `scripts/export-vibelog.mjs`, `scripts/validate-vibelog.mjs`, and focused Node.js tests.",
+      "source": "user approval",
+      "timestamp": "2026-05-26",
+      "type": "approval",
+      "why_it_mattered": "This keeps the foundation practical for hooks and future upload while avoiding premature parser complexity."
+    }
+  ],
+  "idea_evolution": [
+    {
+      "after": "A website where vibe coding people can share their vibe-built works.",
+      "before": "none",
+      "confidence": "high",
+      "reason": "The initial desire was to create a place for vibe coding creators to show what they made.",
+      "source": "reconstructed from conversation",
+      "timestamp": "2026-05-24",
+      "type": "initial"
+    },
+    {
+      "after": "A broader platform where both completed vibe products and early ideas can be shared, discussed, and used for collaboration.",
+      "before": "A vibe coding product showcase website.",
+      "confidence": "high",
+      "reason": "Existing showcase sites cover product discovery, but the stronger opportunity is idea sharing and co-creation.",
+      "source": "reconstructed from conversation",
+      "timestamp": "2026-05-24",
+      "type": "expansion"
+    },
+    {
+      "after": "Private ideas stay private; once an idea is published to Public Idea Space, others may create their own vibe branches from it.",
+      "before": "Public idea sharing might require approval before others can work from an idea.",
+      "confidence": "high",
+      "reason": "Public-by-choice keeps private ideas protected while keeping public collaboration fluid.",
+      "source": "reconstructed from conversation",
+      "timestamp": "2026-05-25",
+      "type": "refinement"
+    },
+    {
+      "after": "Build the VibeLog skill first, independent of the website.",
+      "before": "Build the website first.",
+      "confidence": "high",
+      "reason": "The skill validates the core behavior before community cold start: whether people and agents will consistently record vibe ideas and process.",
+      "source": "reconstructed from conversation",
+      "timestamp": "2026-05-25",
+      "type": "pivot"
+    },
+    {
+      "after": "VibeLog also supports mid-project invocation, historical reconstruction, implementation handoff state, and execution prompt logging.",
+      "before": "VibeLog records one-line ideas, idea expansion, changes, and progress.",
+      "confidence": "high",
+      "reason": "A vibe product may switch agents midstream; the next agent needs historical context, current status, and key prompt directions.",
+      "source": "user request",
+      "timestamp": "2026-05-25",
+      "type": "expansion"
+    },
+    {
+      "after": "Engineering execution prompts must be strictly recorded in `Execution Prompts`, preferably with exact text. Chat-like idea exploration should only be distilled into idea changes, human-in-the-loop records, decisions, or open questions.",
+      "before": "Execution prompts could be recorded as summaries, while idea chat and execution instructions were not sharply separated.",
+      "confidence": "high",
+      "reason": "VibeLog should preserve prompts that actually drive engineering execution without turning ordinary product conversation into a transcript dump.",
+      "source": "user request",
+      "timestamp": "2026-05-25",
+      "type": "refinement"
+    },
+    {
+      "after": "VibeLog includes a `Human-in-the-Loop` section for human direction, scope, taste, tradeoff, approval, rejection, risk, naming, and prioritization decisions.",
+      "before": "VibeLog records decisions but does not explicitly separate human judgment from general decisions.",
+      "confidence": "high",
+      "reason": "In vibe coding, the human often creates value by steering the AI: choosing direction, taste, scope, risk, and acceptance. Future agents should know where the human intentionally shaped the product.",
+      "source": "user request",
+      "timestamp": "2026-05-25",
+      "type": "expansion"
+    },
+    {
+      "after": "VibeLog includes a `Development Log` section for features, bug fixes, refactors, tests, docs, chores, releases, and config changes.",
+      "before": "VibeLog records vibe progress and implementation status, but normal project development events are not first-class entries.",
+      "confidence": "high",
+      "reason": "Real vibe products still need normal development history. Bug fixes especially need symptom, root cause, fix, and verification so another agent can continue safely.",
+      "source": "user request",
+      "timestamp": "2026-05-25",
+      "type": "expansion"
+    },
+    {
+      "after": "VibeLog is a hook-friendly automatic process record skill for Vibe Repos, with creation mode, process level, validation design, verification evidence, artifact index, handoff state, and Claude Code adapter guidance.",
+      "before": "VibeLog was a manual Markdown-first logging skill with idea, prompt, development, and handoff sections.",
+      "confidence": "high",
+      "reason": "The user decided to use Claude Code for execution and wanted the needed skill updated first so hooks can automatically maintain VibeLog during normal vibe coding.",
+      "source": "user request",
+      "timestamp": "2026-05-25",
+      "type": "expansion"
+    }
+  ],
+  "idea_expansion": {
+    "core_features": [
+      "one-line idea",
+      "idea expansion",
+      "idea evolution",
+      "human-in-the-loop decisions",
+      "decisions",
+      "open questions",
+      "implementation status",
+      "project context",
+      "execution prompts",
+      "development log",
+      "bug fix records",
+      "vibe progress",
+      "JSON export."
     ],
+    "problem": [
+      "Vibe builders often have scattered ideas",
+      "midstream pivots",
+      "and AI execution prompts that disappear across chats",
+      "tools",
+      "and agents."
+    ],
+    "target_users": [
+      "people using Codex",
+      "Claude Code",
+      "Cursor",
+      "Windsurf",
+      "Lovable",
+      "Bolt",
+      "Replit",
+      "or other AI tools to create vibe products."
+    ],
+    "use_cases": [
+      "starting a new vibe product",
+      "joining a product midstream",
+      "reconstructing prior thinking",
+      "recording implementation state",
+      "and preparing future upload content."
+    ],
+    "why_it_matters": [
+      "a structured log lets people preserve idea evolution",
+      "resume work later",
+      "hand off to another agent",
+      "and optionally publish progress in the future."
+    ]
+  },
+  "implementation_status": {
+    "blocked": [
+      "No current blocker for Slice 3. Historical note: `skill-creator` quick validation could not run because the current Python environment is missing the `yaml` package."
+    ],
+    "completed": [
+      "Created the VibeLog v0.1 design document.",
+      "Added mid-project reconstruction and execution prompt logging to the standard.",
+      "Created `skills/vibelog/SKILL.md`.",
+      "Created `skills/vibelog/references/vibelog-format.md`.",
+      "Created `skills/vibelog/assets/vibe-log-template.md`.",
+      "Created `skills/vibelog/assets/vibe-log.schema.json`.",
+      "Created `skills/vibelog/agents/openai.yaml`.",
+      "Created this project-level `vibe-log.md` by reconstructing prior conversation context.",
+      "Added `Development Log` support to the standard, skill, template, schema, and project example.",
+      "Added `Human-in-the-Loop` support to the standard, skill, template, schema, and project example.",
+      "Strengthened execution prompt logging so engineering execution prompts are recorded strictly, while idea chat is distilled into idea changes and human judgment records.",
+      "Added a GitHub-ready `README.md`, `.gitignore`, and `.gitattributes`.",
+      "Added the first VibeLog Studio MVP requirements document.",
+      "Added a long-term VibeHub product document.",
+      "Upgraded `skills/vibelog/SKILL.md` for automatic hook-friendly process recording.",
+      "Added `creation_mode`, `process_level`, validation, verification, artifact, handoff, and remix fields to the template and schema.",
+      "Added Claude Code hook adapter notes.",
+      "Updated README and skill metadata to match the v0.2 draft direction.",
+      "Added the Slice 2 guide pack for manual use and agent handoff.",
+      "Added the BillMate Lite generated VibeLog example.",
+      "Drafted Slice 3 exporter design in English and Chinese.",
+      "Added the Slice 3 exporter implementation plan.",
+      "Added test-first coverage for Markdown export, Unicode prompt preservation, JSON drift detection, frontmatter block arrays, and lightweight validation.",
+      "Added `scripts/export-vibelog.mjs` for deterministic Markdown-to-JSON export.",
+      "Added `scripts/validate-vibelog.mjs` for practical JSON validation.",
+      "Added `docs/guides/export-json.md` and linked it from `README.md`."
+    ],
+    "current_state": "The VibeLog skill has a first deterministic Markdown-to-JSON exporter and lightweight validator for Slice 3. The repository remains skill-first: examples contain generated VibeLog records only, while scripts make `vibe-log.md` the source of truth and regenerate `vibe-log.json` for upload, search, handoff, or future VibeHub use.",
+    "important_context_for_next_agent": [
+      "The current priority is the standalone VibeLog skill, not the website.",
+      "The website remains a long-term vision but should not drive the first implementation.",
+      "Markdown must remain the source of truth.",
+      "Execution prompts should default to local exact recording with public summaries unless the user explicitly chooses full public prompt visibility.",
+      "Public visibility changes require explicit user confirmation.",
+      "VibeLog is now being shaped as a bottom-layer, hook-friendly process recorder for Vibe Repos.",
+      "Claude Code is the preferred first execution environment because its hooks can update VibeLog automatically during the vibe process.",
+      "Do not push to GitHub without separate explicit user approval.",
+      "`scripts/export-vibelog.mjs` supports the current strict Markdown subset and should stay conservative until more examples justify expansion."
+    ],
+    "in_progress": [
+      "No active implementation in Slice 3 after exporter and validator verification."
+    ],
+    "next_actions": [
+      "Use the exporter as a foundation for a future hook adapter.",
+      "Add full JSON Schema validation.",
+      "Decide whether to install the skill locally or keep iterating inside the repository first."
+    ],
+    "pending": [
+      "Review the updated VibeLog v0.2 draft skill standard.",
+      "Ask Claude Code to design and implement the first hook adapter around the updated standard.",
+      "Add full JSON Schema validation.",
+      "Add richer example Vibe Repos after the adapter exists."
+    ]
+  },
+  "one_line_vibe": "I want to create a Markdown-first, hook-friendly skill that automatically records vibe ideas, human and agent decisions, prompts, implementation progress, validation, artifacts, and handoff state so any agent can continue the work.",
+  "open_questions": [
+    "Should the next validator use the existing JSON Schema file directly or keep the lightweight validator as the default fast path?",
+    "Should the skill be installed immediately into the user's Codex skill directory or kept as a distributable repo package first?",
+    "Which agent ecosystem should get the next adapter after Codex: Claude Code, Cursor rules, or AGENTS.md?"
+  ],
+  "process_level": "core",
+  "project_context": {
+    "do_not_change": [
+      "Do not shift focus back to the website before the standalone skill is usable.",
+      "Do not make public upload behavior required for v0.1."
+    ],
+    "important_files": [
+      "`docs/superpowers/specs/2026-05-25-vibelog-v0.1-design.md`: VibeLog v0.1 standard design.",
+      "`skills/vibelog/SKILL.md`: main skill instructions.",
+      "`skills/vibelog/references/vibelog-format.md`: detailed format reference.",
+      "`skills/vibelog/references/agent-usage-guide.md`: operational guide for agents using VibeLog during sessions.",
+      "`skills/vibelog/references/claude-code-hooks-adapter.md`: Claude Code hook adapter guidance.",
+      "`skills/vibelog/assets/vibe-log-template.md`: starter Markdown template.",
+      "`skills/vibelog/assets/vibe-log.schema.json`: JSON export schema.",
+      "`skills/vibelog/agents/openai.yaml`: Codex UI metadata.",
+      "`vibe-log.md`: this project's own VibeLog.",
+      "`README.md`: GitHub-facing project overview and quick start.",
+      "`.gitignore`: common local file exclusions.",
+      "`.gitattributes`: normalized line ending rules for repository text files.",
+      "`docs/product/vibelog-studio-mvp-requirements.md`: first product requirements document for the VibeLog Studio MVP.",
+      "`docs/product/vibehub-long-term-product-document.md`: long-term VibeHub product document.",
+      "`docs/guides/`: practical guide pack for starting, testing, validating, and handing off VibeLog.",
+      "`docs/guides/export-json.md`: deterministic export and validation guide.",
+      "`docs/releases/v0.2-draft.md`: release notes for the second draft version.",
+      "`docs/superpowers/plans/2026-05-26-vibelog-exporter-slice-3.md`: Slice 3 implementation plan.",
+      "`scripts/export-vibelog.mjs`: deterministic Markdown-to-JSON exporter.",
+      "`scripts/validate-vibelog.mjs`: lightweight VibeLog JSON validator.",
+      "`test/export-vibelog.test.mjs`: exporter regression tests.",
+      "`test/validate-vibelog.test.mjs`: validator regression tests."
+    ],
+    "known_issues": [
+      "`quick_validate.py` from `skill-creator` needs PyYAML, which is not available in the current Python environment."
+    ],
+    "repo_workspace": "`C:\\Users\\HXW\\Documents\\vibecoding`",
+    "run_test_commands": [
+      "`node -e \"const fs=require('fs'); JSON.parse(fs.readFileSync('skills/vibelog/assets/vibe-log.schema.json','utf8')); console.log('schema json ok')\"`",
+      "`node --test`",
+      "`node scripts/export-vibelog.mjs vibe-log.md --out vibe-log.json`",
+      "`node scripts/export-vibelog.mjs vibe-log.md --out vibe-log.json --check`",
+      "`node scripts/validate-vibelog.mjs vibe-log.json`",
+      "`rg -n \"[^\\\\x00-\\\\x7F]\" docs skills vibe-log.md vibe-log.json`"
+    ]
+  },
+  "prompt_visibility": "summary",
+  "public_private_projection": {
+    "code_visibility": "hidden",
+    "collaboration_status": "closed",
+    "license_usage_note": "no license selected yet",
+    "prompt_visibility": "summary",
+    "public_summary": [
+      "VibeLog is a Markdown-first",
+      "hook-friendly process record skill for vibe-built products."
+    ],
+    "remix_permission": "unknown"
+  },
+  "public_summary": "VibeLog is a Markdown-first, hook-friendly skill and process record standard for vibe-built products. It records ideas, human and agent decisions, execution prompts, implementation status, validation design, verification evidence, artifacts, handoff state, and progress so future agents and VibeHub can continue from structured project memory.",
+  "schema": "vibelog@0.2-draft",
+  "stage": "prototype",
+  "tags": [
+    "vibelog",
+    "agent-skill",
+    "vibe-coding"
+  ],
+  "title": "VibeLog",
+  "tools": [
+    "Codex"
+  ],
+  "updated_at": "2026-05-26",
+  "validation_design": {
+    "automated_test_strategy": "Use Node's built-in test runner for the deterministic exporter and lightweight validator. Exporter tests cover frontmatter parsing, core section export, Unicode prompt preservation, JSON writing, and drift detection. Validator tests cover valid generated logs and common failures. Future work should add full JSON Schema validation.",
     "core_user_paths": [
       "User vibes naturally; hook scripts classify the event and update VibeLog.",
       "User asks for engineering execution; the exact prompt is recorded locally with safe visibility rules.",
       "Agent changes files or runs tests; development log and verification evidence are updated.",
       "Turn ends; handoff state and JSON export are refreshed."
     ],
-    "manual_test_steps": [
-      "Read skills/vibelog/SKILL.md and verify it explains automatic process recording.",
-      "Read skills/vibelog/assets/vibe-log-template.md and verify all first-class sections exist.",
-      "Parse skills/vibelog/assets/vibe-log.schema.json as JSON.",
-      "Ask Claude Code to create an implementation plan using the updated skill and check whether it targets the right hook events."
-    ],
-    "automated_test_strategy": "No deterministic exporter exists yet. For now, validate JSON syntax and use manual review. Future work should add schema validation for exported vibe-log.json.",
     "edge_cases": [
       "User only discusses ideas, with no engineering execution.",
       "User prompt contains secrets and must be redacted.",
       "Hook runs after a failed command.",
       "Hook runs during context compaction.",
-      "Existing VibeLog is partially outdated or still uses vibelog@0.1."
+      "Existing VibeLog is partially outdated or still uses `vibelog@0.1`."
+    ],
+    "manual_test_steps": [
+      "Read `skills/vibelog/SKILL.md` and verify it explains automatic process recording.",
+      "Read `skills/vibelog/assets/vibe-log-template.md` and verify all first-class sections exist.",
+      "Parse `skills/vibelog/assets/vibe-log.schema.json` as JSON.",
+      "Ask Claude Code to create an implementation plan using the updated skill and check whether it targets the right hook events."
     ],
     "regression_points": [
       "Do not turn ordinary chat into transcript dumps.",
@@ -1025,238 +994,239 @@
       "Do not claim verification without evidence.",
       "Do not overwrite historical idea evolution."
     ],
-    "risks_safety_privacy": [
+    "risks_safety_privacy_checks": [
       "Full engineering prompts may contain private details; public projection should default to summaries.",
       "Hook scripts should not publish or upload anything without explicit user consent."
     ],
-    "owner": "human + agent"
+    "success_criteria": [
+      "A future Claude Code adapter can use the skill docs to decide which hook events update which VibeLog sections.",
+      "A future agent can read the generated VibeLog and understand the current idea, decisions, prompts, implementation status, validation plan, artifacts, and next actions.",
+      "Markdown remains readable by a human, while JSON can represent the same process record for agents and VibeHub."
+    ]
   },
   "verification_evidence": [
     {
-      "timestamp": "2026-05-25",
-      "type": "command_output",
-      "summary": "Parsed skills/vibelog/assets/vibe-log.schema.json with Node.js successfully after the schema update.",
-      "evidence_ref": "node -e \"JSON.parse(require('fs').readFileSync('skills/vibelog/assets/vibe-log.schema.json','utf8')); console.log('schema json ok')\"",
-      "result": "passed",
+      "confidence": "high",
+      "evidence_ref": "`node -e \"JSON.parse(require('fs').readFileSync('skills/vibelog/assets/vibe-log.schema.json','utf8')); console.log('schema json ok')\"`",
       "residual_risk": "This checks JSON syntax only, not full schema correctness against sample exports.",
+      "result": "passed",
       "source": "current work session",
-      "confidence": "high"
+      "summary": "Parsed `skills/vibelog/assets/vibe-log.schema.json` with Node.js successfully after the schema update.",
+      "timestamp": "2026-05-25",
+      "type": "command_output"
     },
     {
-      "timestamp": "2026-05-26",
-      "type": "command_output",
-      "summary": "Verified the Slice 1.5 skill-first repository correction.",
-      "evidence_ref": "git status --short; git diff --name-status; git diff --stat; Test-Path apps\\vibelog-studio; node -e \"for (const f of ['vibe-log.json','examples/vibelog-studio/vibe-log.json','skills/vibelog/assets/vibe-log.schema.json']) { JSON.parse(require('fs').readFileSync(f,'utf8')); console.log('OK '+f); }\"",
-      "result": "passed",
+      "confidence": "high",
+      "evidence_ref": "`git status --short`; `git diff --name-status`; `git diff --stat`; `Test-Path apps\\vibelog-studio`; `node -e \"for (const f of ['vibe-log.json','examples/vibelog-studio/vibe-log.json','skills/vibelog/assets/vibe-log.schema.json']) { JSON.parse(require('fs').readFileSync(f,'utf8')); console.log('OK '+f); }\"`",
       "residual_risk": "This verifies local repository shape and JSON syntax only. It does not validate the example JSON against the schema because there is not yet a deterministic schema validation command in the repo.",
+      "result": "passed",
       "source": "current work session",
-      "confidence": "high"
+      "summary": "Verified the Slice 1.5 skill-first repository correction.",
+      "timestamp": "2026-05-26",
+      "type": "command_output"
     },
     {
-      "timestamp": "2026-05-26",
-      "type": "review",
-      "summary": "Verified the Slice 2 skill usability design document.",
-      "evidence_ref": "Select-String -Path docs\\superpowers\\specs\\2026-05-26-vibelog-skill-usability-slice-2-design.md -Pattern \"TBD|TODO|PLACEHOLDER|FIXME|\\?\\?\"; Test-Path docs\\superpowers\\specs\\2026-05-26-vibelog-skill-usability-slice-2-design.md; node -e \"for (const f of ['vibe-log.json','skills/vibelog/assets/vibe-log.schema.json']) { JSON.parse(require('fs').readFileSync(f,'utf8')); console.log('OK '+f); }\"; git diff --check",
-      "result": "passed",
+      "confidence": "high",
+      "evidence_ref": "`Select-String -Path docs\\superpowers\\specs\\2026-05-26-vibelog-skill-usability-slice-2-design.md -Pattern \"TBD|TODO|PLACEHOLDER|FIXME|\\?\\?\"`; `Test-Path docs\\superpowers\\specs\\2026-05-26-vibelog-skill-usability-slice-2-design.md`; `node -e \"for (const f of ['vibe-log.json','skills/vibelog/assets/vibe-log.schema.json']) { JSON.parse(require('fs').readFileSync(f,'utf8')); console.log('OK '+f); }\"`; `git diff --check`",
       "residual_risk": "The design is reviewed locally but still needs user review before implementation planning.",
+      "result": "passed",
       "source": "current work session",
-      "confidence": "high"
+      "summary": "Verified the Slice 2 skill usability design document.",
+      "timestamp": "2026-05-26",
+      "type": "review"
     },
     {
-      "timestamp": "2026-05-26",
-      "type": "review",
-      "summary": "Verified the Slice 2 guide pack implementation.",
-      "evidence_ref": "Test-Path for docs/guides/quickstart.md, docs/guides/manual-test-guide.md, docs/guides/example-scenario.md, docs/guides/validation-checklist.md, skills/vibelog/references/agent-usage-guide.md, docs/superpowers/plans/2026-05-26-vibelog-skill-usability-slice-2.md, and docs/superpowers/specs/2026-05-26-vibelog-skill-usability-slice-2-design.zh.md; node -e \"for (const f of ['vibe-log.json','skills/vibelog/assets/vibe-log.schema.json']) { JSON.parse(require('fs').readFileSync(f,'utf8')); console.log('OK '+f); }\"; Select-String -Path docs\\guides\\*.md,skills\\vibelog\\references\\agent-usage-guide.md -Pattern \"TBD|TODO|PLACEHOLDER|FIXME|\\?\\?\"; git diff --check; Test-Path apps\\vibelog-studio",
-      "result": "passed",
+      "confidence": "high",
+      "evidence_ref": "`Test-Path` for `docs/guides/quickstart.md`, `docs/guides/manual-test-guide.md`, `docs/guides/example-scenario.md`, `docs/guides/validation-checklist.md`, `skills/vibelog/references/agent-usage-guide.md`, `docs/superpowers/plans/2026-05-26-vibelog-skill-usability-slice-2.md`, and `docs/superpowers/specs/2026-05-26-vibelog-skill-usability-slice-2-design.zh.md`; `node -e \"for (const f of ['vibe-log.json','skills/vibelog/assets/vibe-log.schema.json']) { JSON.parse(require('fs').readFileSync(f,'utf8')); console.log('OK '+f); }\"`; `Select-String -Path docs\\guides\\*.md,skills\\vibelog\\references\\agent-usage-guide.md -Pattern \"TBD|TODO|PLACEHOLDER|FIXME|\\?\\?\"`; `git diff --check`; `Test-Path apps\\vibelog-studio`",
       "residual_risk": "This verifies guide existence, JSON syntax, placeholder scan, and repository boundary. It does not run a scratch-project manual test yet; that remains the next usability check.",
+      "result": "passed",
       "source": "current work session",
-      "confidence": "high"
+      "summary": "Verified the Slice 2 guide pack implementation.",
+      "timestamp": "2026-05-26",
+      "type": "review"
     },
     {
-      "timestamp": "2026-05-26",
-      "type": "review",
-      "summary": "Verified the BillMate Lite generated example.",
-      "evidence_ref": "npm test in C:\\Users\\HXW\\Documents\\vibelog-scratch\\billmate-lite; node -e JSON parse for examples/billmate-lite/vibe-log.json, root vibe-log.json, and skills/vibelog/assets/vibe-log.schema.json; Test-Path examples\\billmate-lite\\src/test/package.json",
-      "result": "passed",
-      "residual_risk": "The scratch project is intentionally tiny and does not test a deterministic Markdown-to-JSON exporter yet.",
-      "source": "current work session",
-      "confidence": "high"
-    },
-    {
-      "timestamp": "2026-05-26",
-      "type": "review",
-      "summary": "Verified the Slice 3 exporter design documents.",
-      "evidence_ref": "Select-String placeholder scan for docs/superpowers/specs/2026-05-26-vibelog-exporter-slice-3-design.md and .zh.md; node -e JSON parse for vibe-log.json, examples/billmate-lite/vibe-log.json, and skills/vibelog/assets/vibe-log.schema.json; git diff --check; Test-Path for both Slice 3 design files.",
-      "result": "passed",
+      "confidence": "high",
+      "evidence_ref": "`Select-String` placeholder scan for `docs/superpowers/specs/2026-05-26-vibelog-exporter-slice-3-design.md` and `.zh.md`; `node -e \"for (const f of ['vibe-log.json','examples/billmate-lite/vibe-log.json','skills/vibelog/assets/vibe-log.schema.json']) { JSON.parse(require('fs').readFileSync(f,'utf8')); console.log('OK '+f); }\"`; `git diff --check`; `Test-Path` for both Slice 3 design files.",
       "residual_risk": "This is design verification only. The exporter still needs an implementation plan and test-first implementation.",
+      "result": "passed",
       "source": "current work session",
-      "confidence": "high"
+      "summary": "Verified the Slice 3 exporter design documents.",
+      "timestamp": "2026-05-26",
+      "type": "review"
+    },
+    {
+      "confidence": "high",
+      "evidence_ref": "`node --test`; `node scripts/export-vibelog.mjs examples/billmate-lite/vibe-log.md --out tmp/billmate-lite.vibe-log.json`; `node scripts/validate-vibelog.mjs tmp/billmate-lite.vibe-log.json`; `node scripts/export-vibelog.mjs examples/billmate-lite/vibe-log.md --out tmp/billmate-lite.vibe-log.json --check`; `node -e \"for (const f of ['vibe-log.json','skills/vibelog/assets/vibe-log.schema.json']) { JSON.parse(require('fs').readFileSync(f,'utf8')); console.log('OK '+f); }\"`; `git diff --check`",
+      "residual_risk": "The validator is intentionally lightweight and does not yet perform full JSON Schema validation.",
+      "result": "passed",
+      "source": "current work session",
+      "summary": "Verified the Slice 3 exporter and validator implementation.",
+      "timestamp": "2026-05-26",
+      "type": "test_result"
     }
   ],
-  "artifact_index": [
+  "vibe_progress": [
     {
-      "type": "agent_config",
-      "name": "skills/vibelog",
-      "ref": "skills/vibelog/",
-      "visibility": "private",
-      "notes": "The distributable VibeLog skill package."
+      "confidence": "high",
+      "next": "Build the standalone skill.",
+      "problems": "Needed to keep the standard independent from the future website.",
+      "source": "reconstructed from conversation",
+      "stage": "brief",
+      "timestamp": "2026-05-25",
+      "tools_used": "Codex",
+      "what_happened": "Defined VibeLog v0.1 as a Markdown-first standard with JSON export."
     },
     {
-      "type": "document",
-      "name": "VibeLog schema",
-      "ref": "skills/vibelog/assets/vibe-log.schema.json",
-      "visibility": "private",
-      "notes": "JSON schema for the v0.2 draft process record."
+      "confidence": "high",
+      "next": "Validate manually, review with the user, then decide whether to install locally.",
+      "problems": "`quick_validate.py` could not run because PyYAML is missing.",
+      "source": "current work session",
+      "stage": "prototype",
+      "timestamp": "2026-05-25",
+      "tools_used": "Codex",
+      "what_happened": "Created the standalone `skills/vibelog` package and added mid-project reconstruction plus execution prompt logging."
     },
     {
-      "type": "document",
-      "name": "Claude Code adapter notes",
-      "ref": "skills/vibelog/references/claude-code-hooks-adapter.md",
-      "visibility": "private",
-      "notes": "Guidance for implementing the first hook-based adapter."
+      "confidence": "high",
+      "next": "Verify docs and JSON, commit the update, then configure a GitHub remote when the target repository exists.",
+      "problems": "No GitHub remote is configured yet, so this step only prepares local repository content.",
+      "source": "current work session",
+      "stage": "prototype",
+      "timestamp": "2026-05-25",
+      "tools_used": "Codex",
+      "what_happened": "Prepared the VibeLog repository for GitHub upload with README and repository hygiene files."
     },
     {
-      "type": "document",
-      "name": "VibeLog v0.2 draft release notes",
-      "ref": "docs/releases/v0.2-draft.md",
-      "visibility": "public",
-      "notes": "Human-readable notes explaining the second version."
+      "confidence": "high",
+      "next": "Verify schema, example JSON, and scans, then commit the update.",
+      "problems": "Needed to distinguish human steering from generic decisions.",
+      "source": "current work session",
+      "stage": "prototype",
+      "timestamp": "2026-05-25",
+      "tools_used": "Codex",
+      "what_happened": "Extended VibeLog to record human-in-the-loop judgment as a first-class timeline."
     },
     {
-      "type": "document",
-      "name": "VibeLog Studio generated example",
-      "ref": "examples/vibelog-studio/",
-      "visibility": "private",
-      "notes": "Generated VibeLog files from the dogfood engineering session; app source code is intentionally omitted."
+      "confidence": "high",
+      "next": "Verify JSON/schema checks, ensure all execution prompt entries include recording mode and prompt text, then commit.",
+      "problems": "Needed to preserve exact execution prompts without turning VibeLog into a general chat transcript.",
+      "source": "current work session",
+      "stage": "prototype",
+      "timestamp": "2026-05-25",
+      "tools_used": "Codex",
+      "what_happened": "Strengthened prompt logging rules so engineering execution prompts are strictly recorded and chat-like idea discussion is only distilled."
     },
     {
-      "type": "document",
-      "name": "Slice 2 skill usability design",
-      "ref": "docs/superpowers/specs/2026-05-26-vibelog-skill-usability-slice-2-design.md",
-      "visibility": "private",
-      "notes": "Design for the guide pack that will make VibeLog easier to use, manually test, validate, and hand off before any website work resumes."
+      "confidence": "high",
+      "next": "Verify schema, example JSON, and scans, then commit the update.",
+      "problems": "Needed to keep engineering logs distinct from product-level vibe progress.",
+      "source": "current work session",
+      "stage": "prototype",
+      "timestamp": "2026-05-25",
+      "tools_used": "Codex",
+      "what_happened": "Extended VibeLog to include normal project development logs and bug fix records."
     },
     {
-      "type": "document",
-      "name": "Slice 2 implementation plan",
-      "ref": "docs/superpowers/plans/2026-05-26-vibelog-skill-usability-slice-2.md",
-      "visibility": "private",
-      "notes": "Implementation plan for the Slice 2 skill usability guide pack."
+      "confidence": "high",
+      "next": "Review the requirements document, then create an implementation plan if approved.",
+      "problems": "Needed to keep MVP simple while preserving long-term platform architecture.",
+      "source": "current work session",
+      "stage": "brief",
+      "timestamp": "2026-05-25",
+      "tools_used": "Codex",
+      "what_happened": "Wrote the first VibeLog Studio MVP requirements document."
     },
     {
-      "type": "document",
-      "name": "Slice 2 Chinese design translation",
-      "ref": "docs/superpowers/specs/2026-05-26-vibelog-skill-usability-slice-2-design.zh.md",
-      "visibility": "private",
-      "notes": "Chinese translation of the Slice 2 design document for user review."
+      "confidence": "high",
+      "next": "Use Claude Code to design and implement the first hook adapter.",
+      "problems": "Needed to keep the update focused on the underlying skill and avoid starting the VibeHub website too early.",
+      "source": "current work session",
+      "stage": "prototype",
+      "timestamp": "2026-05-25",
+      "tools_used": "Codex",
+      "what_happened": "Upgraded VibeLog toward a v0.2 draft automatic process record standard and added Claude Code hook adapter guidance."
     },
     {
-      "type": "document",
-      "name": "VibeLog guide pack",
-      "ref": "docs/guides/",
-      "visibility": "private",
-      "notes": "Quickstart, manual test guide, example scenario, and validation checklist for using and testing VibeLog without a website."
+      "confidence": "high",
+      "next": "Review the local diff and decide whether to push the corrective commit to GitHub.",
+      "problems": "The previous pushed structure made the repository look like it included an app source project, which could confuse people trying to reuse the skill.",
+      "source": "current work session",
+      "stage": "prototype",
+      "timestamp": "2026-05-26",
+      "tools_used": [
+        "Codex",
+        "VibeLog"
+      ],
+      "what_happened": "Locally corrected the repository back to a skill-first structure and kept VibeLog Studio only as generated VibeLog example output."
     },
     {
-      "type": "document",
-      "name": "VibeLog agent usage guide",
-      "ref": "skills/vibelog/references/agent-usage-guide.md",
-      "visibility": "private",
-      "notes": "Operational guide for agents that call VibeLog during real project sessions."
+      "confidence": "high",
+      "next": "Review the Slice 2 design, then create an implementation plan if approved.",
+      "problems": "Needed to keep Slice 2 focused on skill usability and manual validation rather than drifting back into website or app source work.",
+      "source": "current work session",
+      "stage": "prototype",
+      "timestamp": "2026-05-26",
+      "tools_used": [
+        "Codex",
+        "VibeLog"
+      ],
+      "what_happened": "Created the Slice 2 skill usability design after locally committing the Slice 1.5 repository correction."
     },
     {
-      "type": "document",
-      "name": "BillMate Lite dogfood example",
-      "ref": "examples/billmate-lite/",
-      "visibility": "private",
-      "notes": "Generated VibeLog files from an agent-simulated billing project dogfood test. Scratch source code is intentionally omitted."
+      "confidence": "high",
+      "next": "Run final verification, commit locally, then use the manual test guide on a scratch project before automation adapter work.",
+      "problems": "Needed to prove manual usability without adding app source or starting website work.",
+      "source": "current work session",
+      "stage": "prototype",
+      "timestamp": "2026-05-26",
+      "tools_used": [
+        "Codex",
+        "VibeLog"
+      ],
+      "what_happened": "Implemented the Slice 2 guide pack for VibeLog skill usability."
     },
     {
-      "type": "document",
-      "name": "Slice 3 exporter design",
-      "ref": "docs/superpowers/specs/2026-05-26-vibelog-exporter-slice-3-design.md",
-      "visibility": "private",
-      "notes": "Design for the first deterministic Markdown-to-JSON exporter."
+      "confidence": "high",
+      "next": "Verify and commit the generated example locally, then consider deterministic Markdown-to-JSON export as the next slice.",
+      "problems": "Needed to prove VibeLog can record a realistic agent-led mini project without requiring the human to manually provide project material.",
+      "source": "current work session",
+      "stage": "prototype",
+      "timestamp": "2026-05-26",
+      "tools_used": [
+        "Codex",
+        "Node.js",
+        "VibeLog"
+      ],
+      "what_happened": "Ran an agent-simulated BillMate Lite dogfood test and added generated logs as a repo example."
     },
     {
-      "type": "document",
-      "name": "Slice 3 exporter design Chinese translation",
-      "ref": "docs/superpowers/specs/2026-05-26-vibelog-exporter-slice-3-design.zh.md",
-      "visibility": "private",
-      "notes": "Chinese translation of the Slice 3 exporter design for user review."
+      "confidence": "high",
+      "next": "Review the design, then create an implementation plan if approved.",
+      "problems": "The dogfood examples showed that Markdown and JSON are still manually synchronized, which is too fragile for hooks and future upload.",
+      "source": "current work session",
+      "stage": "prototype",
+      "timestamp": "2026-05-26",
+      "tools_used": [
+        "Codex",
+        "VibeLog"
+      ],
+      "what_happened": "Drafted the Slice 3 deterministic Markdown-to-JSON exporter design."
+    },
+    {
+      "confidence": "high",
+      "next": "Verify tests and CLI commands, regenerate `vibe-log.json`, commit locally, then use the exporter as the foundation for hook automation.",
+      "problems": "Needed to keep parser scope conservative while still supporting the current root VibeLog and BillMate Lite example.",
+      "source": "current work session",
+      "stage": "prototype",
+      "timestamp": "2026-05-26",
+      "tools_used": [
+        "Codex",
+        "Node.js",
+        "VibeLog"
+      ],
+      "what_happened": "Implemented the first deterministic Markdown-to-JSON exporter and lightweight validator for VibeLog."
     }
   ],
-  "bugfix_incident_log": [],
-  "handoff_state": {
-    "current_state": "VibeLog is a v0.2 draft process record skill. The next proposed slice is a deterministic Markdown-to-JSON exporter, now designed in English and Chinese for user review.",
-    "completed": [
-      "Updated the VibeLog skill for automatic hook-friendly process recording.",
-      "Added v0.2 draft template and schema fields.",
-      "Added Claude Code hook adapter notes.",
-      "Updated README and skill metadata.",
-      "Recorded the update in this VibeLog.",
-      "Moved VibeLog Studio generated VibeLog into examples/vibelog-studio/.",
-      "Removed local app source from the repository structure.",
-      "Updated README and example README to clarify the boundary.",
-      "Created the local Slice 1.5 corrective commit edd7b9e.",
-      "Drafted the Slice 2 skill usability design document.",
-      "Added the Slice 2 implementation plan.",
-      "Added Quickstart, Manual Test Guide, Example Scenario, and Validation Checklist under docs/guides/.",
-      "Added skills/vibelog/references/agent-usage-guide.md.",
-      "Linked the new guides from README.md and skills/vibelog/SKILL.md.",
-      "Ran an agent-simulated BillMate Lite dogfood test outside the repository.",
-      "Added examples/billmate-lite/ with generated VibeLog files only.",
-      "Drafted Slice 3 exporter design in English and Chinese."
-    ],
-    "in_progress": [
-      "Reviewing Slice 3 exporter design before implementation planning."
-    ],
-    "pending": [
-      "Slice 3 implementation plan.",
-      "Deterministic Markdown-to-JSON exporter.",
-      "Example Vibe Repo generated by an adapter.",
-      "Any GitHub push requires a separate explicit user request."
-    ],
-    "blockers": [
-      "No deterministic exporter exists yet, so vibe-log.json must still be maintained manually or generated later."
-    ],
-    "next_actions": [
-      "Review the Slice 3 exporter design.",
-      "If approved, create the Slice 3 implementation plan.",
-      "Implement the exporter with test-first development."
-    ],
-    "context_for_next_agent": [
-      "Do not build the VibeHub website yet.",
-      "Keep the repository skill-first.",
-      "Do not push to GitHub without explicit user approval.",
-      "Slice 3 should start with examples/billmate-lite/ as the canonical exporter fixture.",
-      "Exporter must preserve Unicode prompt text."
-    ]
-  },
-  "public_private_projection": {
-    "public_summary": "VibeLog is a Markdown-first, hook-friendly process record skill for vibe-built products.",
-    "code_visibility": "hidden",
-    "prompt_visibility": "summary",
-    "collaboration_status": "closed",
-    "remix_permission": "unknown",
-    "license_or_usage_note": "No license selected yet."
-  },
-  "branch_remix_readiness": {
-    "remix_allowed": false,
-    "what_can_be_reused": [
-      "VibeLog ideas and public documentation after a license is selected."
-    ],
-    "what_should_not_be_reused": [
-      "Private prompts",
-      "Private project context",
-      "Hidden code"
-    ],
-    "suggested_contribution_areas": [
-      "Claude Code adapter",
-      "Deterministic exporter",
-      "Sample Vibe Repos",
-      "Schema validation"
-    ],
-    "attribution_requirements": "Pending license decision."
-  }
+  "visibility": "private"
 }
