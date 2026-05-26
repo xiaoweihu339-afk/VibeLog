@@ -163,6 +163,16 @@ The JSON schema for VibeLog v0.2 draft exports.
 
 Product strategy and MVP requirements for the future VibeHub / VibeLog Studio direction.
 
+### `docs/guides/`
+
+Practical guides for using and testing the skill:
+
+- [Quickstart](docs/guides/quickstart.md)
+- [Manual test guide](docs/guides/manual-test-guide.md)
+- [Example scenario](docs/guides/example-scenario.md)
+- [Validation checklist](docs/guides/validation-checklist.md)
+- [Agent usage guide](skills/vibelog/references/agent-usage-guide.md)
+
 ### `docs/releases/`
 
 Human-readable version notes.

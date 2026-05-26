@@ -87,6 +87,7 @@ Use these bundled resources when needed:
 - `assets/vibe-log-template.md`: starting template.
 - `assets/vibe-log.schema.json`: JSON export schema.
 - `references/vibelog-format.md`: field reference.
+- `references/agent-usage-guide.md`: operational guide for agents using VibeLog during sessions.
 - `references/claude-code-hooks-adapter.md`: notes for implementing Claude Code hook automation.
 
 ## Standard Process Record

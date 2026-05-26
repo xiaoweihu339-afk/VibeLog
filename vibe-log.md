@@ -454,6 +454,21 @@ No deterministic exporter exists yet. For now, validate JSON syntax and use manu
 
 **Confidence:** high
 
+### 2026-05-26
+**Type:** review
+
+**Summary:** Verified the Slice 2 guide pack implementation.
+
+**Evidence Ref:** `Test-Path` for `docs/guides/quickstart.md`, `docs/guides/manual-test-guide.md`, `docs/guides/example-scenario.md`, `docs/guides/validation-checklist.md`, `skills/vibelog/references/agent-usage-guide.md`, `docs/superpowers/plans/2026-05-26-vibelog-skill-usability-slice-2.md`, and `docs/superpowers/specs/2026-05-26-vibelog-skill-usability-slice-2-design.zh.md`; `node -e "for (const f of ['vibe-log.json','skills/vibelog/assets/vibe-log.schema.json']) { JSON.parse(require('fs').readFileSync(f,'utf8')); console.log('OK '+f); }"`; `Select-String -Path docs\guides\*.md,skills\vibelog\references\agent-usage-guide.md -Pattern "TBD|TODO|PLACEHOLDER|FIXME|\?\?"`; `git diff --check`; `Test-Path apps\vibelog-studio`
+
+**Result:** passed
+
+**Residual Risk:** This verifies guide existence, JSON syntax, placeholder scan, and repository boundary. It does not run a scratch-project manual test yet; that remains the next usability check.
+
+**Source:** current work session
+
+**Confidence:** high
+
 ## Project Context
 
 ### Repo / Workspace
@@ -465,6 +480,7 @@ No deterministic exporter exists yet. For now, validate JSON syntax and use manu
 - `docs/superpowers/specs/2026-05-25-vibelog-v0.1-design.md`: VibeLog v0.1 standard design.
 - `skills/vibelog/SKILL.md`: main skill instructions.
 - `skills/vibelog/references/vibelog-format.md`: detailed format reference.
+- `skills/vibelog/references/agent-usage-guide.md`: operational guide for agents using VibeLog during sessions.
 - `skills/vibelog/references/claude-code-hooks-adapter.md`: Claude Code hook adapter guidance.
 - `skills/vibelog/assets/vibe-log-template.md`: starter Markdown template.
 - `skills/vibelog/assets/vibe-log.schema.json`: JSON export schema.
@@ -475,6 +491,7 @@ No deterministic exporter exists yet. For now, validate JSON syntax and use manu
 - `.gitattributes`: normalized line ending rules for repository text files.
 - `docs/product/vibelog-studio-mvp-requirements.md`: first product requirements document for the VibeLog Studio MVP.
 - `docs/product/vibehub-long-term-product-document.md`: long-term VibeHub product document.
+- `docs/guides/`: practical guide pack for starting, testing, validating, and handing off VibeLog.
 - `docs/releases/v0.2-draft.md`: release notes for the second draft version.
 
 ### Run / Test Commands
@@ -552,6 +569,36 @@ No deterministic exporter exists yet. For now, validate JSON syntax and use manu
 **Visibility:** private
 
 **Notes:** Design for the guide pack that will make VibeLog easier to use, manually test, validate, and hand off before any website work resumes.
+
+### Slice 2 implementation plan
+
+**Type:** document
+
+**Ref:** `docs/superpowers/plans/2026-05-26-vibelog-skill-usability-slice-2.md`
+
+**Visibility:** private
+
+**Notes:** Implementation plan for the Slice 2 skill usability guide pack.
+
+### VibeLog guide pack
+
+**Type:** document
+
+**Ref:** `docs/guides/`
+
+**Visibility:** private
+
+**Notes:** Quickstart, manual test guide, example scenario, and validation checklist for using and testing VibeLog without a website.
+
+### VibeLog agent usage guide
+
+**Type:** document
+
+**Ref:** `skills/vibelog/references/agent-usage-guide.md`
+
+**Visibility:** private
+
+**Notes:** Operational guide for agents that call VibeLog during real project sessions.
 
 ## Execution Prompts
 
@@ -708,6 +755,23 @@ No deterministic exporter exists yet. For now, validate JSON syntax and use manu
 
 **Reuse Notes:** Future agents should treat Slice 2 as skill usability documentation and manual validation work, not website or app source work.
 
+### 2026-05-26
+**Agent / Tool:** Codex
+
+**Prompt Type:** docs
+
+**Prompt Visibility:** summary
+
+**Recording Mode:** exact
+
+**Prompt Summary:** User approved executing Slice 2 after reviewing the design translation.
+
+**Prompt Text:** 确认，可以执行
+
+**Result:** Implemented the Slice 2 guide pack: quickstart, manual test guide, example scenario, validation checklist, agent usage guide, README links, implementation plan, and VibeLog updates.
+
+**Reuse Notes:** Future agents should use these guides to test VibeLog manually before building website or automation features.
+
 ## Development Log
 
 ### 2026-05-25
@@ -862,6 +926,25 @@ No deterministic exporter exists yet. For now, validate JSON syntax and use manu
 
 **Follow-up:** Review the Slice 2 design with the user before writing an implementation plan.
 
+### 2026-05-26
+**Type:** docs
+
+**Summary:** Implemented the Slice 2 skill usability guide pack.
+
+**Files Changed:** `docs/superpowers/plans/2026-05-26-vibelog-skill-usability-slice-2.md`, `docs/superpowers/specs/2026-05-26-vibelog-skill-usability-slice-2-design.zh.md`, `docs/guides/quickstart.md`, `docs/guides/manual-test-guide.md`, `docs/guides/example-scenario.md`, `docs/guides/validation-checklist.md`, `skills/vibelog/references/agent-usage-guide.md`, `skills/vibelog/SKILL.md`, `README.md`, `vibe-log.md`, `vibe-log.json`
+
+**Details:** Added focused user and agent documentation so VibeLog can be started, manually tested, validated, and handed off without website or app source code. The guide pack includes first-time usage, a realistic fake project scenario, isolated and combined manual tests, a validation checklist, and agent-facing operational rules.
+
+**Bug Symptom:** not applicable
+
+**Root Cause:** not applicable
+
+**Fix:** not applicable
+
+**Verification:** Passed. Confirmed all guide and plan files exist; parsed `vibe-log.json` and `skills/vibelog/assets/vibe-log.schema.json`; scanned guide files and the agent usage guide for placeholders with no output; ran `git diff --check` with no output; confirmed `apps/vibelog-studio` remains absent.
+
+**Follow-up:** Use the manual test guide on a scratch VibeLog before implementing automation adapters.
+
 ## Bugfix / Incident Log
 
 No bugfix or incident entry for this update.
@@ -870,7 +953,7 @@ No bugfix or incident entry for this update.
 
 ### Current State
 
-VibeLog is a v0.2 draft process record skill. Slice 1.5 has been committed locally as `edd7b9e`, correcting the repository back to a skill-first shape. Slice 2 design is now focused on making the skill easier to use, manually test, validate, and hand off without rebuilding website or app source code.
+VibeLog is a v0.2 draft process record skill. Slice 1.5 has been committed locally as `edd7b9e`, correcting the repository back to a skill-first shape. Slice 2 implementation has added a local guide pack so the skill can be started, manually tested, validated, and used by future agents without rebuilding website or app source code.
 
 ### Completed
 
@@ -883,14 +966,18 @@ VibeLog is a v0.2 draft process record skill. Slice 1.5 has been committed local
 - Removed app source from the local repository structure.
 - Created the local Slice 1.5 corrective commit `edd7b9e`.
 - Drafted the Slice 2 skill usability design document.
+- Added the Slice 2 implementation plan.
+- Added Quickstart, Manual Test Guide, Example Scenario, and Validation Checklist under `docs/guides/`.
+- Added `skills/vibelog/references/agent-usage-guide.md`.
+- Linked the new guides from `README.md` and `skills/vibelog/SKILL.md`.
 
 ### In Progress
 
-- Reviewing the Slice 2 design before writing an implementation plan.
+- Running final verification for Slice 2 implementation.
 
 ### Pending
 
-- Slice 2 implementation plan for quickstart, manual test guide, example scenario, validation checklist, and agent usage guide.
+- Manual scratch-project test using `docs/guides/manual-test-guide.md`.
 - Deterministic Markdown-to-JSON exporter.
 - Example Vibe Repo generated by the adapter.
 - Any GitHub push requires a separate explicit user request.
@@ -901,9 +988,9 @@ VibeLog is a v0.2 draft process record skill. Slice 1.5 has been committed local
 
 ### Next Actions
 
-- Review the Slice 2 design document.
-- If approved, create a Slice 2 implementation plan.
-- Implement the skill usability guide pack and validate individual plus combined manual flows.
+- Complete final Slice 2 verification.
+- Commit the Slice 2 guide pack locally.
+- Use the manual test guide on a scratch project before starting automation adapter work.
 
 ### Context For Next Agent
 
@@ -913,6 +1000,7 @@ VibeLog is a v0.2 draft process record skill. Slice 1.5 has been committed local
 - Do not include VibeLog Studio application source code in this skill repo unless the user explicitly changes repository strategy.
 - Examples should contain generated VibeLog records, not app source.
 - Do not push to GitHub without separate explicit user approval.
+- Use `docs/guides/manual-test-guide.md` and `docs/guides/validation-checklist.md` for the next usability test.
 
 ## Public / Private Projection
 
@@ -1078,6 +1166,21 @@ VibeLog is a v0.2 draft process record skill. Slice 1.5 has been committed local
 **Problems:** Needed to keep Slice 2 focused on skill usability and manual validation rather than drifting back into website or app source work.
 
 **Next:** Review the Slice 2 design, then create an implementation plan if approved.
+
+**Source:** current work session
+
+**Confidence:** high
+
+### 2026-05-26
+**Stage:** prototype
+
+**What Happened:** Implemented the Slice 2 guide pack for VibeLog skill usability.
+
+**Tools Used:** Codex, VibeLog
+
+**Problems:** Needed to prove manual usability without adding app source or starting website work.
+
+**Next:** Run final verification, commit locally, then use the manual test guide on a scratch project before automation adapter work.
 
 **Source:** current work session
 
