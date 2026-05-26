@@ -89,6 +89,7 @@ Use these bundled resources when needed:
 - `references/vibelog-format.md`: field reference.
 - `references/agent-usage-guide.md`: operational guide for agents using VibeLog during sessions.
 - `references/claude-code-hooks-adapter.md`: notes for implementing Claude Code hook automation.
+- `references/vibe-event-format.md`: structured event contract for recorder and adapter integrations.
 - `../../docs/guides/progress-reporting.md`: project progress reporting rule for human-facing task summaries.
 
 ## Standard Process Record
@@ -130,6 +131,12 @@ PostToolUse       -> record file edits, commands, test outputs, verification evi
 Stop              -> summarize the turn, update implementation status and handoff state
 PreCompact        -> preserve essential context before compaction
 PostCompact       -> record compaction happened and refresh handoff state if useful
+```
+
+When an adapter can emit structured events, prefer the recorder core boundary:
+
+```txt
+Vibe Event JSON -> scripts/record-vibelog-event.mjs -> vibe-log.md -> vibe-log.json
 ```
 
 For Claude Code, use `references/claude-code-hooks-adapter.md` before implementing hooks.

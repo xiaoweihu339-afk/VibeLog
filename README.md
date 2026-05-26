@@ -66,6 +66,12 @@ Chat-like idea exploration should not be copied as a transcript. It should be di
 
 VibeLog is designed for automation hooks. A future Claude Code or Codex adapter can update it continuously during events such as prompt submission, tool use, turn stop, and context compaction.
 
+The first platform-neutral recording path is the recorder core:
+
+```powershell
+node scripts/record-vibelog-event.mjs --event event.json --log vibe-log.md --json vibe-log.json
+```
+
 ## Repository Identity
 
 This repository is skill-first. Its primary purpose is to make the `vibelog` skill, schema, and documentation easy for others to reuse.
@@ -103,6 +109,7 @@ See [Claude Code adapter notes](skills/vibelog/references/claude-code-hooks-adap
 |       |   `-- vibe-log.schema.json
 |       `-- references/
 |           |-- claude-code-hooks-adapter.md
+|           |-- vibe-event-format.md
 |           `-- vibelog-format.md
 |-- docs/
 |   |-- guides/
@@ -111,6 +118,8 @@ See [Claude Code adapter notes](skills/vibelog/references/claude-code-hooks-adap
 |   |   |-- export-json.md
 |   |   |-- progress-reporting.md
 |   |   |-- progress-reporting.zh.md
+|   |   |-- recorder-core.md
+|   |   |-- recorder-core.zh.md
 |   |   |-- quickstart.md
 |   |   |-- manual-test-guide.md
 |   |   |-- example-scenario.md
@@ -122,7 +131,9 @@ See [Claude Code adapter notes](skills/vibelog/references/claude-code-hooks-adap
 |   |   `-- vibehub-long-term-product-document.md
 |   |-- reports/
 |   |   |-- slice-4-vibe-verification-report.md
-|   |   `-- slice-4-vibe-verification-report.zh.md
+|   |   |-- slice-4-vibe-verification-report.zh.md
+|   |   |-- slice-5-recorder-core-report.md
+|   |   `-- slice-5-recorder-core-report.zh.md
 |   |-- releases/
 |   |   `-- v0.2-draft.md
 |   `-- superpowers/
@@ -143,9 +154,11 @@ See [Claude Code adapter notes](skills/vibelog/references/claude-code-hooks-adap
 |       `-- vibe-log.json
 |-- scripts/
 |   |-- export-vibelog.mjs
+|   |-- record-vibelog-event.mjs
 |   `-- validate-vibelog.mjs
 |-- test/
 |   |-- export-vibelog.test.mjs
+|   |-- record-vibelog-event.test.mjs
 |   |-- validate-vibelog.test.mjs
 |   `-- vibelog-examples.test.mjs
 |-- vibe-log.md
@@ -197,6 +210,16 @@ node scripts/export-vibelog.mjs vibe-log.md --out vibe-log.json --check
 
 See [Export JSON](docs/guides/export-json.md) for the supported Markdown subset and current limitations.
 
+## Record Events
+
+Use the recorder core when an agent, hook, or adapter has a structured Vibe Event JSON payload:
+
+```powershell
+node scripts/record-vibelog-event.mjs --event event.json --log vibe-log.md --json vibe-log.json
+```
+
+See [Recorder Core](docs/guides/recorder-core.md) and [Vibe Event Format](skills/vibelog/references/vibe-event-format.md).
+
 ## Files
 
 ### `vibe-log.md`
@@ -215,6 +238,10 @@ The JSON schema for VibeLog v0.2 draft exports.
 
 Dependency-free Node.js tools for deterministic Markdown-to-JSON export and lightweight validation.
 
+- `export-vibelog.mjs`: regenerate JSON from Markdown.
+- `record-vibelog-event.mjs`: apply one structured Vibe Event JSON file to Markdown and optionally regenerate JSON.
+- `validate-vibelog.mjs`: lightweight VibeLog JSON validator.
+
 ### `docs/product/`
 
 Product strategy and MVP requirements for the future VibeHub / VibeLog Studio direction.
@@ -227,6 +254,8 @@ Practical guides for using and testing the skill:
 - [Export JSON](docs/guides/export-json.md)
 - [Project progress reporting](docs/guides/progress-reporting.md)
 - [项目进度汇报机制](docs/guides/progress-reporting.zh.md)
+- [Recorder Core](docs/guides/recorder-core.md)
+- [Recorder Core 指南](docs/guides/recorder-core.zh.md)
 - [Vibe verification guide](docs/guides/vibe-verification-guide.md)
 - [Vibe 验证指南](docs/guides/vibe-verification-guide.zh.md)
 - [Agent dogfood protocol](docs/guides/agent-dogfood-protocol.md)
@@ -246,6 +275,8 @@ User-review reports for completed slices:
 
 - [Slice 4 vibe verification report](docs/reports/slice-4-vibe-verification-report.md)
 - [Slice 4 Vibe 验证报告](docs/reports/slice-4-vibe-verification-report.zh.md)
+- [Slice 5 recorder core report](docs/reports/slice-5-recorder-core-report.md)
+- [Slice 5 Recorder Core 报告](docs/reports/slice-5-recorder-core-report.zh.md)
 
 ### `examples/`
 

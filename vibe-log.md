@@ -164,6 +164,20 @@ The long-term product may become VibeHub, a GitHub-like platform around Vibe Rep
 
 **Confidence:** high
 
+### 2026-05-26
+
+**Type:** refinement
+
+**Before:** VibeLog could be updated by agents manually or through future hooks.
+
+**After:** VibeLog now has a platform-neutral recorder core that accepts structured Vibe Event JSON.
+
+**Reason:** A stable event boundary should exist before binding the project to any one agent hook system.
+
+**Source:** Slice 5 design and implementation
+
+**Confidence:** high
+
 ## Decisions
 
 ### 2026-05-25
@@ -364,6 +378,20 @@ The long-term product may become VibeHub, a GitHub-like platform around Vibe Rep
 **Source:** user correction
 
 **Confidence:** high
+
+### 2026-05-26
+
+**Type:** architecture
+
+**Human Input:** 执行
+
+**Agent Proposal:** Build the recorder core before any Claude Code or Codex-specific hook adapter.
+
+**Final Decision:** Implement a local Vibe Event JSON to VibeLog Markdown recorder first.
+
+**Why It Mattered:** This keeps the VibeLog foundation platform-neutral and reusable across future agents.
+
+**Impact:** Future hooks can emit the same event format instead of each adapter rewriting VibeLog differently.
 
 ## Open Questions
 
@@ -654,6 +682,24 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 **Residual Risk:** Slice 4 verifies agent dogfood recording and repository boundaries, but hook automation is still not implemented. Full JSON Schema validation is also still pending.
 
 **Source:** current work session
+
+**Confidence:** high
+
+### 2026-05-26
+
+**Type:** test_result
+
+**Summary:** Recorder core tests passed after implementation.
+
+**Evidence Ref:** node --test test/record-vibelog-event.test.mjs
+
+**Result:** passed
+
+**Details:** 8 tests passed for supported event types, prompt recording, verification evidence, bugfix entries, handoff replacement, library file writes, CLI JSON export, and combined session validation.
+
+**Residual Risk:** No real lifecycle hook adapter has been connected yet.
+
+**Source:** command output
 
 **Confidence:** high
 
@@ -991,6 +1037,36 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 
 **Notes:** Bilingual report for Slice 4 dogfood verification and progress snapshot.
 
+### VibeLog recorder core
+
+**Type:** script
+
+**Ref:** `scripts/record-vibelog-event.mjs`
+
+**Visibility:** private
+
+**Notes:** Platform-neutral event-to-Markdown recorder core for future hook and adapter integrations.
+
+### Vibe Event format reference
+
+**Type:** document
+
+**Ref:** `skills/vibelog/references/vibe-event-format.md`
+
+**Visibility:** private
+
+**Notes:** Structured event contract for adapters that emit Vibe Event JSON.
+
+### Slice 5 recorder core reports
+
+**Type:** report
+
+**Ref:** `docs/reports/slice-5-recorder-core-report.md`, `docs/reports/slice-5-recorder-core-report.zh.md`
+
+**Visibility:** private
+
+**Notes:** Bilingual report for Slice 5 recorder core implementation and progress snapshot.
+
 ## Execution Prompts
 
 ### 2026-05-25
@@ -1298,6 +1374,24 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 **Result:** Resumed Slice 4 dogfood execution locally: added red example-integrity tests, created bilingual verification guides, ran the Reading Card Lite scratch project with TDD, generated a VibeLog example, and prepared verification reports.
 
 **Reuse Notes:** A short retry prompt can be an engineering execution prompt when it restarts an approved implementation plan.
+
+### 2026-05-26
+
+**Agent / Tool:** Codex
+
+**Prompt Type:** build
+
+**Prompt Visibility:** summary
+
+**Recording Mode:** exact
+
+**Prompt Summary:** User approved executing Slice 5 recorder core.
+
+**Prompt Text:** 执行
+
+**Result:** Codex designed and implemented the first VibeLog recorder core.
+
+**Reuse Notes:** Treat this as authorization to move from the Slice 5 plan into local implementation without pushing.
 
 ## Development Log
 
@@ -1643,6 +1737,31 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 
 **Follow-up:** Implement hook or adapter automation so VibeLog updates can happen continuously during real sessions.
 
+### 2026-05-26
+
+**Type:** feature
+
+**Summary:** Implemented the VibeLog recorder core.
+
+**Files Changed:**
+- `scripts/record-vibelog-event.mjs`
+- `test/record-vibelog-event.test.mjs`
+- `docs/guides/recorder-core.md`
+- `docs/guides/recorder-core.zh.md`
+- `skills/vibelog/references/vibe-event-format.md`
+
+**Details:** Added event-to-Markdown mapping for prompt, idea, decision, development, test, bugfix, and handoff events plus CLI support for optional JSON regeneration.
+
+**Verification:** Recorder-specific tests passed with 8 tests after the expected red run.
+
+**Follow-up:**
+- `Build a hook adapter that emits Vibe Event JSON.`
+- `Consider batch event recording after single-event CLI proves stable.`
+
+**Source:** current work session
+
+**Confidence:** high
+
 ## Bugfix / Incident Log
 
 ### 2026-05-26
@@ -1663,99 +1782,55 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 
 ### Current State
 
-VibeLog is a v0.2 draft process record skill. Slice 1.5, Slice 2, the BillMate Lite dogfood example, Slice 3 exporter, and Slice 4 agent dogfood verification are implemented locally. The repository now has a repeatable Reading Card Lite dogfood example, bilingual verification guides, and integrity tests that protect the generated-example boundary.
+VibeLog is a v0.2 draft process record skill with a deterministic exporter, validator, agent dogfood verification, and the first platform-neutral recorder core. The recorder accepts one Vibe Event JSON file, updates Markdown, and can regenerate JSON.
 
 ### Project Progress Snapshot
 
-- Project Progress: 12 / 100
-- Change This Task: +2
-- Current Phase: Agent dogfood verification
-- Completed This Task: Implemented Slice 4 dogfood verification with Reading Card Lite generated example
+- Project Progress: 15 / 100
+- Change This Task: +3
+- Current Phase: Recorder core
+- Completed This Task: Implemented event-to-Markdown recorder core
 - Next Unlock: Hook / adapter automatic recording
-- Main Risk: Hook automation has not been implemented yet
+- Main Risk: No lifecycle hook integration has been implemented yet
 - Confidence: medium
 
 ### Completed
 
-- Updated the VibeLog skill for automatic hook-friendly process recording.
-- Added v0.2 draft template and schema fields.
-- Added Claude Code hook adapter notes.
-- Updated README and skill metadata.
-- Recorded the update in this VibeLog.
-- Moved the VibeLog Studio dogfood case to `examples/vibelog-studio/` as generated VibeLog output only.
-- Removed app source from the local repository structure.
-- Created the local Slice 1.5 corrective commit `edd7b9e`.
-- Drafted the Slice 2 skill usability design document.
-- Added the Slice 2 implementation plan.
-- Added Quickstart, Manual Test Guide, Example Scenario, and Validation Checklist under `docs/guides/`.
-- Added `skills/vibelog/references/agent-usage-guide.md`.
-- Linked the new guides from `README.md` and `skills/vibelog/SKILL.md`.
-- Ran an agent-simulated BillMate Lite dogfood test outside the repository.
-- Added `examples/billmate-lite/` with generated VibeLog files only.
-- Drafted Slice 3 exporter design in English and Chinese.
-- Added the Slice 3 implementation plan.
-- Implemented `scripts/export-vibelog.mjs`.
-- Implemented `scripts/validate-vibelog.mjs`.
-- Added exporter and validator tests under `test/`.
-- Added `docs/guides/export-json.md`.
-- Linked export usage from `README.md`.
-- Drafted the Slice 4 vibe-driven skill verification design.
-- Added the Slice 4 Chinese design translation.
-- Added the bilingual review rule for user-facing design, plan, report, verification, and product requirement artifacts.
-- Added bilingual project progress reporting guides.
-- Added progress snapshot rules to `skills/vibelog/SKILL.md` and `skills/vibelog/references/agent-usage-guide.md`.
-- Added bilingual progress reporting guides.
-- Added conservative project progress snapshot rules to the VibeLog skill and agent usage guide.
-- Set the current long-term project progress baseline to `10 / 100`.
-- Drafted the Slice 4 implementation plan in English and Chinese.
-- Added Slice 4 bilingual vibe verification guides and dogfood protocol.
-- Added `test/vibelog-examples.test.mjs`.
-- Ran the Reading Card Lite scratch project outside the repository using TDD.
-- Added `examples/reading-card-lite/` with generated VibeLog records only.
-- Verified example JSON, drift checks, example integrity tests, and full repository tests.
-- Created bilingual Slice 4 verification reports.
+- Slice 1.5 skill-first repository correction
+- Slice 2 guide pack
+- BillMate Lite generated dogfood example
+- Slice 3 Markdown-to-JSON exporter and validator
+- Slice 4 Reading Card Lite agent dogfood verification
+- Slice 5 VibeLog recorder core
 
 ### In Progress
 
-- No active slice implementation after Slice 4 verification.
+- none
 
 ### Pending
 
-- Build hook / adapter automatic recording.
-- Full JSON Schema validation.
-- Example Vibe Repo generated by the adapter.
-- Any GitHub push requires a separate explicit user request.
+- Hook / adapter automatic recording
+- Full JSON Schema validation
+- Example Vibe Repo generated through an adapter
+- GitHub push only after separate explicit user approval
 
 ### Blockers
 
-- No current blocker.
+- none
 
 ### Next Actions
 
-- Use the exporter in the future Claude Code or Codex hook adapter.
-- Design the first hook or adapter that can update VibeLog automatically during a real vibe session.
-- Add full JSON Schema validation.
-- Decide whether to install the skill locally or keep iterating inside the repository first.
+- Design the first hook adapter around Vibe Event JSON
+- Decide whether Claude Code or Codex should be the first adapter target
+- Keep generated examples source-free unless repository strategy changes
 
 ### Context For Next Agent
 
-- Do not build the VibeHub website yet.
-- First prove the VibeLog skill can be used and vibe-verified without a website.
-- Keep `vibe-log.md` as source of truth and regenerate JSON after Markdown changes.
-- Do not include VibeLog Studio application source code in this skill repo unless the user explicitly changes repository strategy.
-- Examples should contain generated VibeLog records, not app source.
-- Do not push to GitHub without separate explicit user approval.
-- Slice 4 should prefer agent dogfood verification over human manual verification.
-- Every artifact that needs user review should be available in both Chinese and English.
-- Every completed meaningful task report should include a conservative progress snapshot using the long-term project target as `100`.
-- Current long-term project progress is `12 / 100`, not `36 / 100`.
-- Use `docs/guides/vibe-verification-guide.md` and `.zh.md` before future verification slices.
-- Use `docs/guides/agent-dogfood-protocol.md` and `.zh.md` before future scratch dogfood examples.
-- `examples/billmate-lite/` should contain generated logs only, not scratch source code.
-- `examples/reading-card-lite/` should contain generated logs only, not scratch source code.
-- Markdown is the source of truth; regenerate JSON with `scripts/export-vibelog.mjs`.
-- Validate generated JSON with `scripts/validate-vibelog.mjs`.
-
+- Do not push without explicit user approval.
+- Markdown remains the source of truth.
+- Use scripts/record-vibelog-event.mjs for structured event updates.
+- Use skills/vibelog/references/vibe-event-format.md as adapter contract.
+- Every user-review artifact should be bilingual.
 ## Public / Private Projection
 
 - Public summary: VibeLog is a Markdown-first, hook-friendly process record skill for vibe-built products.
