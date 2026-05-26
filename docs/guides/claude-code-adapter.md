@@ -51,8 +51,16 @@ node --test test/claude-code-hook-adapter.test.mjs
 node --test
 ```
 
+For scratch-local live verification, run:
+
+```powershell
+node scripts/verify-claude-code-live-hook.mjs --workspace "C:\Users\HXW\Documents\vibelog-scratch\claude-live-hook-test-live" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs" --live --prompt "Reply with OK. Do not use tools." --max-budget-usd 0.05
+```
+
+See [Live Hook Verification](live-hook-verification.md).
+
 ## Current Limits
 
-- This is fixture-verified, not live-session verified in this repository.
+- This is fixture-verified and scratch-live verified, but not installed into a real user project by default.
 - `Stop` handoff is conservative and does not inspect the whole repository.
 - More nuanced idea extraction should be added later after deterministic prompt/tool/test capture is stable.

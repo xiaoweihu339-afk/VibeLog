@@ -147,6 +147,16 @@ skills/vibelog/assets/claude-code-hooks.settings.example.json
 
 Do not copy the example settings into a real project without reviewing paths and confirming that local automatic recording is desired.
 
+## Scratch Live Verifier
+
+Slice 7 adds a scratch-local verifier that creates local `.claude/settings.json`, runs fixture hook payloads through the real adapter command path, and optionally launches a tiny Claude Code session:
+
+```powershell
+node scripts/verify-claude-code-live-hook.mjs --workspace "C:\Users\HXW\Documents\vibelog-scratch\claude-live-hook-test-live" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs" --live --prompt "Reply with OK. Do not use tools." --max-budget-usd 0.05
+```
+
+The live verifier uses Claude Code `stream-json` output with `--include-hook-events` so it can confirm that hook responses happened. It still does not install hooks into a real project or modify global settings.
+
 ## Success Test
 
 A fresh agent should be able to read the generated VibeLog and answer:
