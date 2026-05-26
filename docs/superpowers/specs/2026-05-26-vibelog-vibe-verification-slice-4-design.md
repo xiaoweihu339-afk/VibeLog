@@ -57,6 +57,20 @@ agent receives a natural task
 
 The human can still reject the result if the log feels fake, incomplete, or not useful. But the first pass should be generated and checked by the agent.
 
+## Review Language Rule
+
+Any artifact that needs the user's review must be available in both Chinese and English.
+
+This includes:
+
+- design specs
+- implementation plans
+- slice reports
+- verification reports
+- product requirement documents
+
+Agent-internal scratch notes, generated JSON, and command output do not need bilingual versions unless they are explicitly presented for user review.
+
 ## Considered Approaches
 
 ### Approach A: Keep Manual Checklist Verification
@@ -159,6 +173,7 @@ Update root `vibe-log.md` and regenerate `vibe-log.json` to record:
 - Slice 4 design decision.
 - Exact execution prompt: `好开始slice4`.
 - The principle that vibe verification should replace manual verification where possible.
+- The review language rule: user-facing review artifacts must be bilingual Chinese and English.
 - The pending implementation plan.
 
 ## Verification Model
@@ -246,6 +261,7 @@ Slice 4 is accepted when:
 
 - The vibe verification guide exists.
 - The agent dogfood protocol exists.
+- User-review artifacts exist in both Chinese and English.
 - A new generated example exists under `examples/`.
 - The example was generated from a scratch vibe flow, not handwritten as a static fixture.
 - The example JSON is produced from Markdown by the exporter.

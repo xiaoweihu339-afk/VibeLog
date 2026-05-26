@@ -331,6 +331,23 @@ The long-term product may become VibeHub, a GitHub-like platform around Vibe Rep
 
 **Confidence:** high
 
+### 2026-05-26
+**Type:** direction
+
+**Human Input:** The user clarified that every artifact needing user review must be available in both Chinese and English.
+
+**Agent Proposal:** The agent had drafted the Slice 4 design only in English.
+
+**Final Decision:** Add bilingual Chinese-English as a standing review rule for design specs, implementation plans, slice reports, verification reports, and product requirement documents.
+
+**Why It Mattered:** The user should be able to review important project artifacts comfortably and precisely without losing nuance across languages.
+
+**Impact:** Slice 4 design now includes a review language rule, and the Slice 4 Chinese translation was added beside the English design.
+
+**Source:** user correction
+
+**Confidence:** high
+
 ## Open Questions
 
 - Should the next validator use the existing JSON Schema file directly or keep the lightweight validator as the default fast path?
@@ -341,7 +358,7 @@ The long-term product may become VibeHub, a GitHub-like platform around Vibe Rep
 
 ### Current State
 
-The VibeLog skill has a first deterministic Markdown-to-JSON exporter and lightweight validator. Slice 4 design is now focused on agent dogfood verification: if a VibeLog capability can be verified by an agent through a scratch vibe flow, the human should review the report instead of doing manual checklist labor.
+The VibeLog skill has a first deterministic Markdown-to-JSON exporter and lightweight validator. Slice 4 design is now focused on agent dogfood verification, and all user-review artifacts must be bilingual Chinese-English.
 
 ### Completed
 
@@ -372,6 +389,8 @@ The VibeLog skill has a first deterministic Markdown-to-JSON exporter and lightw
 - Added `scripts/validate-vibelog.mjs` for practical JSON validation.
 - Added `docs/guides/export-json.md` and linked it from `README.md`.
 - Drafted the Slice 4 vibe-driven skill verification design.
+- Added the Chinese translation of the Slice 4 design.
+- Added the bilingual user-review rule to Slice 4 design and project handoff context.
 
 ### In Progress
 
@@ -556,6 +575,21 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 **Result:** passed
 
 **Residual Risk:** This verifies the design and current repository checks only. Slice 4 implementation still needs a separate implementation plan and dogfood run.
+
+**Source:** current work session
+
+**Confidence:** high
+
+### 2026-05-26
+**Type:** review
+
+**Summary:** Verified the bilingual Slice 4 design update.
+
+**Evidence Ref:** `rg -n "TBD|TODO|PLACEHOLDER|FIXME|\?\?" docs\superpowers\specs\2026-05-26-vibelog-vibe-verification-slice-4-design.md docs\superpowers\specs\2026-05-26-vibelog-vibe-verification-slice-4-design.zh.md`; `node --test`; `node scripts/validate-vibelog.mjs vibe-log.json`; `node scripts/export-vibelog.mjs vibe-log.md --out vibe-log.json --check`; `node -e "for (const f of ['vibe-log.json','skills/vibelog/assets/vibe-log.schema.json']) { JSON.parse(require('fs').readFileSync(f,'utf8')); console.log('OK '+f); }"`; `git diff --check`
+
+**Result:** passed
+
+**Residual Risk:** This verifies the bilingual design files and repository checks. Future user-facing review artifacts still need to follow the bilingual rule.
 
 **Source:** current work session
 
@@ -802,6 +836,16 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 
 **Notes:** Design for replacing manual acceptance framing with agent-run dogfood verification.
 
+### Slice 4 vibe verification design Chinese translation
+
+**Type:** document
+
+**Ref:** `docs/superpowers/specs/2026-05-26-vibelog-vibe-verification-slice-4-design.zh.md`
+
+**Visibility:** private
+
+**Notes:** Chinese translation of the Slice 4 design for user review.
+
 ## Execution Prompts
 
 ### 2026-05-25
@@ -1042,6 +1086,23 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 
 **Reuse Notes:** Future agents should treat Slice 4 as agent-run verification first, not human manual checklist work.
 
+### 2026-05-26
+**Agent / Tool:** Codex
+
+**Prompt Type:** docs
+
+**Prompt Visibility:** summary
+
+**Recording Mode:** exact
+
+**Prompt Summary:** User required every user-review artifact to be bilingual Chinese-English.
+
+**Prompt Text:** 每个需要我看的都要中英双文
+
+**Result:** Added the bilingual review rule to Slice 4 design and created the Chinese translation of the Slice 4 design.
+
+**Reuse Notes:** Future design specs, implementation plans, slice reports, verification reports, and product requirement documents that need user review should have Chinese and English versions.
+
 ## Development Log
 
 ### 2026-05-25
@@ -1277,9 +1338,9 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 
 **Summary:** Drafted the Slice 4 vibe-driven skill verification design.
 
-**Files Changed:** `docs/superpowers/specs/2026-05-26-vibelog-vibe-verification-slice-4-design.md`, `vibe-log.md`, `vibe-log.json`
+**Files Changed:** `docs/superpowers/specs/2026-05-26-vibelog-vibe-verification-slice-4-design.md`, `docs/superpowers/specs/2026-05-26-vibelog-vibe-verification-slice-4-design.zh.md`, `vibe-log.md`, `vibe-log.json`
 
-**Details:** Reframed Slice 4 around agent dogfood verification instead of manual human acceptance testing. The design defines goals, non-goals, considered approaches, deliverables, isolated and combined checks, human review criteria, error handling, and acceptance criteria.
+**Details:** Reframed Slice 4 around agent dogfood verification instead of manual human acceptance testing. The design defines goals, non-goals, considered approaches, deliverables, isolated and combined checks, human review criteria, error handling, acceptance criteria, and the bilingual review rule for user-facing artifacts.
 
 **Bug Symptom:** not applicable
 
@@ -1289,7 +1350,7 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 
 **Verification:** Passed. Placeholder scan returned no matches; `node --test` ran 9 tests successfully; root VibeLog JSON validated and matched Markdown; root JSON and schema parsed; `git diff --check` returned no output.
 
-**Follow-up:** Ask the user to review the Slice 4 design before writing the implementation plan.
+**Follow-up:** Ask the user to review the bilingual Slice 4 design before writing the implementation plan.
 
 ## Bugfix / Incident Log
 
@@ -1326,10 +1387,12 @@ VibeLog is a v0.2 draft process record skill. Slice 1.5, Slice 2, the BillMate L
 - Added `docs/guides/export-json.md`.
 - Linked export usage from `README.md`.
 - Drafted the Slice 4 vibe-driven skill verification design.
+- Added the Slice 4 Chinese design translation.
+- Added the bilingual review rule for user-facing design, plan, report, verification, and product requirement artifacts.
 
 ### In Progress
 
-- Slice 4 design is ready for user review.
+- Slice 4 bilingual design is ready for user review.
 
 ### Pending
 
@@ -1358,7 +1421,8 @@ VibeLog is a v0.2 draft process record skill. Slice 1.5, Slice 2, the BillMate L
 - Examples should contain generated VibeLog records, not app source.
 - Do not push to GitHub without separate explicit user approval.
 - Slice 4 should prefer agent dogfood verification over human manual verification.
-- Use `docs/superpowers/specs/2026-05-26-vibelog-vibe-verification-slice-4-design.md` as the source for the next implementation plan.
+- Every artifact that needs user review should be available in both Chinese and English.
+- Use `docs/superpowers/specs/2026-05-26-vibelog-vibe-verification-slice-4-design.md` and `.zh.md` as the source for the next implementation plan.
 - `examples/billmate-lite/` should contain generated logs only, not scratch source code.
 - Markdown is the source of truth; regenerate JSON with `scripts/export-vibelog.mjs`.
 - Validate generated JSON with `scripts/validate-vibelog.mjs`.
@@ -1602,6 +1666,21 @@ VibeLog is a v0.2 draft process record skill. Slice 1.5, Slice 2, the BillMate L
 **Problems:** Needed to avoid turning VibeLog verification into manual human checklist labor when an agent can create a scratch vibe flow and produce evidence.
 
 **Next:** Review the Slice 4 design, then write the implementation plan if approved.
+
+**Source:** current work session
+
+**Confidence:** high
+
+### 2026-05-26
+**Stage:** prototype
+
+**What Happened:** Added the bilingual review rule and Chinese translation for the Slice 4 design.
+
+**Tools Used:** Codex, VibeLog
+
+**Problems:** The Slice 4 design was a user-review artifact but existed only in English.
+
+**Next:** Review the bilingual Slice 4 design, then write bilingual implementation plans and reports going forward.
 
 **Source:** current work session
 

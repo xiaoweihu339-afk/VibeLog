@@ -132,6 +132,13 @@
       "ref": "`docs/superpowers/specs/2026-05-26-vibelog-vibe-verification-slice-4-design.md`",
       "type": "document",
       "visibility": "private"
+    },
+    {
+      "name": "Slice 4 vibe verification design Chinese translation",
+      "notes": "Chinese translation of the Slice 4 design for user review.",
+      "ref": "`docs/superpowers/specs/2026-05-26-vibelog-vibe-verification-slice-4-design.zh.md`",
+      "type": "document",
+      "visibility": "private"
     }
   ],
   "branch_remix_readiness": {
@@ -444,14 +451,15 @@
     },
     {
       "bug_symptom": "not applicable",
-      "details": "Reframed Slice 4 around agent dogfood verification instead of manual human acceptance testing. The design defines goals, non-goals, considered approaches, deliverables, isolated and combined checks, human review criteria, error handling, and acceptance criteria.",
+      "details": "Reframed Slice 4 around agent dogfood verification instead of manual human acceptance testing. The design defines goals, non-goals, considered approaches, deliverables, isolated and combined checks, human review criteria, error handling, acceptance criteria, and the bilingual review rule for user-facing artifacts.",
       "files_changed": [
         "docs/superpowers/specs/2026-05-26-vibelog-vibe-verification-slice-4-design.md",
+        "docs/superpowers/specs/2026-05-26-vibelog-vibe-verification-slice-4-design.zh.md",
         "vibe-log.md",
         "vibe-log.json"
       ],
       "fix": "not applicable",
-      "follow_up": "Ask the user to review the Slice 4 design before writing the implementation plan.",
+      "follow_up": "Ask the user to review the bilingual Slice 4 design before writing the implementation plan.",
       "root_cause": "not applicable",
       "summary": "Drafted the Slice 4 vibe-driven skill verification design.",
       "timestamp": "2026-05-26",
@@ -613,6 +621,17 @@
       "result": "Drafted the Slice 4 design around vibe-driven agent dogfood verification.",
       "reuse_notes": "Future agents should treat Slice 4 as agent-run verification first, not human manual checklist work.",
       "timestamp": "2026-05-26"
+    },
+    {
+      "agent_or_tool": "Codex",
+      "prompt_summary": "User required every user-review artifact to be bilingual Chinese-English.",
+      "prompt_text": "每个需要我看的都要中英双文",
+      "prompt_type": "docs",
+      "prompt_visibility": "summary",
+      "recording_mode": "exact",
+      "result": "Added the bilingual review rule to Slice 4 design and created the Chinese translation of the Slice 4 design.",
+      "reuse_notes": "Future design specs, implementation plans, slice reports, verification reports, and product requirement documents that need user review should have Chinese and English versions.",
+      "timestamp": "2026-05-26"
     }
   ],
   "handoff_state": {
@@ -642,7 +661,9 @@
       "Added exporter and validator tests under `test/`.",
       "Added `docs/guides/export-json.md`.",
       "Linked export usage from `README.md`.",
-      "Drafted the Slice 4 vibe-driven skill verification design."
+      "Drafted the Slice 4 vibe-driven skill verification design.",
+      "Added the Slice 4 Chinese design translation.",
+      "Added the bilingual review rule for user-facing design, plan, report, verification, and product requirement artifacts."
     ],
     "context_for_next_agent": [
       "Do not build the VibeHub website yet.",
@@ -652,14 +673,15 @@
       "Examples should contain generated VibeLog records, not app source.",
       "Do not push to GitHub without separate explicit user approval.",
       "Slice 4 should prefer agent dogfood verification over human manual verification.",
-      "Use `docs/superpowers/specs/2026-05-26-vibelog-vibe-verification-slice-4-design.md` as the source for the next implementation plan.",
+      "Every artifact that needs user review should be available in both Chinese and English.",
+      "Use `docs/superpowers/specs/2026-05-26-vibelog-vibe-verification-slice-4-design.md` and `.zh.md` as the source for the next implementation plan.",
       "`examples/billmate-lite/` should contain generated logs only, not scratch source code.",
       "Markdown is the source of truth; regenerate JSON with `scripts/export-vibelog.mjs`.",
       "Validate generated JSON with `scripts/validate-vibelog.mjs`."
     ],
     "current_state": "VibeLog is a v0.2 draft process record skill. Slice 1.5, Slice 2, the BillMate Lite dogfood example, and Slice 3 exporter are committed locally. Slice 4 design is now drafted around vibe-driven agent dogfood verification.",
     "in_progress": [
-      "Slice 4 design is ready for user review."
+      "Slice 4 bilingual design is ready for user review."
     ],
     "next_actions": [
       "Use the exporter in the future Claude Code or Codex hook adapter.",
@@ -751,6 +773,17 @@
       "timestamp": "2026-05-26",
       "type": "direction",
       "why_it_mattered": "This keeps VibeLog aligned with its core principle that the user can speak naturally while agents record and verify structurally."
+    },
+    {
+      "agent_proposal": "The agent had drafted the Slice 4 design only in English.",
+      "confidence": "high",
+      "final_decision": "Add bilingual Chinese-English as a standing review rule for design specs, implementation plans, slice reports, verification reports, and product requirement documents.",
+      "human_input": "The user clarified that every artifact needing user review must be available in both Chinese and English.",
+      "impact": "Slice 4 design now includes a review language rule, and the Slice 4 Chinese translation was added beside the English design.",
+      "source": "user correction",
+      "timestamp": "2026-05-26",
+      "type": "direction",
+      "why_it_mattered": "The user should be able to review important project artifacts comfortably and precisely without losing nuance across languages."
     }
   ],
   "idea_evolution": [
@@ -914,9 +947,11 @@
       "Added `scripts/export-vibelog.mjs` for deterministic Markdown-to-JSON export.",
       "Added `scripts/validate-vibelog.mjs` for practical JSON validation.",
       "Added `docs/guides/export-json.md` and linked it from `README.md`.",
-      "Drafted the Slice 4 vibe-driven skill verification design."
+      "Drafted the Slice 4 vibe-driven skill verification design.",
+      "Added the Chinese translation of the Slice 4 design.",
+      "Added the bilingual user-review rule to Slice 4 design and project handoff context."
     ],
-    "current_state": "The VibeLog skill has a first deterministic Markdown-to-JSON exporter and lightweight validator. Slice 4 design is now focused on agent dogfood verification: if a VibeLog capability can be verified by an agent through a scratch vibe flow, the human should review the report instead of doing manual checklist labor.",
+    "current_state": "The VibeLog skill has a first deterministic Markdown-to-JSON exporter and lightweight validator. Slice 4 design is now focused on agent dogfood verification, and all user-review artifacts must be bilingual Chinese-English.",
     "important_context_for_next_agent": [
       "The current priority is the standalone VibeLog skill, not the website.",
       "The website remains a long-term vision but should not drive the first implementation.",
@@ -1126,6 +1161,16 @@
       "summary": "Verified the Slice 4 vibe-driven skill verification design.",
       "timestamp": "2026-05-26",
       "type": "review"
+    },
+    {
+      "confidence": "high",
+      "evidence_ref": "`rg -n \"TBD|TODO|PLACEHOLDER|FIXME|\\?\\?\" docs\\superpowers\\specs\\2026-05-26-vibelog-vibe-verification-slice-4-design.md docs\\superpowers\\specs\\2026-05-26-vibelog-vibe-verification-slice-4-design.zh.md`; `node --test`; `node scripts/validate-vibelog.mjs vibe-log.json`; `node scripts/export-vibelog.mjs vibe-log.md --out vibe-log.json --check`; `node -e \"for (const f of ['vibe-log.json','skills/vibelog/assets/vibe-log.schema.json']) { JSON.parse(require('fs').readFileSync(f,'utf8')); console.log('OK '+f); }\"`; `git diff --check`",
+      "residual_risk": "This verifies the bilingual design files and repository checks. Future user-facing review artifacts still need to follow the bilingual rule.",
+      "result": "passed",
+      "source": "current work session",
+      "summary": "Verified the bilingual Slice 4 design update.",
+      "timestamp": "2026-05-26",
+      "type": "review"
     }
   ],
   "vibe_progress": [
@@ -1301,6 +1346,19 @@
         "VibeLog"
       ],
       "what_happened": "Drafted the Slice 4 design for vibe-driven skill verification."
+    },
+    {
+      "confidence": "high",
+      "next": "Review the bilingual Slice 4 design, then write bilingual implementation plans and reports going forward.",
+      "problems": "The Slice 4 design was a user-review artifact but existed only in English.",
+      "source": "current work session",
+      "stage": "prototype",
+      "timestamp": "2026-05-26",
+      "tools_used": [
+        "Codex",
+        "VibeLog"
+      ],
+      "what_happened": "Added the bilingual review rule and Chinese translation for the Slice 4 design."
     }
   ],
   "visibility": "private"
