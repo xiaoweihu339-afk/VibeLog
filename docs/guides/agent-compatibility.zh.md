@@ -72,11 +72,19 @@ node --test test/agent-compatibility.test.mjs
 
 它验证模板路径、关键 VibeLog 命令、公开仓库隐私边界和分发计划状态。
 
-Level 2 - 项目接入测试：
+Level 2 - clean-clone 模板接入测试：
+
+```powershell
+node scripts/verify-github-agent-template-adoption.mjs --remote-url https://github.com/xiaoweihu339-afk/VibeLog.git --workspace <scratch-root>
+```
+
+它会从干净来源 clone 仓库，把每个模板安装到合成消费项目中，初始化 VibeLog，导出 JSON，验证 JSON，并检查没有私有项目产物。
+
+Level 3 - 项目接入测试：
 
 用一个合成小项目，让目标 agent 创建或更新 `vibe-log.md`，再运行导出和验证命令。
 
-Level 3 - 真实流程测试：
+Level 4 - 真实流程测试：
 
 让目标 agent 执行一次真实开发任务，并检查想法变化、人类决策、工程执行提示词、测试证据和交接状态是否被记录，同时确认没有泄露私有数据。
 

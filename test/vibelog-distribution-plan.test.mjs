@@ -53,13 +53,17 @@ test("distribution plan keeps clone-local active and public package channels gat
   assert.ok(installerChannel.forbidden_actions.some((action) => action.includes("--write")));
 
   const agentTemplatesChannel = plan.channels.find((channel) => channel.id === "agent_templates");
-  assert.equal(agentTemplatesChannel.state, "prototype_templates_added");
+  assert.equal(agentTemplatesChannel.state, "prototype_clean_clone_verified");
   assert.equal(agentTemplatesChannel.human_approval_required, true);
   assert.ok(agentTemplatesChannel.verified_by.includes("test/agent-compatibility.test.mjs"));
+  assert.ok(agentTemplatesChannel.verified_by.includes("test/verify-github-agent-template-adoption.test.mjs"));
+  assert.ok(agentTemplatesChannel.verified_by.includes("scripts/verify-github-agent-template-adoption.mjs"));
   assert.ok(agentTemplatesChannel.required_gates.includes("adapter_docs_verified"));
   assert.ok(agentTemplatesChannel.required_gates.includes("template_smoke_tests_passed"));
+  assert.ok(agentTemplatesChannel.required_gates.includes("clean_clone_template_adoption_verified"));
   assert.ok(agentTemplatesChannel.required_gates.includes("explicit_release_approval"));
   assert.ok(agentTemplatesChannel.verified_gates.includes("template_smoke_tests_passed"));
+  assert.ok(agentTemplatesChannel.verified_gates.includes("clean_clone_template_adoption_verified"));
 
   for (const gateId of [
     "no_push_without_explicit_approval",
@@ -70,7 +74,8 @@ test("distribution plan keeps clone-local active and public package channels gat
     "backup_restore_verified",
     "release_bundle_verified",
     "dry_run_only",
-    "uninstall_or_rollback_verified"
+    "uninstall_or_rollback_verified",
+    "clean_clone_template_adoption_verified"
   ]) {
     assert.ok(plan.safety_gates.some((gate) => gate.id === gateId), `Missing safety gate: ${gateId}`);
   }

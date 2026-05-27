@@ -52,6 +52,11 @@
       "description": "Any downloadable release bundle must be verified from a clean extracted package before public distribution."
     },
     {
+      "id": "clean_clone_template_adoption_verified",
+      "required": true,
+      "description": "Agent template packs must be verified from a clean clone into a synthetic consumer project before they are treated as reusable."
+    },
+    {
       "id": "dry_run_only",
       "required": true,
       "description": "The public installer command remains preview-only; scratch-only verification may write and roll back inside temporary targets."
@@ -179,19 +184,33 @@
     {
       "id": "agent_templates",
       "label": "Agent-specific templates",
-      "state": "prototype_templates_added",
+      "state": "prototype_clean_clone_verified",
       "human_approval_required": true,
-      "description": "Copyable template pack for Codex/AGENTS.md, Claude Code, Cursor, Gemini CLI, Windsurf, Cline, Roo-compatible environments, and GitHub Copilot. Templates are smoke-tested for structure and safety, but real agent adherence must still be verified in each target environment.",
+      "description": "Copyable template pack for Codex/AGENTS.md, Claude Code, Cursor, Gemini CLI, Windsurf, Cline, Roo-compatible environments, and GitHub Copilot. Templates are smoke-tested for structure and safety and verified from a clean clone into a synthetic consumer project, but real agent adherence must still be verified in each target environment.",
       "verified_by": [
-        "test/agent-compatibility.test.mjs"
+        "test/agent-compatibility.test.mjs",
+        "test/verify-github-agent-template-adoption.test.mjs",
+        "scripts/verify-github-agent-template-adoption.mjs"
+      ],
+      "allowed_commands": [
+        "node scripts/verify-github-agent-template-adoption.mjs --remote-url <github-url> --workspace <scratch-root>",
+        "npm run vibelog:verify-github-agent-template-adoption -- --remote-url <github-url> --workspace <scratch-root>"
+      ],
+      "forbidden_actions": [
+        "git push",
+        "npm publish",
+        "editing global Claude Code settings",
+        "editing global Codex skill directories"
       ],
       "required_gates": [
         "adapter_docs_verified",
         "template_smoke_tests_passed",
+        "clean_clone_template_adoption_verified",
         "explicit_release_approval"
       ],
       "verified_gates": [
-        "template_smoke_tests_passed"
+        "template_smoke_tests_passed",
+        "clean_clone_template_adoption_verified"
       ]
     }
   ],

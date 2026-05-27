@@ -90,11 +90,15 @@ test("agent compatibility docs and package metadata expose the template pack", a
   assert.ok(packageJson.files.includes("agent-templates"));
 
   const agentChannel = plan.channels.find((channel) => channel.id === "agent_templates");
-  assert.equal(agentChannel.state, "prototype_templates_added");
+  assert.equal(agentChannel.state, "prototype_clean_clone_verified");
   assert.equal(agentChannel.human_approval_required, true);
   assert.ok(agentChannel.verified_by.includes("test/agent-compatibility.test.mjs"));
+  assert.ok(agentChannel.verified_by.includes("test/verify-github-agent-template-adoption.test.mjs"));
+  assert.ok(agentChannel.verified_by.includes("scripts/verify-github-agent-template-adoption.mjs"));
   assert.ok(agentChannel.required_gates.includes("adapter_docs_verified"));
   assert.ok(agentChannel.required_gates.includes("template_smoke_tests_passed"));
+  assert.ok(agentChannel.required_gates.includes("clean_clone_template_adoption_verified"));
   assert.ok(agentChannel.required_gates.includes("explicit_release_approval"));
   assert.ok(agentChannel.verified_gates.includes("template_smoke_tests_passed"));
+  assert.ok(agentChannel.verified_gates.includes("clean_clone_template_adoption_verified"));
 });

@@ -72,11 +72,19 @@ node --test test/agent-compatibility.test.mjs
 
 This verifies template paths, required VibeLog commands, public-repo privacy boundaries, and distribution-plan status.
 
-Level 2 - project adoption test:
+Level 2 - clean-clone template adoption test:
+
+```powershell
+node scripts/verify-github-agent-template-adoption.mjs --remote-url https://github.com/xiaoweihu339-afk/VibeLog.git --workspace <scratch-root>
+```
+
+This clones a clean source, installs every template into a synthetic consumer project, initializes VibeLog, exports JSON, validates JSON, and checks that no private project artifacts are present.
+
+Level 3 - project adoption test:
 
 Use a synthetic project and ask the selected agent to create or update `vibe-log.md`, then run the export and validation commands.
 
-Level 3 - live workflow test:
+Level 4 - live workflow test:
 
 Run a real coding task with the selected agent and verify that idea changes, human decisions, execution prompts, validation evidence, and handoff state were recorded without leaking private data.
 

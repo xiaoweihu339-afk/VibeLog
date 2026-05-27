@@ -104,6 +104,12 @@ Current template targets:
 
 See [Agent compatibility](docs/guides/agent-compatibility.md) and [Agent compatibility 中文](docs/guides/agent-compatibility.zh.md).
 
+To verify the template pack from a clean clone into a synthetic consumer project:
+
+```powershell
+npm run vibelog:verify-github-agent-template-adoption -- --remote-url https://github.com/xiaoweihu339-afk/VibeLog.git --workspace "C:\path\to\scratch-root"
+```
+
 ## Clone-Local CLI
 
 This repository is marked `private` in `package.json` because the current package path is for clone-local reuse, not npm publishing.
@@ -199,6 +205,7 @@ See [Claude Code Adapter](docs/guides/claude-code-adapter.md), [Claude Code Opt-
 - `scripts/vibelog-project.mjs`: project adoption CLI for init, hook preview/enable, verification, and hook disable.
 - `scripts/vibelog-install.mjs`: dry-run installer planner.
 - `scripts/verify-release-bundle.mjs`: scratch-only release bundle verifier.
+- `scripts/verify-github-agent-template-adoption.mjs`: clean-clone agent template adoption verifier.
 
 ## Examples
 
@@ -242,12 +249,13 @@ Useful targeted checks:
 node scripts/export-vibelog.mjs examples/public-sample/vibe-log.md --out examples/public-sample/vibe-log.json
 node scripts/validate-vibelog.mjs examples/public-sample/vibe-log.json
 node scripts/export-vibelog.mjs examples/public-sample/vibe-log.md --out examples/public-sample/vibe-log.json --check
+node scripts/verify-github-agent-template-adoption.mjs --remote-url https://github.com/xiaoweihu339-afk/VibeLog.git --workspace "C:\path\to\scratch-root"
 node scripts/verify-release-bundle.mjs --repo "C:\path\to\VibeLog" --scratch-root "C:\path\to\scratch-root"
 ```
 
 ## Current Status
 
-VibeLog v0.2 draft is ready for local skill testing, JSON export, schema validation, project-local adoption, copyable agent-template smoke testing, Claude Code hook preview, scratch-only verification, and sanitized public example review.
+VibeLog v0.2 draft is ready for local skill testing, JSON export, schema validation, project-local adoption, copyable agent-template smoke testing, clean-clone agent-template adoption verification, Claude Code hook preview, scratch-only verification, and sanitized public example review.
 
 It is not yet a polished public package manager release. The next major step is to test the skill across more real agent sessions while keeping private VibeLogs outside this repository.
 
