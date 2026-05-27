@@ -403,7 +403,7 @@ The long-term product may become VibeHub, a GitHub-like platform around Vibe Rep
 
 ### Current State
 
-The VibeLog skill now has a deterministic Markdown-to-JSON exporter, lightweight validator, recorder core, Claude Code hook adapter, scratch-local live hook verifier, dry-run-first project-local hook settings generator, and real-project-style opt-in acceptance verifier. Slice 10 proved that generated project-local settings commands can update VibeLog files inside a realistic scratch project.
+The VibeLog skill now has a deterministic Markdown-to-JSON exporter, lightweight validator, recorder core, Claude Code hook adapter, scratch-local live hook verifier, dry-run-first project-local hook settings generator, real-project-style opt-in acceptance verifier, and ordinary project adoption CLI. Slice 11 added a safer first-use path for normal users: initialize, preview or enable hooks, verify readiness, and disable hooks.
 
 ### Completed
 
@@ -445,26 +445,27 @@ The VibeLog skill now has a deterministic Markdown-to-JSON exporter, lightweight
 - Added bilingual Slice 8 opt-in install guide and report.
 - Fixed first comprehensive audit issues: example JSON drift, incomplete example coverage, broken Slice 4 links, stale Stop handoff progress, and stale hook example settings.
 - Verified the real-project-style opt-in hook path in a scratch project outside this repository.
+- Added the ordinary project adoption CLI for init, enable-hooks, verify, and disable-hooks.
 
 ### In Progress
 
-- Final repository verification and local commit for Slice 10.
+- Final repository verification and local commit for Slice 11.
 
 ### Pending
 
 - Review the updated VibeLog v0.2 draft skill standard.
-- Design the package/install path for normal users.
+- Package the local adoption CLI for easier installation.
 - Add full JSON Schema validation.
 - Add richer example Vibe Repos after the adapter exists.
 - Make Claude Code Stop handoff progress configurable instead of static.
 
 ### Blocked
 
-- No current Slice 10 blocker. Historical note: `skill-creator` quick validation could not run because the current Python environment is missing the `yaml` package.
+- No current Slice 11 blocker. Historical note: `skill-creator` quick validation could not run because the current Python environment is missing the `yaml` package.
 
 ### Next Actions
 
-- Package or install the VibeLog skill for normal user adoption.
+- Package the local adoption CLI for easier installation.
 - Add full JSON Schema validation.
 - Decide whether to install the skill locally or keep iterating inside the repository first.
 
@@ -478,6 +479,7 @@ The VibeLog skill now has a deterministic Markdown-to-JSON exporter, lightweight
 - VibeLog is now being shaped as a bottom-layer, hook-friendly process recorder for Vibe Repos.
 - Claude Code is the preferred first execution environment because its hooks can update VibeLog automatically during the vibe process.
 - Real-project-style opt-in verification uses scratch project source outside this repository.
+- Ordinary project adoption now has a local CLI, but it is not yet packaged as a globally installed command.
 - Do not push to GitHub without separate explicit user approval.
 - `scripts/export-vibelog.mjs` supports the current strict Markdown subset and should stay conservative until more examples justify expansion.
 - Prefer agent dogfood verification over human manual verification when a repeatable vibe scenario can produce evidence.
@@ -875,6 +877,42 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 
 **Confidence:** high
 
+### 2026-05-27
+
+**Type:** test_result
+
+**Summary:** Verified Slice 11 ordinary project adoption workflow.
+
+**Evidence Ref:** `node --test test\vibelog-project.test.mjs`; `node scripts\vibelog-project.mjs init --project "C:\Users\HXW\Documents\vibelog-scratch\slice-11-user-adoption" --title "Slice 11 Adoption Test" --idea "Verify ordinary users can initialize and manage VibeLog safely."`; `node scripts\vibelog-project.mjs enable-hooks --project "C:\Users\HXW\Documents\vibelog-scratch\slice-11-user-adoption" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs" --write`; `node scripts\vibelog-project.mjs verify --project "C:\Users\HXW\Documents\vibelog-scratch\slice-11-user-adoption"`; `node scripts\vibelog-project.mjs disable-hooks --project "C:\Users\HXW\Documents\vibelog-scratch\slice-11-user-adoption"`.
+
+**Result:** passed
+
+**Details:** Targeted tests passed with 2 tests. The scratch CLI acceptance path created valid VibeLog files, wrote project-local hook settings, verified readiness with `ready: true`, and removed 3 VibeLog hook commands during disable.
+
+**Residual Risk:** The CLI still runs from the local repository path and is not yet packaged as an installed command.
+
+**Source:** current work session
+
+**Confidence:** high
+
+### 2026-05-27
+
+**Type:** test_result
+
+**Summary:** Ran final Slice 11 repository verification.
+
+**Evidence Ref:** `node --test`; `node scripts\validate-vibelog.mjs vibe-log.json`; `node scripts\export-vibelog.mjs vibe-log.md --out vibe-log.json --check`; S11 scratch CLI acceptance commands; Markdown relative link checker; Slice 11 placeholder scan; JSON parse checks; `git diff --check`.
+
+**Result:** passed
+
+**Details:** Full `node --test` passed with 44 tests. Root VibeLog validated and matched Markdown. The S11 scratch CLI acceptance path initialized a project, enabled hooks, verified readiness with `ready: true`, and disabled 3 VibeLog hook commands. Markdown link checker scanned 89 tracked and untracked files and found no broken relative links. Slice 11 placeholder scan produced no matches. JSON parse checks passed. `git diff --check` produced no output.
+
+**Residual Risk:** The next step is packaging and install distribution so users do not need to invoke scripts through a local repository path.
+
+**Source:** current work session
+
+**Confidence:** high
+
 ## Project Context
 
 ### Repo / Workspace
@@ -901,6 +939,8 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 - `docs/guides/export-json.md`: deterministic export and validation guide.
 - `docs/guides/claude-code-opt-in-install.md`: English guide for project-local opt-in Claude Code hook setup.
 - `docs/guides/claude-code-opt-in-install.zh.md`: Chinese guide for project-local opt-in Claude Code hook setup.
+- `docs/guides/vibelog-project-adoption.md`: English guide for ordinary project adoption.
+- `docs/guides/vibelog-project-adoption.zh.md`: Chinese guide for ordinary project adoption.
 - `docs/guides/vibe-verification-guide.md`: English guide for agent-run VibeLog verification.
 - `docs/guides/vibe-verification-guide.zh.md`: Chinese guide for agent-run VibeLog verification.
 - `docs/guides/live-hook-verification.md`: English guide for scratch-local Claude Code live hook verification.
@@ -921,6 +961,8 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 - `docs/reports/slice-9-first-audit-fixes-report.zh.md`: Chinese Slice 9 first audit fixes report.
 - `docs/reports/slice-10-real-project-opt-in-report.md`: English Slice 10 real-project opt-in acceptance report.
 - `docs/reports/slice-10-real-project-opt-in-report.zh.md`: Chinese Slice 10 real-project opt-in acceptance report.
+- `docs/reports/slice-11-user-adoption-report.md`: English Slice 11 ordinary user adoption report.
+- `docs/reports/slice-11-user-adoption-report.zh.md`: Chinese Slice 11 ordinary user adoption report.
 - `examples/reading-card-lite/`: generated VibeLog dogfood example only.
 - `scripts/export-vibelog.mjs`: deterministic Markdown-to-JSON exporter.
 - `scripts/validate-vibelog.mjs`: lightweight VibeLog JSON validator.
@@ -929,6 +971,7 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 - `scripts/verify-claude-code-live-hook.mjs`: scratch-local Claude Code hook verifier.
 - `scripts/configure-claude-code-vibelog-hooks.mjs`: dry-run-first project-local Claude Code hook settings generator.
 - `scripts/verify-claude-code-opt-in-project.mjs`: real-project-style opt-in acceptance verifier.
+- `scripts/vibelog-project.mjs`: ordinary project adoption CLI.
 - `test/export-vibelog.test.mjs`: exporter regression tests.
 - `test/validate-vibelog.test.mjs`: validator regression tests.
 - `test/record-vibelog-event.test.mjs`: recorder core tests.
@@ -936,6 +979,7 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 - `test/verify-claude-code-live-hook.test.mjs`: live hook verifier tests.
 - `test/configure-claude-code-vibelog-hooks.test.mjs`: opt-in hook settings generator tests.
 - `test/verify-claude-code-opt-in-project.test.mjs`: real-project-style opt-in acceptance tests.
+- `test/vibelog-project.test.mjs`: ordinary project adoption CLI tests.
 - `test/vibelog-examples.test.mjs`: generated example integrity and repository-boundary tests.
 
 ### Run / Test Commands
@@ -951,6 +995,11 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 - `node scripts/verify-claude-code-live-hook.mjs --workspace "C:\Users\HXW\Documents\vibelog-scratch\claude-live-hook-test" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs"`
 - `node scripts/verify-claude-code-live-hook.mjs --workspace "C:\Users\HXW\Documents\vibelog-scratch\claude-live-hook-test-live" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs" --live --prompt "Reply with OK. Do not use tools." --max-budget-usd 0.05`
 - `node scripts/verify-claude-code-opt-in-project.mjs --workspace "C:\Users\HXW\Documents\vibelog-scratch\slice-10-real-project-opt-in" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs"`
+- `node --test test/vibelog-project.test.mjs`
+- `node scripts/vibelog-project.mjs init --project "C:\Users\HXW\Documents\vibelog-scratch\slice-11-user-adoption" --title "Slice 11 Adoption Test" --idea "Verify ordinary users can initialize and manage VibeLog safely."`
+- `node scripts/vibelog-project.mjs enable-hooks --project "C:\Users\HXW\Documents\vibelog-scratch\slice-11-user-adoption" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs" --write`
+- `node scripts/vibelog-project.mjs verify --project "C:\Users\HXW\Documents\vibelog-scratch\slice-11-user-adoption"`
+- `node scripts/vibelog-project.mjs disable-hooks --project "C:\Users\HXW\Documents\vibelog-scratch\slice-11-user-adoption"`
 - `node --test test/configure-claude-code-vibelog-hooks.test.mjs`
 - `node scripts/configure-claude-code-vibelog-hooks.mjs --project "C:\Users\HXW\Documents\vibelog-scratch\slice-8-install-test" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs"`
 - `node --test test/vibelog-examples.test.mjs`
@@ -1397,6 +1446,26 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 
 **Notes:** Bilingual report for the real-project-style opt-in hook acceptance verifier and scratch evidence.
 
+### VibeLog project adoption guide
+
+**Type:** document
+
+**Ref:** `docs/guides/vibelog-project-adoption.md`, `docs/guides/vibelog-project-adoption.zh.md`
+
+**Visibility:** private
+
+**Notes:** Bilingual guide for initializing, enabling, verifying, and disabling VibeLog in ordinary projects.
+
+### Slice 11 user adoption reports
+
+**Type:** report
+
+**Ref:** `docs/reports/slice-11-user-adoption-report.md`, `docs/reports/slice-11-user-adoption-report.zh.md`
+
+**Visibility:** private
+
+**Notes:** Bilingual report for the ordinary project adoption CLI and scratch acceptance evidence.
+
 ## Execution Prompts
 
 ### 2026-05-25
@@ -1812,6 +1881,24 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 **Result:** Added a real-project-style opt-in verifier, ran scratch acceptance evidence, and documented the result in bilingual reports.
 
 **Reuse Notes:** Treat this as authorization for local S10 verification only. It does not authorize GitHub push or global Claude Code settings changes.
+
+### 2026-05-27
+
+**Agent / Tool:** Codex
+
+**Prompt Type:** build
+
+**Prompt Visibility:** summary
+
+**Recording Mode:** exact
+
+**Prompt Summary:** User authorized executing Slice 11 ordinary project adoption path.
+
+**Prompt Text:** 执行s11
+
+**Result:** Added a local VibeLog project adoption CLI with init, enable-hooks, verify, and disable-hooks commands.
+
+**Reuse Notes:** Treat this as authorization for local S11 implementation only. It does not authorize GitHub push, global Claude Code settings changes, or package publishing.
 
 ## Development Log
 
@@ -2347,21 +2434,40 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 
 **Follow-up:** Design the normal-user package/install path and make Stop handoff progress configurable.
 
+### 2026-05-27
+**Type:** feature
+
+**Summary:** Added ordinary project adoption CLI.
+
+**Files Changed:** `scripts/vibelog-project.mjs`, `test/vibelog-project.test.mjs`, `docs/guides/vibelog-project-adoption.md`, `docs/guides/vibelog-project-adoption.zh.md`, `docs/reports/slice-11-user-adoption-report.md`, `docs/reports/slice-11-user-adoption-report.zh.md`, `docs/superpowers/specs/2026-05-27-vibelog-user-adoption-slice-11-design.md`, `docs/superpowers/specs/2026-05-27-vibelog-user-adoption-slice-11-design.zh.md`, `docs/superpowers/plans/2026-05-27-vibelog-user-adoption-slice-11.md`, `docs/superpowers/plans/2026-05-27-vibelog-user-adoption-slice-11.zh.md`, `README.md`, `vibe-log.md`, `vibe-log.json`
+
+**Details:** Added `scripts/vibelog-project.mjs` with `init`, `enable-hooks`, `verify`, and `disable-hooks` subcommands so ordinary users can start VibeLog without directly composing lower-level exporter and hook generator commands.
+
+**Bug Symptom:** not applicable
+
+**Root Cause:** not applicable
+
+**Fix:** not applicable
+
+**Verification:** `node --test test\vibelog-project.test.mjs` passed. The scratch CLI acceptance path created valid VibeLog files, wrote project-local hook settings, verified readiness, and disabled VibeLog hooks.
+
+**Follow-up:** Package the CLI so users do not need to invoke it from a cloned repository path.
+
 ## Handoff State
 
 ### Current State
 
-Slice 10 verified the real-project-style opt-in hook path. A scratch project outside the repository can generate project-local Claude settings, run generated hook commands with `CLAUDE_PROJECT_DIR`, and update `vibe-log.md`, `vibe-log.json`, and `.vibelog-events/` without touching global settings.
+Slice 11 added the first ordinary-user adoption CLI. A local project can now initialize VibeLog, dry-run or write project-local Claude Code hooks, verify readiness, and disable only VibeLog hook commands while preserving unrelated settings.
 
 ### Project Progress Snapshot
 
-- Project Progress: 25 / 100
-- Change This Task: +2
-- Current Phase: real-project opt-in acceptance
-- Completed This Task: Verified project-local opt-in hooks in a realistic scratch project
-- Next Unlock: package/install path for normal users
-- Main Risk: this validates generated hook commands with fixture payloads, not a full live Claude Code paid session by default
-- Confidence: medium
+- Project Progress: 28 / 100
+- Change This Task: +3
+- Current Phase: ordinary-user adoption path
+- Completed This Task: Added init, enable, verify, and disable commands for normal project adoption
+- Next Unlock: packaging and install distribution
+- Main Risk: the CLI is still local-repository based, not yet a packaged command installed globally or through a package manager
+- Confidence: medium-high
 
 ### Completed
 
@@ -2373,14 +2479,15 @@ Slice 10 verified the real-project-style opt-in hook path. A scratch project out
 - First comprehensive audit fixes completed
 - All examples covered by JSON drift tests
 - Real-project-style opt-in hook acceptance verified
+- Ordinary project adoption CLI added
 
 ### In Progress
 
-- Local commit for Slice 10
+- Local commit for Slice 11
 
 ### Pending
 
-- Design package/install path for normal users
+- Package the adoption CLI for easier installation
 - Add stronger schema validation
 - Make Stop handoff progress configurable instead of static
 - Optional full live Claude Code verification in an opted-in project
@@ -2391,12 +2498,12 @@ Slice 10 verified the real-project-style opt-in hook path. A scratch project out
 
 ### Next Actions
 
-- Commit Slice 10 locally
-- Plan package/install path for normal users
+- Commit Slice 11 locally
+- Plan packaging and install distribution
 
 ### Context For Next Agent
 
-- Session: slice-10-codex
+- Session: slice-11-codex
 - Stop hook active: false
 ## Public / Private Projection
 
@@ -2742,6 +2849,21 @@ Slice 10 verified the real-project-style opt-in hook path. A scratch project out
 **Problems:** Needed to prove the safe adoption path works after settings generation, not only that settings can be written.
 
 **Next:** Finish full repository verification, commit locally, then design the package/install path for normal users.
+
+**Source:** current work session
+
+**Confidence:** high
+
+### 2026-05-27
+**Stage:** prototype
+
+**What Happened:** Added the first ordinary project adoption CLI for VibeLog.
+
+**Tools Used:** Codex, Node.js, VibeLog
+
+**Problems:** Users needed a single safer entry point for init, hook enablement, readiness verification, and rollback instead of composing lower-level scripts manually.
+
+**Next:** Finish full repository verification, commit locally, then plan packaging and install distribution.
 
 **Source:** current work session
 

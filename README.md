@@ -96,6 +96,15 @@ The real-project-style opt-in acceptance verifier is:
 node scripts/verify-claude-code-opt-in-project.mjs --workspace "C:\Users\HXW\Documents\vibelog-scratch\slice-10-real-project-opt-in" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs"
 ```
 
+The ordinary project adoption CLI is:
+
+```powershell
+node scripts/vibelog-project.mjs init --project "C:\path\to\project" --title "My Vibe Project" --idea "One sentence describing the product idea."
+node scripts/vibelog-project.mjs enable-hooks --project "C:\path\to\project" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs"
+node scripts/vibelog-project.mjs verify --project "C:\path\to\project"
+node scripts/vibelog-project.mjs disable-hooks --project "C:\path\to\project"
+```
+
 ## Repository Identity
 
 This repository is skill-first. Its primary purpose is to make the `vibelog` skill, schema, and documentation easy for others to reuse.
@@ -186,6 +195,7 @@ See [Claude Code adapter notes](skills/vibelog/references/claude-code-hooks-adap
 |   |-- configure-claude-code-vibelog-hooks.mjs
 |   |-- export-vibelog.mjs
 |   |-- record-vibelog-event.mjs
+|   |-- vibelog-project.mjs
 |   |-- verify-claude-code-live-hook.mjs
 |   `-- validate-vibelog.mjs
 |-- test/
@@ -193,6 +203,7 @@ See [Claude Code adapter notes](skills/vibelog/references/claude-code-hooks-adap
 |   |-- configure-claude-code-vibelog-hooks.test.mjs
 |   |-- export-vibelog.test.mjs
 |   |-- record-vibelog-event.test.mjs
+|   |-- vibelog-project.test.mjs
 |   |-- verify-claude-code-live-hook.test.mjs
 |   |-- validate-vibelog.test.mjs
 |   `-- vibelog-examples.test.mjs
@@ -293,6 +304,7 @@ Dependency-free Node.js tools for deterministic Markdown-to-JSON export and ligh
 - `configure-claude-code-vibelog-hooks.mjs`: dry-run-first generator for project-local Claude Code VibeLog hook settings.
 - `verify-claude-code-live-hook.mjs`: create scratch Claude Code settings, run fixture hook payloads, and optionally verify a tiny live Claude Code hook session.
 - `verify-claude-code-opt-in-project.mjs`: verify project-local opt-in hooks in a realistic scratch project by executing generated settings commands.
+- `vibelog-project.mjs`: ordinary project adoption CLI for init, hook preview/enable, readiness verification, and hook disable.
 - `validate-vibelog.mjs`: lightweight VibeLog JSON validator.
 
 ### `docs/product/`
@@ -308,6 +320,8 @@ Practical guides for using and testing the skill:
 - [Claude Code Adapter 指南](docs/guides/claude-code-adapter.zh.md)
 - [Claude Code Opt-In Install](docs/guides/claude-code-opt-in-install.md)
 - [Claude Code Opt-In 安装指南](docs/guides/claude-code-opt-in-install.zh.md)
+- [VibeLog Project Adoption](docs/guides/vibelog-project-adoption.md)
+- [VibeLog 项目采用指南](docs/guides/vibelog-project-adoption.zh.md)
 - [Export JSON](docs/guides/export-json.md)
 - [Project progress reporting](docs/guides/progress-reporting.md)
 - [项目进度汇报机制](docs/guides/progress-reporting.zh.md)
@@ -346,6 +360,8 @@ User-review reports for completed slices:
 - [Slice 9 第一次全面检查修复报告](docs/reports/slice-9-first-audit-fixes-report.zh.md)
 - [Slice 10 real project opt-in report](docs/reports/slice-10-real-project-opt-in-report.md)
 - [Slice 10 真实项目 Opt-In 验收报告](docs/reports/slice-10-real-project-opt-in-report.zh.md)
+- [Slice 11 user adoption report](docs/reports/slice-11-user-adoption-report.md)
+- [Slice 11 普通用户采用路径报告](docs/reports/slice-11-user-adoption-report.zh.md)
 
 ### `examples/`
 
@@ -366,16 +382,17 @@ This repository contains the VibeLog v0.2 draft prototype:
 - Claude Code hook adapter notes
 - scratch-local live Claude Code hook verifier
 - project-local opt-in Claude Code hook settings generator
+- ordinary project adoption CLI
 - deterministic Markdown-to-JSON exporter
 - lightweight JSON validator
 - design spec
 - self-recorded project VibeLog
 
-It is ready for local testing, generated example review, scratch-local Claude Code hook verification, and dry-run project-local hook settings generation. It is not yet a polished public package.
+It is ready for local testing, generated example review, scratch-local Claude Code hook verification, dry-run project-local hook settings generation, and ordinary project adoption through the local CLI. It is not yet a polished public package.
 
 ## Next Steps
 
-- Test the opt-in hook generator across real user projects.
+- Package the local adoption CLI for easier installation.
 - Add full JSON Schema validation.
 - Install and test the skill in real agent sessions.
 - Add adapters for other agent environments, such as Codex hooks, Cursor rules, or AGENTS.md.
