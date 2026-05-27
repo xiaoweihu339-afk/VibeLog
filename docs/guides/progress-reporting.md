@@ -15,21 +15,21 @@ Because the total goal is broad, progress must be conservative. Do not score loc
 Every completed meaningful task report should include:
 
 ```txt
-Project Progress: 16 / 100
-Change This Task: +0
-Current Phase: VibeLog foundation and verification
-Completed This Task: Updated the progress reporting baseline after S23 VibeLog self-update loop
-Next Unlock: Automatic or hook-assisted continuous VibeLog recording during real work
-Main Risk: Manual self-update loop is verified, but automatic continuous recording is not yet proven
+Project Progress: 18 / 100
+Change This Task: +2
+Current Phase: Automatic recording foundation
+Completed This Task: S24 local event stream recording and progress_updated event support
+Next Unlock: Live hook adapters emitting event streams continuously during real work
+Main Risk: Local deterministic event streams are verified, but live hook environments still need separate verification
 Confidence: medium-high
 ```
 
 ## Current Baseline
 
-Current baseline after S23 VibeLog self-update loop:
+Current baseline after S24 local event stream recording:
 
 ```txt
-Project Progress: 16 / 100
+Project Progress: 18 / 100
 ```
 
 Reason:
@@ -39,8 +39,9 @@ Reason:
 - Public repository boundaries, sanitized examples, agent templates, and clean-clone template adoption verification exist.
 - S22R inserted VibeLog into the current real project mid-stream and produced a private validated dogfood log.
 - S23 proved a small real self-update loop: read local VibeLog, execute a maintenance task, update VibeLog, export JSON, and validate.
+- S24 proved a local event stream loop: read ordered events, update Markdown, append progress, export JSON, and validate without relying on a manual Markdown edit.
 - VibeHub's product layer, repository storage model, collaboration/remix model, and public community still do not exist.
-- Automatic continuous recording across agent environments is not yet proven.
+- Live hook-driven continuous recording across agent environments is not yet proven.
 
 ## Progress Bands
 
@@ -77,8 +78,8 @@ Never increase progress just because many files changed. Increase it only when t
 
 ## Current Recommendation
 
-Until automatic or hook-assisted recording proves that VibeLog can update during real work without relying on a manual end-of-slice edit, keep the project near:
+Until live hook adapters prove that VibeLog can update continuously inside real agent environments, keep the project near:
 
 ```txt
-Project Progress: 16 / 100
+Project Progress: 18 / 100
 ```

@@ -1,6 +1,6 @@
 # Vibe Event Format
 
-Vibe Event JSON is the adapter boundary for automatic VibeLog recording.
+Vibe Event JSON is the adapter boundary for automatic VibeLog recording. A recorder may consume one event at a time or an ordered local event stream.
 
 ## Core Shape
 
@@ -14,6 +14,22 @@ Every event is a JSON object with:
 ```
 
 `timestamp` should use an ISO-like date or datetime. The first 10 characters update `updated_at` when they match `YYYY-MM-DD`.
+
+## Event Streams
+
+Use event streams when a session, hook, or adapter accumulates multiple process facts before writing to `vibe-log.md`.
+
+Supported local stream shapes:
+
+- JSON array of Vibe Event objects.
+- JSONL where each non-empty line is one Vibe Event object.
+
+Events are applied in file order:
+
+```jsonl
+{"type":"prompt_submitted","timestamp":"2026-05-27T09:00:00+08:00","agent_or_tool":"Codex","prompt_type":"build","prompt_visibility":"summary","recording_mode":"exact","prompt_summary":"Execute S24.","prompt_text":"Execute S24.","result":"Prompt captured."}
+{"type":"test_ran","timestamp":"2026-05-27T09:05:00+08:00","summary":"Focused tests passed.","evidence_ref":"node --test test/record-vibelog-event.test.mjs","result":"passed"}
+```
 
 ## Supported Types
 
@@ -143,6 +159,24 @@ Optional fields:
 - `in_progress`
 - `blockers`
 - `context_for_next_agent`
+
+### `progress_updated`
+
+Appends to `Vibe Progress`.
+
+Required fields:
+
+- `timestamp`
+- `stage`
+- `what_happened`
+
+Optional fields:
+
+- `tools_used`
+- `problems`
+- `next`
+- `source`
+- `confidence`
 
 ## Adapter Rules
 

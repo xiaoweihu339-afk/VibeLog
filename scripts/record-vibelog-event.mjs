@@ -11,7 +11,8 @@ export const SUPPORTED_EVENT_TYPES = new Set([
   "tool_used",
   "test_ran",
   "bug_fixed",
-  "handoff_updated"
+  "handoff_updated",
+  "progress_updated"
 ]);
 
 const sectionByType = {
@@ -20,7 +21,8 @@ const sectionByType = {
   decision_made: "Human-in-the-Loop",
   tool_used: "Development Log",
   test_ran: "Verification Evidence",
-  bug_fixed: "Bugfix / Incident Log"
+  bug_fixed: "Bugfix / Incident Log",
+  progress_updated: "Vibe Progress"
 };
 
 const requiredFieldsByType = {
@@ -46,7 +48,8 @@ const requiredFieldsByType = {
   tool_used: ["timestamp", "work_type", "summary", "details", "verification"],
   test_ran: ["timestamp", "summary", "evidence_ref", "result"],
   bug_fixed: ["timestamp", "summary", "bug_symptom", "root_cause", "fix", "verification"],
-  handoff_updated: ["timestamp", "current_state", "completed", "pending", "next_actions"]
+  handoff_updated: ["timestamp", "current_state", "completed", "pending", "next_actions"],
+  progress_updated: ["timestamp", "stage", "what_happened"]
 };
 
 export function applyVibeLogEvent(markdown, event) {
@@ -81,6 +84,75 @@ export async function recordVibeLogEventFile({ eventPath, logPath = "vibe-log.md
     logPath,
     jsonPath
   };
+}
+
+export async function loadVibeEventsFile(eventsPath) {
+  if (!eventsPath) throw new Error("--events is required");
+  const text = await readFile(eventsPath, "utf8");
+  return parseVibeEvents(text, eventsPath);
+}
+
+export function parseVibeEvents(text, sourceName = "Vibe Event stream") {
+  const trimmed = text.trim();
+  if (!trimmed) {
+    throw new Error(`${sourceName} must contain at least one Vibe Event`);
+  }
+
+  if (trimmed.startsWith("[")) {
+    const parsed = JSON.parse(trimmed);
+    return normalizeEventList(parsed, sourceName);
+  }
+
+  if (trimmed.startsWith("{") && !trimmed.includes("\n")) {
+    const parsed = JSON.parse(trimmed);
+    return normalizeEventList(parsed, sourceName);
+  }
+
+  const events = text
+    .split(/\r?\n/u)
+    .map((line, index) => ({ line: line.trim(), lineNumber: index + 1 }))
+    .filter(({ line }) => line.length > 0)
+    .map(({ line, lineNumber }) => {
+      try {
+        return JSON.parse(line);
+      } catch (error) {
+        throw new Error(`Invalid JSON in ${sourceName} line ${lineNumber}: ${error.message}`);
+      }
+    });
+
+  return normalizeEventList(events, sourceName);
+}
+
+export async function recordVibeLogEventsFile({ eventsPath, logPath = "vibe-log.md", jsonPath = null }) {
+  if (!eventsPath) throw new Error("--events is required");
+
+  const events = await loadVibeEventsFile(eventsPath);
+  const markdown = await readFile(logPath, "utf8");
+  const updatedMarkdown = events.reduce(applyVibeLogEvent, markdown);
+
+  await writeFile(logPath, updatedMarkdown, "utf8");
+  if (jsonPath) {
+    await exportVibeLogFile(logPath, jsonPath);
+  }
+
+  return {
+    count: events.length,
+    logPath,
+    jsonPath
+  };
+}
+
+function normalizeEventList(value, sourceName) {
+  const events = Array.isArray(value) ? value : [value];
+  if (events.length === 0) {
+    throw new Error(`${sourceName} must contain at least one Vibe Event`);
+  }
+
+  for (const event of events) {
+    validateEvent(event);
+  }
+
+  return events;
 }
 
 function validateEvent(event) {
@@ -160,7 +232,8 @@ function renderEntry(event) {
     decision_made: renderDecisionMade,
     tool_used: renderToolUsed,
     test_ran: renderTestRan,
-    bug_fixed: renderBugFixed
+    bug_fixed: renderBugFixed,
+    progress_updated: renderProgressUpdated
   };
 
   return renderers[event.type](event);
@@ -235,6 +308,18 @@ function renderBugFixed(event) {
     ["Fix", event.fix],
     ["Verification", event.verification],
     ["Follow-up", event.follow_up]
+  ]);
+}
+
+function renderProgressUpdated(event) {
+  return renderEntryBlock(event.timestamp, [
+    ["Stage", event.stage],
+    ["What Happened", event.what_happened],
+    ["Tools Used", event.tools_used],
+    ["Problems", event.problems],
+    ["Next", event.next],
+    ["Source", event.source],
+    ["Confidence", event.confidence]
   ]);
 }
 
@@ -320,6 +405,7 @@ function ensureTrailingNewline(markdown) {
 function parseArgs(argv) {
   const options = {
     eventPath: null,
+    eventsPath: null,
     logPath: "vibe-log.md",
     jsonPath: null
   };
@@ -329,6 +415,8 @@ function parseArgs(argv) {
     const arg = args.shift();
     if (arg === "--event") {
       options.eventPath = args.shift() ?? null;
+    } else if (arg === "--events") {
+      options.eventsPath = args.shift() ?? null;
     } else if (arg === "--log") {
       options.logPath = args.shift() ?? "";
     } else if (arg === "--json") {
@@ -338,7 +426,11 @@ function parseArgs(argv) {
     }
   }
 
-  if (!options.eventPath) throw new Error("--event is required");
+  if (Boolean(options.eventPath) === Boolean(options.eventsPath)) {
+    throw new Error("Provide exactly one of --event or --events");
+  }
+  if (options.eventPath === "") throw new Error("--event requires a path");
+  if (options.eventsPath === "") throw new Error("--events requires a path");
   if (!options.logPath) throw new Error("--log requires a path");
   if (options.jsonPath === "") throw new Error("--json requires a path");
 
@@ -347,14 +439,21 @@ function parseArgs(argv) {
 
 async function main() {
   const options = parseArgs(process.argv.slice(2));
-  const result = await recordVibeLogEventFile({
-    eventPath: resolve(options.eventPath),
-    logPath: resolve(options.logPath),
-    jsonPath: options.jsonPath ? resolve(options.jsonPath) : null
-  });
+  const result = options.eventsPath
+    ? await recordVibeLogEventsFile({
+      eventsPath: resolve(options.eventsPath),
+      logPath: resolve(options.logPath),
+      jsonPath: options.jsonPath ? resolve(options.jsonPath) : null
+    })
+    : await recordVibeLogEventFile({
+      eventPath: resolve(options.eventPath),
+      logPath: resolve(options.logPath),
+      jsonPath: options.jsonPath ? resolve(options.jsonPath) : null
+    });
 
   const jsonMessage = result.jsonPath ? ` and regenerated ${result.jsonPath}` : "";
-  console.log(`Recorded ${result.type} in ${result.logPath}${jsonMessage}`);
+  const recorded = result.count === undefined ? result.type : `${result.count} events`;
+  console.log(`Recorded ${recorded} in ${result.logPath}${jsonMessage}`);
 }
 
 if (import.meta.url === pathToFileURL(fileURLToPath(import.meta.url)).href) {

@@ -10,7 +10,9 @@ import { parseVibeLogMarkdown } from "../scripts/export-vibelog.mjs";
 import { validateVibeLog } from "../scripts/validate-vibelog.mjs";
 import {
   applyVibeLogEvent,
+  loadVibeEventsFile,
   recordVibeLogEventFile,
+  recordVibeLogEventsFile,
   SUPPORTED_EVENT_TYPES
 } from "../scripts/record-vibelog-event.mjs";
 
@@ -150,6 +152,7 @@ test("exposes the first supported Vibe Event types", () => {
     "decision_made",
     "handoff_updated",
     "idea_changed",
+    "progress_updated",
     "prompt_submitted",
     "test_ran",
     "tool_used"
@@ -242,6 +245,27 @@ test("handoff_updated replaces handoff state with structured next-agent context"
   assert.ok(data.handoff_state.project_progress_snapshot.includes("Project Progress: 15 / 100"));
 });
 
+test("progress_updated appends a chronological Vibe Progress entry", () => {
+  const markdown = applyVibeLogEvent(baseMarkdown, {
+    type: "progress_updated",
+    timestamp: "2026-05-27T10:25:00+08:00",
+    stage: "prototype",
+    what_happened: "S24 local event stream recording became available.",
+    tools_used: ["Codex", "node --test"],
+    problems: ["Live hook environments still need separate verification."],
+    next: ["Wire adapters to emit event streams."],
+    source: "S24 event stream",
+    confidence: "high"
+  });
+  const data = parseVibeLogMarkdown(markdown);
+  const latest = data.vibe_progress.at(-1);
+
+  assert.equal(latest.timestamp, "2026-05-27T10:25:00+08:00");
+  assert.equal(latest.stage, "prototype");
+  assert.match(latest.what_happened, /event stream/);
+  assert.deepEqual(latest.tools_used, ["`Codex`", "`node --test`"]);
+});
+
 test("recordVibeLogEventFile writes Markdown and optional JSON", async () => {
   const dir = await mkdtemp(join(tmpdir(), "vibelog-recorder-"));
   const logPath = join(dir, "vibe-log.md");
@@ -267,6 +291,167 @@ test("recordVibeLogEventFile writes Markdown and optional JSON", async () => {
     const json = JSON.parse(await readFile(jsonPath, "utf8"));
     assert.match(markdown, /Recorder CLI test passed/);
     assert.equal(json.verification_evidence[0].result, "passed");
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
+test("loads Vibe Events from a JSONL event stream in order", async () => {
+  const dir = await mkdtemp(join(tmpdir(), "vibelog-event-stream-"));
+  const eventsPath = join(dir, "events.jsonl");
+
+  try {
+    await writeFile(eventsPath, [
+      JSON.stringify({
+        type: "prompt_submitted",
+        timestamp: "2026-05-27T09:00:00+08:00",
+        agent_or_tool: "Codex",
+        prompt_type: "build",
+        prompt_visibility: "summary",
+        recording_mode: "exact",
+        prompt_summary: "Execute S24 event loop.",
+        prompt_text: "Execute S24.",
+        result: "Prompt captured."
+      }),
+      "",
+      JSON.stringify({
+        type: "test_ran",
+        timestamp: "2026-05-27T09:05:00+08:00",
+        summary: "Focused S24 tests passed.",
+        evidence_ref: "node --test test/record-vibelog-event.test.mjs",
+        result: "passed"
+      })
+    ].join("\n"), "utf8");
+
+    const events = await loadVibeEventsFile(eventsPath);
+
+    assert.equal(events.length, 2);
+    assert.equal(events[0].type, "prompt_submitted");
+    assert.equal(events[1].type, "test_ran");
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
+test("loads Vibe Events from a JSON array event stream in order", async () => {
+  const dir = await mkdtemp(join(tmpdir(), "vibelog-event-array-"));
+  const eventsPath = join(dir, "events.json");
+
+  try {
+    await writeFile(eventsPath, JSON.stringify([
+      {
+        type: "idea_changed",
+        timestamp: "2026-05-27T09:10:00+08:00",
+        change_type: "refinement",
+        before: "Single-event recorder.",
+        after: "Ordered event stream recorder.",
+        reason: "A session can emit multiple structured facts."
+      },
+      {
+        type: "decision_made",
+        timestamp: "2026-05-27T09:15:00+08:00",
+        decision_type: "scope",
+        human_input: "Keep S24 local and safe.",
+        final_decision: "Use a local event stream before live hooks.",
+        why_it_mattered: "It avoids binding the core to one agent.",
+        impact: "Adapters can share the same recorder boundary."
+      }
+    ]), "utf8");
+
+    const events = await loadVibeEventsFile(eventsPath);
+
+    assert.equal(events.length, 2);
+    assert.equal(events[0].type, "idea_changed");
+    assert.equal(events[1].type, "decision_made");
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
+test("recordVibeLogEventsFile applies a local event stream and exports valid JSON", async () => {
+  const dir = await mkdtemp(join(tmpdir(), "vibelog-event-loop-"));
+  const logPath = join(dir, "vibe-log.md");
+  const eventsPath = join(dir, "events.jsonl");
+  const jsonPath = join(dir, "vibe-log.json");
+
+  const events = [
+    {
+      type: "prompt_submitted",
+      timestamp: "2026-05-27T10:00:00+08:00",
+      agent_or_tool: "Codex",
+      prompt_type: "build",
+      prompt_visibility: "summary",
+      recording_mode: "exact",
+      prompt_summary: "Build S24 local event loop.",
+      prompt_text: "Execute S24 local event loop.",
+      result: "Prompt recorded through event stream."
+    },
+    {
+      type: "tool_used",
+      timestamp: "2026-05-27T10:10:00+08:00",
+      work_type: "feature",
+      summary: "Applied event stream updates to VibeLog.",
+      files_changed: ["scripts/record-vibelog-event.mjs"],
+      details: "Multiple events are applied in file order.",
+      verification: "Focused event stream test passed."
+    },
+    {
+      type: "test_ran",
+      timestamp: "2026-05-27T10:20:00+08:00",
+      summary: "S24 focused tests passed.",
+      evidence_ref: "node --test test/record-vibelog-event.test.mjs",
+      result: "passed",
+      residual_risk: "No long-running daemon is implemented yet.",
+      source: "test fixture",
+      confidence: "high"
+    },
+    {
+      type: "progress_updated",
+      timestamp: "2026-05-27T10:25:00+08:00",
+      stage: "prototype",
+      what_happened: "S24 event stream updated progress without a manual Markdown edit.",
+      tools_used: ["Codex", "node --test"],
+      problems: ["No live hook daemon is implemented."],
+      next: ["Connect hook adapters to event streams."],
+      source: "test fixture",
+      confidence: "high"
+    },
+    {
+      type: "handoff_updated",
+      timestamp: "2026-05-27T10:30:00+08:00",
+      current_state: "Local event stream recording is ready for adapters.",
+      progress_snapshot: {
+        project_progress: "18 / 100",
+        change_this_task: "+2",
+        current_phase: "Automatic recording foundation",
+        completed_this_task: "Local event stream applied to Markdown and JSON",
+        next_unlock: "Agent hook adapters emit event streams continuously",
+        main_risk: "Live hook environments still need separate verification",
+        confidence: "medium"
+      },
+      completed: ["Local event stream recorded"],
+      pending: ["Hook adapter event stream verification"],
+      next_actions: ["Wire adapters to append structured events"]
+    }
+  ];
+
+  try {
+    await writeFile(logPath, baseMarkdown, "utf8");
+    await writeFile(eventsPath, events.map((event) => JSON.stringify(event)).join("\n"), "utf8");
+
+    const result = await recordVibeLogEventsFile({ eventsPath, logPath, jsonPath });
+    const markdown = await readFile(logPath, "utf8");
+    const json = JSON.parse(await readFile(jsonPath, "utf8"));
+    const validation = validateVibeLog(json);
+
+    assert.equal(result.count, 5);
+    assert.equal(validation.valid, true, validation.errors.join("\n"));
+    assert.match(markdown, /Local event stream recording is ready/);
+    assert.equal(json.execution_prompts[0].prompt_text, "Execute S24 local event loop.");
+    assert.equal(json.development_log[0].files_changed[0], "`scripts/record-vibelog-event.mjs`");
+    assert.equal(json.verification_evidence[0].result, "passed");
+    assert.match(json.vibe_progress.at(-1).what_happened, /manual Markdown edit/);
+    assert.ok(json.handoff_state.project_progress_snapshot.includes("Project Progress: 18 / 100"));
   } finally {
     await rm(dir, { recursive: true, force: true });
   }
@@ -306,6 +491,51 @@ test("CLI records an event and regenerates JSON", async () => {
     const json = JSON.parse(await readFile(jsonPath, "utf8"));
     assert.match(stdout, /Recorded prompt_submitted/);
     assert.equal(json.execution_prompts[0].prompt_text, "执行");
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
+test("CLI records an event stream and regenerates JSON", async () => {
+  const dir = await mkdtemp(join(tmpdir(), "vibelog-event-loop-cli-"));
+  const logPath = join(dir, "vibe-log.md");
+  const eventsPath = join(dir, "events.jsonl");
+  const jsonPath = join(dir, "vibe-log.json");
+
+  try {
+    await writeFile(logPath, baseMarkdown, "utf8");
+    await writeFile(eventsPath, [
+      JSON.stringify({
+        type: "idea_changed",
+        timestamp: "2026-05-27T11:00:00+08:00",
+        change_type: "refinement",
+        before: "Manual end-of-slice updates.",
+        after: "Structured event stream updates.",
+        reason: "Adapters need a repeatable local capture loop."
+      }),
+      JSON.stringify({
+        type: "test_ran",
+        timestamp: "2026-05-27T11:05:00+08:00",
+        summary: "CLI event stream test passed.",
+        evidence_ref: "node scripts/record-vibelog-event.mjs --events events.jsonl --log vibe-log.md --json vibe-log.json",
+        result: "passed"
+      })
+    ].join("\n"), "utf8");
+
+    const { stdout } = await execFileAsync("node", [
+      "scripts/record-vibelog-event.mjs",
+      "--events",
+      eventsPath,
+      "--log",
+      logPath,
+      "--json",
+      jsonPath
+    ], { cwd: process.cwd() });
+
+    const json = JSON.parse(await readFile(jsonPath, "utf8"));
+    assert.match(stdout, /Recorded 2 events/);
+    assert.match(json.idea_evolution[0].after, /event stream/);
+    assert.equal(json.verification_evidence[0].result, "passed");
   } finally {
     await rm(dir, { recursive: true, force: true });
   }

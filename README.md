@@ -136,11 +136,19 @@ See [Export JSON](docs/guides/export-json.md).
 
 ## Record Events
 
-Use the recorder core when an agent, hook, or adapter has a structured Vibe Event JSON payload:
+Use the recorder core when an agent, hook, or adapter has one structured Vibe Event JSON payload:
 
 ```powershell
 node scripts/record-vibelog-event.mjs --event event.json --log vibe-log.md --json vibe-log.json
 ```
+
+Use an event stream when a session, hook, or adapter accumulates multiple events:
+
+```powershell
+node scripts/record-vibelog-event.mjs --events events.jsonl --log vibe-log.md --json vibe-log.json
+```
+
+`--events` accepts a JSON array or JSONL file. Events are applied in file order.
 
 See [Recorder Core](docs/guides/recorder-core.md) and [Vibe Event Format](skills/vibelog/references/vibe-event-format.md).
 
@@ -199,7 +207,7 @@ See [Claude Code Adapter](docs/guides/claude-code-adapter.md), [Claude Code Opt-
 
 - `scripts/export-vibelog.mjs`: export deterministic JSON from Markdown.
 - `scripts/validate-vibelog.mjs`: validate exported VibeLog JSON against the current schema subset.
-- `scripts/record-vibelog-event.mjs`: apply one structured Vibe Event payload to Markdown and optionally regenerate JSON.
+- `scripts/record-vibelog-event.mjs`: apply one structured Vibe Event payload or an ordered event stream to Markdown and optionally regenerate JSON.
 - `scripts/claude-code-hook-adapter.mjs`: map Claude Code hook JSON input to Vibe Event JSON and call the recorder core.
 - `scripts/configure-claude-code-vibelog-hooks.mjs`: preview or write project-local Claude Code VibeLog hook settings.
 - `scripts/vibelog-project.mjs`: project adoption CLI for init, hook preview/enable, verification, and hook disable.

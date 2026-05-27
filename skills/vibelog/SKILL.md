@@ -133,10 +133,10 @@ PreCompact        -> preserve essential context before compaction
 PostCompact       -> record compaction happened and refresh handoff state if useful
 ```
 
-When an adapter can emit structured events, prefer the recorder core boundary:
+When an adapter can emit structured events, prefer the recorder core boundary. Use one event for immediate writes, or an ordered JSON array / JSONL event stream when a session accumulates multiple facts before writing:
 
 ```txt
-Vibe Event JSON -> scripts/record-vibelog-event.mjs -> vibe-log.md -> vibe-log.json
+Vibe Event JSON or JSONL stream -> scripts/record-vibelog-event.mjs -> vibe-log.md -> vibe-log.json
 ```
 
 For Claude Code, use `references/claude-code-hooks-adapter.md` before implementing hooks.
@@ -196,6 +196,7 @@ Before writing, classify the current event:
 - refactor
 - test design
 - verification result
+- progress update
 - artifact update
 - public summary update
 - handoff update
@@ -420,10 +421,10 @@ Use the long-term VibeHub vision as `100%`, not the local repository task list. 
 Current baseline for this project:
 
 ```txt
-Project Progress: 16 / 100
+Project Progress: 18 / 100
 ```
 
-This baseline reflects S23 VibeLog self-update loop verification. Read local `vibe-log.md` first when it exists, because private dogfood state may be newer than public docs.
+This baseline reflects S24 local event stream recording verification. Read local `vibe-log.md` first when it exists, because private dogfood state may be newer than public docs.
 
 Include:
 
