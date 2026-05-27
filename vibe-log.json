@@ -405,6 +405,27 @@
       "ref": "`docs/reports/slice-17-installer-dry-run-report.md`, `docs/reports/slice-17-installer-dry-run-report.zh.md`",
       "type": "report",
       "visibility": "private"
+    },
+    {
+      "name": "VibeLog installer rollback verifier",
+      "notes": "Scratch-only verifier that copies the installer plan into a temporary target, removes the target, and reports machine-readable rollback evidence.",
+      "ref": "`scripts/verify-installer-rollback.mjs`",
+      "type": "script",
+      "visibility": "private"
+    },
+    {
+      "name": "Slice 18 installer rollback design and plan",
+      "notes": "Bilingual design and implementation plan for S18 scratch-only installer rollback verification.",
+      "ref": "`docs/superpowers/specs/2026-05-27-vibelog-installer-rollback-slice-18-design.md`, `docs/superpowers/specs/2026-05-27-vibelog-installer-rollback-slice-18-design.zh.md`, `docs/superpowers/plans/2026-05-27-vibelog-installer-rollback-slice-18.md`, `docs/superpowers/plans/2026-05-27-vibelog-installer-rollback-slice-18.zh.md`",
+      "type": "document",
+      "visibility": "private"
+    },
+    {
+      "name": "Slice 18 installer rollback reports",
+      "notes": "Bilingual report for isolated and flow verification of the scratch-only rollback verifier.",
+      "ref": "`docs/reports/slice-18-installer-rollback-report.md`, `docs/reports/slice-18-installer-rollback-report.zh.md`",
+      "type": "report",
+      "visibility": "private"
     }
   ],
   "branch_remix_readiness": {
@@ -634,6 +655,38 @@
       "timestamp": "2026-05-27",
       "type": "feature",
       "verification": "`node --test` passed with 58 tests before local commit. Targeted S17 tests passed for installer dry-run behavior, private package metadata, and distribution plan state. Manual dry-run output reported `dryRun: true` and `writesPerformed: false`."
+    },
+    {
+      "bug_symptom": "not applicable",
+      "details": "Added a dependency-free scratch-only verifier that imports the installer dry-run plan, copies the planned files into a temporary target, verifies install evidence, removes the target, and reports rollback evidence. The public installer remains dry-run-only and still refuses `--write`.",
+      "files_changed": [
+        "scripts/verify-installer-rollback.mjs",
+        "test/vibelog-installer-rollback.test.mjs",
+        "package.json",
+        "test/vibelog-package.test.mjs",
+        "docs/distribution/vibelog-distribution-plan.json",
+        "test/vibelog-distribution-plan.test.mjs",
+        "docs/guides/vibelog-installer-dry-run.md",
+        "docs/guides/vibelog-installer-dry-run.zh.md",
+        "docs/guides/vibelog-installer-package-manager-plan.md",
+        "docs/guides/vibelog-installer-package-manager-plan.zh.md",
+        "docs/superpowers/specs/2026-05-27-vibelog-installer-rollback-slice-18-design.md",
+        "docs/superpowers/specs/2026-05-27-vibelog-installer-rollback-slice-18-design.zh.md",
+        "docs/superpowers/plans/2026-05-27-vibelog-installer-rollback-slice-18.md",
+        "docs/superpowers/plans/2026-05-27-vibelog-installer-rollback-slice-18.zh.md",
+        "docs/reports/slice-18-installer-rollback-report.md",
+        "docs/reports/slice-18-installer-rollback-report.zh.md",
+        "README.md",
+        "vibe-log.md",
+        "vibe-log.json"
+      ],
+      "fix": "not applicable",
+      "follow_up": "Verify backup/restore behavior for existing install targets before any user-visible installer write mode exists.",
+      "root_cause": "not applicable",
+      "summary": "Added VibeLog installer rollback verifier.",
+      "timestamp": "2026-05-27",
+      "type": "feature",
+      "verification": "Isolated checks passed for rollback verifier, dry-run installer, package metadata, and distribution plan tests. Combined installer flow tests passed with 11 tests. Full `node --test` passed with 61 tests. The verifier CLI reported `passed: true` and `targetExistsAfterRollback: false`."
     }
   ],
   "code_repositories": [],
@@ -1476,6 +1529,28 @@
       "result": "Added a dry-run-only installer planner, private local npm entry, distribution plan update, bilingual guide, bilingual report, and tests that prove dry-run writes nothing and refuses `--write`.",
       "reuse_notes": "Treat this as authorization for local S17 implementation only. It does not authorize GitHub push, npm publishing, global installer creation, actual install writes, or global Claude Code/Codex settings changes.",
       "timestamp": "2026-05-27"
+    },
+    {
+      "agent_or_tool": "Codex",
+      "prompt_summary": "User authorized executing Slice 18 installer rollback verification.",
+      "prompt_text": "执行s18",
+      "prompt_type": "build",
+      "prompt_visibility": "summary",
+      "recording_mode": "exact",
+      "result": "Added a scratch-only installer rollback verifier, private local npm entry, distribution plan update, bilingual guide/report updates, and tests proving scratch install plus rollback.",
+      "reuse_notes": "Treat this as authorization for local S18 implementation only. It does not authorize GitHub push, npm publishing, public installer write mode, global installer creation, or global Claude Code/Codex settings changes.",
+      "timestamp": "2026-05-27"
+    },
+    {
+      "agent_or_tool": "Codex",
+      "prompt_summary": "User required the S18 test design to follow two strict parts: isolated tests and flow tests.",
+      "prompt_text": "你的测试设计是严格按照两部分来的吗？单项测试和流程测试",
+      "prompt_type": "test",
+      "prompt_visibility": "summary",
+      "recording_mode": "exact",
+      "result": "S18 verification reporting was split into isolated checks and combined flow checks.",
+      "reuse_notes": "Future slices should keep reporting both isolated component checks and combined flow checks.",
+      "timestamp": "2026-05-27"
     }
   ],
   "handoff_state": {
@@ -1498,35 +1573,38 @@
       "Stronger schema-driven validator added",
       "Project init and opt-in fixtures now generate schema-valid VibeLogs",
       "Dry-run installer planner added",
-      "Private local `vibelog:install` npm entry added"
+      "Private local `vibelog:install` npm entry added",
+      "Scratch-only installer rollback verifier added",
+      "Private local `vibelog:verify-installer-rollback` npm entry added"
     ],
     "context_for_next_agent": [
-      "Session: slice-17-codex",
+      "Session: slice-18-codex",
       "Stop hook active: false",
       "Default validation now enforces the VibeLog schema subset in `skills/vibelog/assets/vibe-log.schema.json`.",
-      "Installer work is dry-run only; `scripts/vibelog-install.mjs --write` must fail until rollback/uninstall verification exists."
+      "Public installer work is dry-run only; `scripts/vibelog-install.mjs --write` must fail until a future explicit approval changes that boundary.",
+      "Scratch rollback verification is available through `scripts/verify-installer-rollback.mjs`, but it must only write inside scratch targets."
     ],
-    "current_state": "Slice 17 added a dry-run-only installer planner. VibeLog can now preview local install operations and rollback steps into a user-selected target root without writing files. The installer path remains safe: clone-local is still the only active distribution channel, and installer write mode is intentionally refused.",
+    "current_state": "Slice 18 added a scratch-only installer rollback verifier. VibeLog can now preview local install operations, verify scratch-only copying into a temporary target, remove the created target, and report rollback evidence. The public installer path remains safe: clone-local is still the only active distribution channel, and user-visible installer write mode is intentionally refused.",
     "in_progress": [
-      "Final repository verification and local commit for Slice 17"
+      "Final repository verification and local commit for Slice 18"
     ],
     "next_actions": [
-      "Finish Slice 17 repository verification and local commit",
-      "Plan rollback/uninstall verification"
+      "Finish Slice 18 repository verification and local commit",
+      "Plan backup/restore verification or release-bundle verification"
     ],
     "pending": [
-      "Verify rollback or uninstall behavior before any installer write mode exists",
+      "Verify backup/restore behavior for existing install targets before any installer write mode exists",
       "Verify remote clone or release-bundle usage before public distribution",
       "Make Stop handoff progress configurable instead of static",
       "Optional full live Claude Code verification in an opted-in project"
     ],
     "project_progress_snapshot": [
-      "Project Progress: 42 / 100",
+      "Project Progress: 45 / 100",
       "Change This Task: +3",
       "Current Phase: safe installer prototyping",
-      "Completed This Task: Added dry-run installer planner and safety tests",
-      "Next Unlock: rollback/uninstall verification",
-      "Main Risk: S17 proves install planning only; it does not execute writes or verify real uninstall",
+      "Completed This Task: Added scratch-only installer rollback verifier and safety tests",
+      "Next Unlock: backup/restore verification for existing install targets or release-bundle verification",
+      "Main Risk: S18 proves rollback only for newly created scratch content; it does not yet prove backup/restore over existing user targets",
       "Confidence: high"
     ]
   },
@@ -1638,6 +1716,17 @@
       "timestamp": "2026-05-26",
       "type": "architecture",
       "why_it_mattered": "This keeps the VibeLog foundation platform-neutral and reusable across future agents."
+    },
+    {
+      "agent_proposal": "The agent had planned targeted rollback verification and full repository verification.",
+      "confidence": "high",
+      "final_decision": "Report S18 verification in two explicit categories: single-component checks and combined flow checks. S18 is not complete unless both categories pass.",
+      "human_input": "The user reminded that S18 testing must strictly follow two parts: isolated tests for each component and flow tests for combined behavior.",
+      "impact": "The S18 report, VibeLog evidence, and final human-facing report separate isolated checks from flow checks.",
+      "source": "user correction",
+      "timestamp": "2026-05-27",
+      "type": "direction",
+      "why_it_mattered": "This keeps the project aligned with the user's test principle and prevents a slice from passing just because one narrow command succeeded."
     }
   ],
   "idea_evolution": [
@@ -1828,9 +1917,10 @@
       "Added a tested installer/package-manager distribution roadmap and safety gates.",
       "Added stronger schema-driven VibeLog JSON validation without adding npm dependencies.",
       "Aligned init and verifier fixtures so newly generated project VibeLogs satisfy the current data contract.",
-      "Added a dry-run-only installer planner and private local `vibelog:install` npm entry."
+      "Added a dry-run-only installer planner and private local `vibelog:install` npm entry.",
+      "Added a scratch-only installer rollback verifier and private local `vibelog:verify-installer-rollback` npm entry."
     ],
-    "current_state": "The VibeLog skill now has a deterministic Markdown-to-JSON exporter, stronger schema-driven validator, recorder core, Claude Code hook adapter, scratch-local live hook verifier, dry-run-first project-local hook settings generator, real-project-style opt-in acceptance verifier, ordinary project adoption CLI, private clone-local package entry, clean clone adoption verifier, tested installer/package-manager distribution roadmap, and dry-run-only installer planner. Slice 17 previews install and rollback operations without writing files.",
+    "current_state": "The VibeLog skill now has a deterministic Markdown-to-JSON exporter, stronger schema-driven validator, recorder core, Claude Code hook adapter, scratch-local live hook verifier, dry-run-first project-local hook settings generator, real-project-style opt-in acceptance verifier, ordinary project adoption CLI, private clone-local package entry, clean clone adoption verifier, tested installer/package-manager distribution roadmap, dry-run-only installer planner, and scratch-only installer rollback verifier. Slice 18 proves newly created scratch install targets can be removed again while the public installer stays dry-run-only.",
     "important_context_for_next_agent": [
       "The current priority is the standalone VibeLog skill, not the website.",
       "The website remains a long-term vision but should not drive the first implementation.",
@@ -1842,22 +1932,22 @@
       "Real-project-style opt-in verification uses scratch project source outside this repository.",
       "Ordinary project adoption now has a local CLI, but it is not yet packaged as a globally installed command.",
       "Strong schema validation is now part of the default validator, but it is a focused VibeLog schema subset rather than full JSON Schema support.",
-      "Installer work is still dry-run only; `--write` is intentionally refused in S17.",
+      "Installer work is still dry-run only for user-visible commands; `--write` is intentionally refused, while `scripts/verify-installer-rollback.mjs` may write only inside scratch targets it removes again.",
       "Do not push to GitHub without separate explicit user approval.",
       "`scripts/export-vibelog.mjs` supports the current strict Markdown subset and should stay conservative until more examples justify expansion.",
       "Prefer agent dogfood verification over human manual verification when a repeatable vibe scenario can produce evidence."
     ],
     "in_progress": [
-      "Final repository verification and local commit for Slice 17."
+      "Final repository verification and local commit for Slice 18."
     ],
     "next_actions": [
-      "Finish Slice 17 repository verification and local commit.",
-      "Plan rollback/uninstall verification before any installer write mode exists.",
+      "Finish Slice 18 repository verification and local commit.",
+      "Plan backup/restore verification before any installer write mode exists.",
       "Decide whether to install the skill locally or keep iterating inside the repository first."
     ],
     "pending": [
       "Review the updated VibeLog v0.2 draft skill standard.",
-      "Verify rollback or uninstall behavior before any installer write mode exists.",
+      "Verify backup/restore behavior for existing install targets before any installer write mode exists.",
       "Verify remote clone or release-bundle usage before public distribution.",
       "Add richer example Vibe Repos after the adapter exists.",
       "Make Claude Code Stop handoff progress configurable instead of static."
@@ -1867,7 +1957,7 @@
   "open_questions": [
     "Should the skill be installed immediately into the user's Codex skill directory or kept as a distributable repo package first?",
     "Which agent ecosystem should get the next adapter after Codex: Claude Code, Cursor rules, or AGENTS.md?",
-    "What is the safest installer dry-run boundary after schema validation is stable: release bundle verification, local installer rollback, or remote clone verification?"
+    "What backup and restore guarantees are required before a future installer can update existing user targets?"
   ],
   "process_level": "core",
   "project_context": {
@@ -1918,6 +2008,14 @@
       "`docs/superpowers/plans/2026-05-27-vibelog-installer-dry-run-slice-17.zh.md`: Chinese Slice 17 implementation plan.",
       "`docs/reports/slice-17-installer-dry-run-report.md`: English Slice 17 report.",
       "`docs/reports/slice-17-installer-dry-run-report.zh.md`: Chinese Slice 17 report.",
+      "`scripts/verify-installer-rollback.mjs`: scratch-only installer rollback verifier.",
+      "`test/vibelog-installer-rollback.test.mjs`: installer rollback verifier regression tests.",
+      "`docs/superpowers/specs/2026-05-27-vibelog-installer-rollback-slice-18-design.md`: English Slice 18 installer rollback design.",
+      "`docs/superpowers/specs/2026-05-27-vibelog-installer-rollback-slice-18-design.zh.md`: Chinese Slice 18 installer rollback design.",
+      "`docs/superpowers/plans/2026-05-27-vibelog-installer-rollback-slice-18.md`: English Slice 18 implementation plan.",
+      "`docs/superpowers/plans/2026-05-27-vibelog-installer-rollback-slice-18.zh.md`: Chinese Slice 18 implementation plan.",
+      "`docs/reports/slice-18-installer-rollback-report.md`: English Slice 18 report.",
+      "`docs/reports/slice-18-installer-rollback-report.zh.md`: Chinese Slice 18 report.",
       "`docs/guides/vibe-verification-guide.md`: English guide for agent-run VibeLog verification.",
       "`docs/guides/vibe-verification-guide.zh.md`: Chinese guide for agent-run VibeLog verification.",
       "`docs/guides/live-hook-verification.md`: English guide for scratch-local Claude Code live hook verification.",
@@ -1993,6 +2091,8 @@
       "`node --test test/vibelog-package.test.mjs`",
       "`npm run vibelog -- --help`",
       "`node --test test/vibelog-distribution-plan.test.mjs`",
+      "`node --test test/vibelog-installer-rollback.test.mjs`",
+      "`node scripts/verify-installer-rollback.mjs --scratch-root \"C:\\Users\\HXW\\Documents\\vibelog-scratch\\slice-18-installer-rollback\"`",
       "`node --test test/verify-clean-clone-adoption.test.mjs`",
       "`node scripts/verify-clean-clone-adoption.mjs --workspace \"C:\\Users\\HXW\\Documents\\vibelog-scratch\\slice-13-clean-clone-adoption\"`",
       "`node --test test/configure-claude-code-vibelog-hooks.test.mjs`",
@@ -2393,6 +2493,17 @@
       "summary": "Ran Slice 17 installer dry-run verification.",
       "timestamp": "2026-05-27",
       "type": "test_result"
+    },
+    {
+      "confidence": "high",
+      "details": "Isolated checks passed: rollback verifier tests passed with 3 tests, installer dry-run tests passed with 4 tests, package metadata tests passed with 2 tests, and distribution plan tests passed with 2 tests. The verifier CLI output reported `passed: true`, `installPerformed: true`, `rollbackPerformed: true`, `plannedOperations: 5`, and `targetExistsAfterRollback: false`. Flow checks passed: combined installer flow tests passed with 11 tests and full `node --test` passed with 61 tests. Root and example VibeLog JSON files validated. Root VibeLog JSON matched Markdown. Markdown link checker scanned 131 Markdown files and found no broken relative links. Slice 18 placeholder scan produced no matches. JSON parse checks passed for `package.json`, `vibe-log.json`, `skills/vibelog/assets/vibe-log.schema.json`, and `docs/distribution/vibelog-distribution-plan.json`. `git diff --check` produced no output.",
+      "evidence_ref": "Isolated checks: `node --test test\\vibelog-installer-rollback.test.mjs`; `node --test test\\vibelog-installer-dry-run.test.mjs`; `node --test test\\vibelog-package.test.mjs`; `node --test test\\vibelog-distribution-plan.test.mjs`; `node scripts\\verify-installer-rollback.mjs --scratch-root \"C:\\Users\\HXW\\Documents\\vibelog-scratch\\slice-18-installer-rollback\"`. Flow checks: `node --test test\\vibelog-installer-rollback.test.mjs test\\vibelog-installer-dry-run.test.mjs test\\vibelog-package.test.mjs test\\vibelog-distribution-plan.test.mjs`; `node --test`. Quality checks: `node scripts\\validate-vibelog.mjs vibe-log.json`; `node scripts\\export-vibelog.mjs vibe-log.md --out vibe-log.json --check`; Markdown relative link checker; Slice 18 placeholder scan; JSON parse checks; `git diff --check`.",
+      "residual_risk": "S18 verifies rollback for newly created scratch targets only. It does not yet verify backup or restore behavior for existing user targets, and the public installer still has no write mode.",
+      "result": "passed",
+      "source": "current work session",
+      "summary": "Ran Slice 18 installer rollback verification.",
+      "timestamp": "2026-05-27",
+      "type": "test_result"
     }
   ],
   "vibe_progress": [
@@ -2752,6 +2863,20 @@
         "VibeLog"
       ],
       "what_happened": "Added a dry-run-only installer planner for VibeLog."
+    },
+    {
+      "confidence": "high",
+      "next": "Verify backup/restore behavior for existing install targets or verify release-bundle usage before public distribution.",
+      "problems": "The project needed to prove installer reversibility without exposing real user directories or global settings to write risk.",
+      "source": "current work session",
+      "stage": "prototype",
+      "timestamp": "2026-05-27",
+      "tools_used": [
+        "Codex",
+        "Node.js",
+        "VibeLog"
+      ],
+      "what_happened": "Added a scratch-only installer rollback verifier for VibeLog."
     }
   ],
   "visibility": "private"

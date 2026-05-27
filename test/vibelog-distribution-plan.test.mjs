@@ -26,10 +26,14 @@ test("distribution plan keeps clone-local active and public package channels gat
   assert.ok(npmChannel.required_gates.includes("explicit_publish_approval"));
 
   const installerChannel = plan.channels.find((channel) => channel.id === "local_installer_scripts");
-  assert.equal(installerChannel.state, "prototype_dry_run");
+  assert.equal(installerChannel.state, "prototype_scratch_rollback_verified");
   assert.ok(installerChannel.required_gates.includes("dry_run_only"));
   assert.ok(installerChannel.required_gates.includes("uninstall_or_rollback_verified"));
   assert.ok(installerChannel.verified_by.includes("test/vibelog-installer-dry-run.test.mjs"));
+  assert.ok(installerChannel.verified_by.includes("test/vibelog-installer-rollback.test.mjs"));
+  assert.ok(installerChannel.verified_by.includes("scripts/verify-installer-rollback.mjs"));
+  assert.ok(installerChannel.allowed_commands.includes("npm run vibelog:verify-installer-rollback -- --scratch-root <scratch-root>"));
+  assert.ok(installerChannel.verified_gates.includes("uninstall_or_rollback_verified"));
   assert.ok(installerChannel.forbidden_actions.some((action) => action.includes("--write")));
 
   for (const gateId of [
@@ -38,7 +42,8 @@ test("distribution plan keeps clone-local active and public package channels gat
     "no_public_package_without_license",
     "no_public_package_without_schema_validation",
     "project_local_hooks_only",
-    "dry_run_only"
+    "dry_run_only",
+    "uninstall_or_rollback_verified"
   ]) {
     assert.ok(plan.safety_gates.some((gate) => gate.id === gateId), `Missing safety gate: ${gateId}`);
   }

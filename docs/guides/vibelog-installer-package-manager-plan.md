@@ -35,19 +35,27 @@ Required gates:
 
 ## Prototype Channel: Local Installer Scripts
 
-Local installer scripts are now in dry-run prototype state. The current command previews copying the VibeLog skill, scripts, docs, README, and package metadata into a user-selected location, but it writes nothing.
+Local installer scripts are now in scratch rollback verified prototype state. The public installer command previews copying the VibeLog skill, scripts, docs, README, and package metadata into a user-selected location, but it writes nothing.
 
 ```powershell
 node scripts/vibelog-install.mjs --target "C:\path\to\install-root"
 npm run vibelog:install -- --target "C:\path\to\install-root"
 ```
 
-S17 refuses `--write`. Real writing remains blocked until rollback or uninstall behavior is verified.
+S18 adds a scratch-only rollback verifier:
+
+```powershell
+node scripts/verify-installer-rollback.mjs --scratch-root "C:\path\to\scratch-root"
+npm run vibelog:verify-installer-rollback -- --scratch-root "C:\path\to\scratch-root"
+```
+
+The verifier copies planned files into a temporary scratch target, confirms the install shape, removes the target, and confirms rollback removed the created content. The public installer still refuses `--write`.
 
 Required gates:
 
 - dry-run mode;
-- uninstall or rollback verification;
+- scratch rollback verification;
+- backup or restore verification before writing over existing targets;
 - project-local hook setup by default;
 - no global Claude Code settings edits by default;
 - explicit human approval before writing outside the current repository.
@@ -84,11 +92,11 @@ Required gates:
 - No publish without explicit human approval.
 - No public package before license selection.
 - No public package before stronger JSON Schema validation.
-- No global installer before rollback verification.
+- No global installer before rollback verification and explicit approval.
 - Markdown remains the source of truth.
 - JSON remains an export format.
 - Hook setup remains project-local and opt-in by default.
 
 ## Next Recommended Slice
 
-The strongest next step is rollback or uninstall verification in a scratch target. It keeps installer work safe before any real write mode exists.
+The strongest next step is backup/restore verification for existing targets or release-bundle verification. User-visible installer write mode still needs explicit approval.

@@ -1,6 +1,8 @@
-# VibeLog Installer Dry-Run
+# VibeLog Installer Dry-Run And Rollback Verification
 
-S17 adds a dry-run-only installer planner. It previews how VibeLog would be copied into a user-selected local install root, but it does not write files.
+S17 added a dry-run-only installer planner. It previews how VibeLog would be copied into a user-selected local install root, but it does not write files.
+
+S18 adds a separate scratch-only rollback verifier. It copies the planned files into a temporary scratch target, confirms the install shape, removes the target, and verifies that rollback removed the created content.
 
 ## Command
 
@@ -14,6 +16,20 @@ Through the private clone-local npm script:
 
 ```powershell
 npm run vibelog:install -- --target "C:\path\to\install-root"
+```
+
+## Rollback Verification Command
+
+Run the scratch-only verifier:
+
+```powershell
+node scripts/verify-installer-rollback.mjs --scratch-root "C:\path\to\scratch-root"
+```
+
+Through the private clone-local npm script:
+
+```powershell
+npm run vibelog:verify-installer-rollback -- --scratch-root "C:\path\to\scratch-root"
 ```
 
 ## What The Plan Shows
@@ -30,7 +46,7 @@ The command prints JSON with:
 
 ## Safety Boundary
 
-S17 is intentionally dry-run only.
+The public installer command is intentionally dry-run only.
 
 The command refuses:
 
@@ -38,11 +54,11 @@ The command refuses:
 node scripts/vibelog-install.mjs --target "C:\path\to\install-root" --write
 ```
 
-This protects the project from accidental global installs before rollback and uninstall behavior is tested.
+The rollback verifier may write only inside a scratch target it controls. It refuses direct installer write mode, does not edit global Codex or Claude Code settings, and does not push or publish anything.
 
 ## What This Does Not Do
 
-- It does not copy files.
+- The public installer does not copy files.
 - It does not edit `$HOME\.codex`.
 - It does not edit `$HOME\.claude`.
 - It does not enable hooks.
@@ -51,4 +67,4 @@ This protects the project from accidental global installs before rollback and un
 
 ## Next Step
 
-The next installer slice should verify rollback and uninstall behavior in a scratch target before any real write mode exists.
+The next installer slice should decide whether to add an explicit uninstall command, add backup/restore checks for existing targets, or verify a release bundle. User-visible installer write mode still needs explicit approval.

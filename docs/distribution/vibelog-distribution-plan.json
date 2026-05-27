@@ -39,12 +39,12 @@
     {
       "id": "uninstall_or_rollback_verified",
       "required": true,
-      "description": "Any installer must have a verified uninstall or rollback path before use."
+      "description": "Any installer must have a verified uninstall or rollback path before user-visible write mode exists."
     },
     {
       "id": "dry_run_only",
       "required": true,
-      "description": "Installer work remains preview-only until rollback or uninstall behavior is verified in a scratch target."
+      "description": "The public installer command remains preview-only; scratch-only verification may write and roll back inside temporary targets."
     }
   ],
   "channels": [
@@ -92,16 +92,20 @@
     {
       "id": "local_installer_scripts",
       "label": "Local installer scripts",
-      "state": "prototype_dry_run",
+      "state": "prototype_scratch_rollback_verified",
       "human_approval_required": true,
-      "description": "Dry-run-only installer planner that previews local VibeLog skill files, scripts, docs, and rollback steps without writing files.",
+      "description": "Dry-run-only public installer planner plus a scratch-only rollback verifier that copies VibeLog files into a temporary target and removes them again.",
       "verified_by": [
         "test/vibelog-installer-dry-run.test.mjs",
-        "scripts/vibelog-install.mjs"
+        "test/vibelog-installer-rollback.test.mjs",
+        "scripts/vibelog-install.mjs",
+        "scripts/verify-installer-rollback.mjs"
       ],
       "allowed_commands": [
         "node scripts/vibelog-install.mjs --target <install-root>",
-        "npm run vibelog:install -- --target <install-root>"
+        "npm run vibelog:install -- --target <install-root>",
+        "node scripts/verify-installer-rollback.mjs --scratch-root <scratch-root>",
+        "npm run vibelog:verify-installer-rollback -- --scratch-root <scratch-root>"
       ],
       "forbidden_actions": [
         "node scripts/vibelog-install.mjs --target <install-root> --write",
@@ -116,6 +120,9 @@
         "project_local_hooks_only",
         "clean_clone_verified",
         "explicit_install_approval"
+      ],
+      "verified_gates": [
+        "uninstall_or_rollback_verified"
       ]
     },
     {
@@ -147,8 +154,8 @@
   ],
   "next_recommended_slices": [
     {
-      "id": "rollback_uninstall_verification",
-      "reason": "A verified rollback path is required before any installer write mode can exist."
+      "id": "backup_restore_verification",
+      "reason": "Existing-target backup and restore behavior is required before installer write mode can update real user directories."
     },
     {
       "id": "remote_clone_or_release_bundle_verification",
