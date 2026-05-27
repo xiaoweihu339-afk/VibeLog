@@ -114,6 +114,12 @@ npm run vibelog -- init --project "C:\path\to\project" --title "My Vibe Project"
 
 This repository is marked `private` in `package.json`. The current package path is for local reuse from a cloned repository, not npm publishing.
 
+The clean clone adoption verifier is:
+
+```powershell
+node scripts/verify-clean-clone-adoption.mjs --workspace "C:\Users\HXW\Documents\vibelog-scratch\slice-13-clean-clone-adoption"
+```
+
 ## Repository Identity
 
 This repository is skill-first. Its primary purpose is to make the `vibelog` skill, schema, and documentation easy for others to reuse.
@@ -185,7 +191,9 @@ See [Claude Code adapter notes](skills/vibelog/references/claude-code-hooks-adap
 |   |   |-- slice-6-claude-code-adapter-report.md
 |   |   |-- slice-6-claude-code-adapter-report.zh.md
 |   |   |-- slice-12-packaging-report.md
-|   |   `-- slice-12-packaging-report.zh.md
+|   |   |-- slice-12-packaging-report.zh.md
+|   |   |-- slice-13-clean-clone-adoption-report.md
+|   |   `-- slice-13-clean-clone-adoption-report.zh.md
 |   |-- releases/
 |   |   `-- v0.2-draft.md
 |   `-- superpowers/
@@ -210,6 +218,7 @@ See [Claude Code adapter notes](skills/vibelog/references/claude-code-hooks-adap
 |   |-- export-vibelog.mjs
 |   |-- record-vibelog-event.mjs
 |   |-- vibelog-project.mjs
+|   |-- verify-clean-clone-adoption.mjs
 |   |-- verify-claude-code-live-hook.mjs
 |   `-- validate-vibelog.mjs
 |-- test/
@@ -219,6 +228,7 @@ See [Claude Code adapter notes](skills/vibelog/references/claude-code-hooks-adap
 |   |-- record-vibelog-event.test.mjs
 |   |-- vibelog-package.test.mjs
 |   |-- vibelog-project.test.mjs
+|   |-- verify-clean-clone-adoption.test.mjs
 |   |-- verify-claude-code-live-hook.test.mjs
 |   |-- validate-vibelog.test.mjs
 |   `-- vibelog-examples.test.mjs
@@ -320,6 +330,7 @@ Dependency-free Node.js tools for deterministic Markdown-to-JSON export and ligh
 - `verify-claude-code-live-hook.mjs`: create scratch Claude Code settings, run fixture hook payloads, and optionally verify a tiny live Claude Code hook session.
 - `verify-claude-code-opt-in-project.mjs`: verify project-local opt-in hooks in a realistic scratch project by executing generated settings commands.
 - `vibelog-project.mjs`: ordinary project adoption CLI for init, hook preview/enable, readiness verification, and hook disable.
+- `verify-clean-clone-adoption.mjs`: clone this repository into a scratch directory and verify `npm run vibelog` works from the clean clone.
 - `validate-vibelog.mjs`: lightweight VibeLog JSON validator.
 
 ### `package.json`
@@ -389,6 +400,8 @@ User-review reports for completed slices:
 - [Slice 11 普通用户采用路径报告](docs/reports/slice-11-user-adoption-report.zh.md)
 - [Slice 12 packaging report](docs/reports/slice-12-packaging-report.md)
 - [Slice 12 包装路径报告](docs/reports/slice-12-packaging-report.zh.md)
+- [Slice 13 clean clone adoption report](docs/reports/slice-13-clean-clone-adoption-report.md)
+- [Slice 13 Clean Clone Adoption 报告](docs/reports/slice-13-clean-clone-adoption-report.zh.md)
 
 ### `examples/`
 
@@ -411,16 +424,17 @@ This repository contains the VibeLog v0.2 draft prototype:
 - project-local opt-in Claude Code hook settings generator
 - ordinary project adoption CLI
 - private clone-local package entry and npm script
+- clean clone adoption verifier
 - deterministic Markdown-to-JSON exporter
 - lightweight JSON validator
 - design spec
 - self-recorded project VibeLog
 
-It is ready for local testing, generated example review, scratch-local Claude Code hook verification, dry-run project-local hook settings generation, ordinary project adoption through the local CLI, and clone-local npm script use. It is not yet a polished public package.
+It is ready for local testing, generated example review, scratch-local Claude Code hook verification, dry-run project-local hook settings generation, ordinary project adoption through the local CLI, clone-local npm script use, and clean clone adoption verification. It is not yet a polished public package.
 
 ## Next Steps
 
-- Verify clean clone adoption from a fresh local copy.
+- Decide between installer/package-manager design and stronger JSON Schema validation.
 - Add full JSON Schema validation.
 - Install and test the skill in real agent sessions.
 - Add adapters for other agent environments, such as Codex hooks, Cursor rules, or AGENTS.md.
