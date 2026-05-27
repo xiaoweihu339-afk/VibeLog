@@ -140,11 +140,13 @@ If the handoff state is vague, update it before stopping.
 
 Every completed meaningful task should report conservative project progress to the human.
 
-Use the long-term VibeHub vision as `100%`, not the local repo's immediate tasks. The current baseline is:
+Use the long-term VibeHub vision as `100%`, not the local repo's immediate tasks. The current baseline after S23 is:
 
 ```txt
-Project Progress: 10 / 100
+Project Progress: 16 / 100
 ```
+
+Read local `vibe-log.md` first when it exists, because private dogfood state may be newer than public docs.
 
 Final reports should include:
 

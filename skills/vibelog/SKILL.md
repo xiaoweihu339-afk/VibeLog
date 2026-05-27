@@ -420,8 +420,10 @@ Use the long-term VibeHub vision as `100%`, not the local repository task list. 
 Current baseline for this project:
 
 ```txt
-Project Progress: 10 / 100
+Project Progress: 16 / 100
 ```
+
+This baseline reflects S23 VibeLog self-update loop verification. Read local `vibe-log.md` first when it exists, because private dogfood state may be newer than public docs.
 
 Include:
 

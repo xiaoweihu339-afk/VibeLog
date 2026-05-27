@@ -12,32 +12,35 @@ Because the total goal is broad, progress must be conservative. Do not score loc
 
 ## Required Snapshot
 
-Every completed task report should include:
+Every completed meaningful task report should include:
 
 ```txt
-Project Progress: 10 / 100
+Project Progress: 16 / 100
 Change This Task: +0
 Current Phase: VibeLog foundation and verification
-Completed This Task: Added conservative project progress reporting mechanism
-Next Unlock: Slice 4 implementation plan
-Main Risk: Agent dogfood verification has not run end to end yet
-Confidence: medium
+Completed This Task: Updated the progress reporting baseline after S23 VibeLog self-update loop
+Next Unlock: Automatic or hook-assisted continuous VibeLog recording during real work
+Main Risk: Manual self-update loop is verified, but automatic continuous recording is not yet proven
+Confidence: medium-high
 ```
 
 ## Current Baseline
 
-Current baseline:
+Current baseline after S23 VibeLog self-update loop:
 
 ```txt
-Project Progress: 10 / 100
+Project Progress: 16 / 100
 ```
 
 Reason:
 
-- The VibeLog idea, standard, skill structure, documentation, examples, exporter, and lightweight validator exist.
-- The project has not yet completed agent dogfood verification.
-- Hook adapters are not implemented.
-- VibeHub's product layer, repository storage model, collaboration/remix model, and public community do not exist yet.
+- The VibeLog idea, standard, skill structure, documentation, examples, exporter, validator, recorder core, and project adoption CLI exist.
+- Claude Code hook adapter work and project-local hook verification exist.
+- Public repository boundaries, sanitized examples, agent templates, and clean-clone template adoption verification exist.
+- S22R inserted VibeLog into the current real project mid-stream and produced a private validated dogfood log.
+- S23 proved a small real self-update loop: read local VibeLog, execute a maintenance task, update VibeLog, export JSON, and validate.
+- VibeHub's product layer, repository storage model, collaboration/remix model, and public community still do not exist.
+- Automatic continuous recording across agent environments is not yet proven.
 
 ## Progress Bands
 
@@ -70,11 +73,12 @@ Never increase progress just because many files changed. Increase it only when t
 - State at least one real risk or missing capability.
 - If progress did not change, say so directly.
 - Keep the number conservative when the work only improves documentation or planning.
+- Read the local `vibe-log.md` first when it exists, because the latest private dogfood state may be newer than public docs.
 
 ## Current Recommendation
 
-Until Slice 4 is implemented and a new agent-generated example passes export, validation, drift check, and tests, keep the project at:
+Until automatic or hook-assisted recording proves that VibeLog can update during real work without relying on a manual end-of-slice edit, keep the project near:
 
 ```txt
-Project Progress: 10 / 100
+Project Progress: 16 / 100
 ```
