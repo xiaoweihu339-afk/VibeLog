@@ -40,6 +40,11 @@
       "id": "uninstall_or_rollback_verified",
       "required": true,
       "description": "Any installer must have a verified uninstall or rollback path before use."
+    },
+    {
+      "id": "dry_run_only",
+      "required": true,
+      "description": "Installer work remains preview-only until rollback or uninstall behavior is verified in a scratch target."
     }
   ],
   "channels": [
@@ -87,10 +92,26 @@
     {
       "id": "local_installer_scripts",
       "label": "Local installer scripts",
-      "state": "planned",
+      "state": "prototype_dry_run",
       "human_approval_required": true,
-      "description": "Future PowerShell and shell helper scripts that install or update local VibeLog skill files and CLI helpers.",
+      "description": "Dry-run-only installer planner that previews local VibeLog skill files, scripts, docs, and rollback steps without writing files.",
+      "verified_by": [
+        "test/vibelog-installer-dry-run.test.mjs",
+        "scripts/vibelog-install.mjs"
+      ],
+      "allowed_commands": [
+        "node scripts/vibelog-install.mjs --target <install-root>",
+        "npm run vibelog:install -- --target <install-root>"
+      ],
+      "forbidden_actions": [
+        "node scripts/vibelog-install.mjs --target <install-root> --write",
+        "editing global Claude Code settings",
+        "editing global Codex skill directories",
+        "npm publish",
+        "git push"
+      ],
       "required_gates": [
+        "dry_run_only",
         "uninstall_or_rollback_verified",
         "project_local_hooks_only",
         "clean_clone_verified",
@@ -126,12 +147,12 @@
   ],
   "next_recommended_slices": [
     {
-      "id": "strong_schema_validation",
-      "reason": "A stronger data contract makes future public package and upload flows safer."
+      "id": "rollback_uninstall_verification",
+      "reason": "A verified rollback path is required before any installer write mode can exist."
     },
     {
-      "id": "installer_dry_run_prototype",
-      "reason": "A dry-run installer can test install and rollback design before touching global state."
+      "id": "remote_clone_or_release_bundle_verification",
+      "reason": "Remote clone or release-bundle verification is needed before public distribution."
     }
   ]
 }

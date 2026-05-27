@@ -26,15 +26,19 @@ test("distribution plan keeps clone-local active and public package channels gat
   assert.ok(npmChannel.required_gates.includes("explicit_publish_approval"));
 
   const installerChannel = plan.channels.find((channel) => channel.id === "local_installer_scripts");
-  assert.equal(installerChannel.state, "planned");
+  assert.equal(installerChannel.state, "prototype_dry_run");
+  assert.ok(installerChannel.required_gates.includes("dry_run_only"));
   assert.ok(installerChannel.required_gates.includes("uninstall_or_rollback_verified"));
+  assert.ok(installerChannel.verified_by.includes("test/vibelog-installer-dry-run.test.mjs"));
+  assert.ok(installerChannel.forbidden_actions.some((action) => action.includes("--write")));
 
   for (const gateId of [
     "no_push_without_explicit_approval",
     "no_publish_without_explicit_approval",
     "no_public_package_without_license",
     "no_public_package_without_schema_validation",
-    "project_local_hooks_only"
+    "project_local_hooks_only",
+    "dry_run_only"
   ]) {
     assert.ok(plan.safety_gates.some((gate) => gate.id === gateId), `Missing safety gate: ${gateId}`);
   }
@@ -50,9 +54,9 @@ test("installer package manager docs describe a roadmap without claiming publica
   assert.match(english, /Package-manager Distribution/i);
   assert.match(english, /not published/);
   assert.match(chinese, /Clone-local/);
-  assert.match(chinese, /Release bundle/i);
-  assert.match(chinese, /Local installer scripts/i);
-  assert.match(chinese, /Package-manager distribution/i);
+  assert.match(chinese, /Release Bundle/i);
+  assert.match(chinese, /Local Installer Scripts/i);
+  assert.match(chinese, /Package-manager Distribution/i);
   assert.match(chinese, /尚未发布/);
   assert.doesNotMatch(english, /is published to npm/i);
   assert.doesNotMatch(chinese, /已经发布到 npm/);

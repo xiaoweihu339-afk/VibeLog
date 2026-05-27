@@ -128,6 +128,13 @@ docs/guides/vibelog-installer-package-manager-plan.md
 docs/guides/vibelog-installer-package-manager-plan.zh.md
 ```
 
+The installer dry-run planner is:
+
+```powershell
+node scripts/vibelog-install.mjs --target "C:\path\to\install-root"
+npm run vibelog:install -- --target "C:\path\to\install-root"
+```
+
 ## Repository Identity
 
 This repository is skill-first. Its primary purpose is to make the `vibelog` skill, schema, and documentation easy for others to reuse.
@@ -231,6 +238,7 @@ See [Claude Code adapter notes](skills/vibelog/references/claude-code-hooks-adap
 |   |-- configure-claude-code-vibelog-hooks.mjs
 |   |-- export-vibelog.mjs
 |   |-- record-vibelog-event.mjs
+|   |-- vibelog-install.mjs
 |   |-- vibelog-project.mjs
 |   |-- verify-clean-clone-adoption.mjs
 |   |-- verify-claude-code-live-hook.mjs
@@ -241,6 +249,7 @@ See [Claude Code adapter notes](skills/vibelog/references/claude-code-hooks-adap
 |   |-- export-vibelog.test.mjs
 |   |-- record-vibelog-event.test.mjs
 |   |-- vibelog-distribution-plan.test.mjs
+|   |-- vibelog-installer-dry-run.test.mjs
 |   |-- vibelog-package.test.mjs
 |   |-- vibelog-project.test.mjs
 |   |-- verify-clean-clone-adoption.test.mjs
@@ -344,6 +353,7 @@ Dependency-free Node.js tools for deterministic Markdown-to-JSON export and sche
 - `configure-claude-code-vibelog-hooks.mjs`: dry-run-first generator for project-local Claude Code VibeLog hook settings.
 - `verify-claude-code-live-hook.mjs`: create scratch Claude Code settings, run fixture hook payloads, and optionally verify a tiny live Claude Code hook session.
 - `verify-claude-code-opt-in-project.mjs`: verify project-local opt-in hooks in a realistic scratch project by executing generated settings commands.
+- `vibelog-install.mjs`: dry-run-only installer planner that prints planned install operations and rollback steps without writing files.
 - `vibelog-project.mjs`: ordinary project adoption CLI for init, hook preview/enable, readiness verification, and hook disable.
 - `verify-clean-clone-adoption.mjs`: clone this repository into a scratch directory and verify `npm run vibelog` works from the clean clone.
 - `validate-vibelog.mjs`: dependency-free VibeLog schema subset validator plus practical VibeLog checks.
@@ -354,6 +364,7 @@ Private clone-local package entry for local reuse. It exposes:
 
 - `npm run vibelog -- --help`
 - `npm run vibelog -- init --project "C:\path\to\project" --title "My Vibe Project" --idea "One sentence describing the product idea."`
+- `npm run vibelog:install -- --target "C:\path\to\install-root"`
 - `npm test`
 
 ### `docs/product/`
@@ -377,6 +388,8 @@ Practical guides for using and testing the skill:
 - [Claude Code Opt-In 安装指南](docs/guides/claude-code-opt-in-install.zh.md)
 - [VibeLog Installer and Package Manager Plan](docs/guides/vibelog-installer-package-manager-plan.md)
 - [VibeLog Installer and Package Manager 计划](docs/guides/vibelog-installer-package-manager-plan.zh.md)
+- [VibeLog Installer Dry-Run](docs/guides/vibelog-installer-dry-run.md)
+- [VibeLog Installer Dry-Run 指南](docs/guides/vibelog-installer-dry-run.zh.md)
 - [VibeLog Install and Distribution](docs/guides/vibelog-install-distribution.md)
 - [VibeLog 安装与分发指南](docs/guides/vibelog-install-distribution.zh.md)
 - [VibeLog Project Adoption](docs/guides/vibelog-project-adoption.md)
@@ -429,6 +442,8 @@ User-review reports for completed slices:
 - [Slice 15 Installer and Package Manager 报告](docs/reports/slice-15-installer-package-manager-report.zh.md)
 - [Slice 16 strong schema validation report](docs/reports/slice-16-strong-schema-validation-report.md)
 - [Slice 16 强 Schema 校验报告](docs/reports/slice-16-strong-schema-validation-report.zh.md)
+- [Slice 17 installer dry-run report](docs/reports/slice-17-installer-dry-run-report.md)
+- [Slice 17 Installer Dry-Run 报告](docs/reports/slice-17-installer-dry-run-report.zh.md)
 
 ### `examples/`
 
@@ -453,16 +468,17 @@ This repository contains the VibeLog v0.2 draft prototype:
 - private clone-local package entry and npm script
 - clean clone adoption verifier
 - tested installer/package-manager distribution roadmap
+- dry-run-only installer planner
 - deterministic Markdown-to-JSON exporter
 - stronger schema-driven JSON validator
 - design spec
 - self-recorded project VibeLog
 
-It is ready for local testing, generated example review, scratch-local Claude Code hook verification, dry-run project-local hook settings generation, ordinary project adoption through the local CLI, clone-local npm script use, clean clone adoption verification, distribution roadmap review, and schema-validated JSON export. It is not yet a polished public package.
+It is ready for local testing, generated example review, scratch-local Claude Code hook verification, dry-run project-local hook settings generation, ordinary project adoption through the local CLI, clone-local npm script use, clean clone adoption verification, installer dry-run review, distribution roadmap review, and schema-validated JSON export. It is not yet a polished public package.
 
 ## Next Steps
 
-- Prototype installer dry-run only after rollback rules are stable.
+- Verify rollback or uninstall behavior before any installer write mode exists.
 - Verify remote clone or release-bundle usage before public distribution.
 - Install and test the skill in real agent sessions.
 - Add adapters for other agent environments, such as Codex hooks, Cursor rules, or AGENTS.md.

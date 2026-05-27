@@ -5,11 +5,13 @@
   "type": "module",
   "description": "Markdown-first process log skill and local adoption CLI for vibe-built projects.",
   "bin": {
+    "vibelog-install": "./scripts/vibelog-install.mjs",
     "vibelog-project": "./scripts/vibelog-project.mjs"
   },
   "scripts": {
     "test": "node --test",
-    "vibelog": "node scripts/vibelog-project.mjs"
+    "vibelog": "node scripts/vibelog-project.mjs",
+    "vibelog:install": "node scripts/vibelog-install.mjs"
   },
   "files": [
     "README.md",

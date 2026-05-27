@@ -403,7 +403,7 @@ The long-term product may become VibeHub, a GitHub-like platform around Vibe Rep
 
 ### Current State
 
-The VibeLog skill now has a deterministic Markdown-to-JSON exporter, stronger schema-driven validator, recorder core, Claude Code hook adapter, scratch-local live hook verifier, dry-run-first project-local hook settings generator, real-project-style opt-in acceptance verifier, ordinary project adoption CLI, private clone-local package entry, clean clone adoption verifier, and tested installer/package-manager distribution roadmap. Slice 16 turned the schema into an active validation contract while keeping the project dependency-free.
+The VibeLog skill now has a deterministic Markdown-to-JSON exporter, stronger schema-driven validator, recorder core, Claude Code hook adapter, scratch-local live hook verifier, dry-run-first project-local hook settings generator, real-project-style opt-in acceptance verifier, ordinary project adoption CLI, private clone-local package entry, clean clone adoption verifier, tested installer/package-manager distribution roadmap, and dry-run-only installer planner. Slice 17 previews install and rollback operations without writing files.
 
 ### Completed
 
@@ -451,27 +451,28 @@ The VibeLog skill now has a deterministic Markdown-to-JSON exporter, stronger sc
 - Added a tested installer/package-manager distribution roadmap and safety gates.
 - Added stronger schema-driven VibeLog JSON validation without adding npm dependencies.
 - Aligned init and verifier fixtures so newly generated project VibeLogs satisfy the current data contract.
+- Added a dry-run-only installer planner and private local `vibelog:install` npm entry.
 
 ### In Progress
 
-- Final repository verification and local commit for Slice 16.
+- Final repository verification and local commit for Slice 17.
 
 ### Pending
 
 - Review the updated VibeLog v0.2 draft skill standard.
-- Prototype installer dry-run only after rollback rules are stable.
+- Verify rollback or uninstall behavior before any installer write mode exists.
 - Verify remote clone or release-bundle usage before public distribution.
 - Add richer example Vibe Repos after the adapter exists.
 - Make Claude Code Stop handoff progress configurable instead of static.
 
 ### Blocked
 
-- No current Slice 16 blocker. Historical note: `skill-creator` quick validation could not run because the current Python environment is missing the `yaml` package.
+- No current Slice 17 blocker. Historical note: `skill-creator` quick validation could not run because the current Python environment is missing the `yaml` package.
 
 ### Next Actions
 
-- Finish Slice 16 repository verification and local commit.
-- Plan installer dry-run or remote clone/release-bundle verification now that schema validation is in place.
+- Finish Slice 17 repository verification and local commit.
+- Plan rollback/uninstall verification before any installer write mode exists.
 - Decide whether to install the skill locally or keep iterating inside the repository first.
 
 ### Important Context for Next Agent
@@ -486,6 +487,7 @@ The VibeLog skill now has a deterministic Markdown-to-JSON exporter, stronger sc
 - Real-project-style opt-in verification uses scratch project source outside this repository.
 - Ordinary project adoption now has a local CLI, but it is not yet packaged as a globally installed command.
 - Strong schema validation is now part of the default validator, but it is a focused VibeLog schema subset rather than full JSON Schema support.
+- Installer work is still dry-run only; `--write` is intentionally refused in S17.
 - Do not push to GitHub without separate explicit user approval.
 - `scripts/export-vibelog.mjs` supports the current strict Markdown subset and should stay conservative until more examples justify expansion.
 - Prefer agent dogfood verification over human manual verification when a repeatable vibe scenario can produce evidence.
@@ -1045,6 +1047,24 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 
 **Confidence:** high
 
+### 2026-05-27
+
+**Type:** test_result
+
+**Summary:** Ran Slice 17 installer dry-run verification.
+
+**Evidence Ref:** `node --test`; `node --test test\vibelog-installer-dry-run.test.mjs test\vibelog-package.test.mjs test\vibelog-distribution-plan.test.mjs`; `node scripts\vibelog-install.mjs --target <scratch-target>`; `node scripts\validate-vibelog.mjs vibe-log.json`; `node scripts\validate-vibelog.mjs examples\vibelog-studio\vibe-log.json`; `node scripts\validate-vibelog.mjs examples\reading-card-lite\vibe-log.json`; `node scripts\validate-vibelog.mjs examples\billmate-lite\vibe-log.json`; `node scripts\export-vibelog.mjs vibe-log.md --out vibe-log.json --check`; Markdown relative link checker; Slice 17 placeholder scan; JSON parse checks; `git diff --check`.
+
+**Result:** passed
+
+**Details:** Full `node --test` passed with 58 tests before local commit. Targeted S17 tests passed with 8 tests. The dry-run command printed a plan with `dryRun: true`, `writesPerformed: false`, 5 planned operations, and 5 rollback steps, and it did not create the scratch target path. Root and example VibeLog JSON files validated. Root VibeLog JSON matched Markdown. Markdown link checker scanned 125 Markdown files and found no broken relative links. Slice 17 placeholder scan produced no matches. JSON parse checks passed for `package.json`, `vibe-log.json`, `skills/vibelog/assets/vibe-log.schema.json`, and `docs/distribution/vibelog-distribution-plan.json`. `git diff --check` produced no output.
+
+**Residual Risk:** This verifies planning only. S17 does not write files, run rollback, verify uninstall, publish a package, or push to GitHub.
+
+**Source:** current work session
+
+**Confidence:** high
+
 ## Project Context
 
 ### Repo / Workspace
@@ -1085,6 +1105,16 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 - `docs/superpowers/plans/2026-05-27-vibelog-strong-schema-validation-slice-16.zh.md`: Chinese Slice 16 implementation plan.
 - `docs/reports/slice-16-strong-schema-validation-report.md`: English Slice 16 report.
 - `docs/reports/slice-16-strong-schema-validation-report.zh.md`: Chinese Slice 16 report.
+- `scripts/vibelog-install.mjs`: dry-run-only installer planner.
+- `test/vibelog-installer-dry-run.test.mjs`: installer dry-run regression tests.
+- `docs/guides/vibelog-installer-dry-run.md`: English installer dry-run guide.
+- `docs/guides/vibelog-installer-dry-run.zh.md`: Chinese installer dry-run guide.
+- `docs/superpowers/specs/2026-05-27-vibelog-installer-dry-run-slice-17-design.md`: English Slice 17 installer dry-run design.
+- `docs/superpowers/specs/2026-05-27-vibelog-installer-dry-run-slice-17-design.zh.md`: Chinese Slice 17 installer dry-run design.
+- `docs/superpowers/plans/2026-05-27-vibelog-installer-dry-run-slice-17.md`: English Slice 17 implementation plan.
+- `docs/superpowers/plans/2026-05-27-vibelog-installer-dry-run-slice-17.zh.md`: Chinese Slice 17 implementation plan.
+- `docs/reports/slice-17-installer-dry-run-report.md`: English Slice 17 report.
+- `docs/reports/slice-17-installer-dry-run-report.zh.md`: Chinese Slice 17 report.
 - `docs/guides/vibe-verification-guide.md`: English guide for agent-run VibeLog verification.
 - `docs/guides/vibe-verification-guide.zh.md`: Chinese guide for agent-run VibeLog verification.
 - `docs/guides/live-hook-verification.md`: English guide for scratch-local Claude Code live hook verification.
@@ -1725,6 +1755,36 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 
 **Notes:** Bilingual report for stronger schema validation, fixture updates, and final verification.
 
+### VibeLog installer dry-run script
+
+**Type:** script
+
+**Ref:** `scripts/vibelog-install.mjs`
+
+**Visibility:** private
+
+**Notes:** Dry-run-only installer planner that outputs planned install operations, rollback steps, and safety flags without writing files.
+
+### Slice 17 installer dry-run design and plan
+
+**Type:** document
+
+**Ref:** `docs/superpowers/specs/2026-05-27-vibelog-installer-dry-run-slice-17-design.md`, `docs/superpowers/specs/2026-05-27-vibelog-installer-dry-run-slice-17-design.zh.md`, `docs/superpowers/plans/2026-05-27-vibelog-installer-dry-run-slice-17.md`, `docs/superpowers/plans/2026-05-27-vibelog-installer-dry-run-slice-17.zh.md`
+
+**Visibility:** private
+
+**Notes:** Bilingual design and implementation plan for S17 installer dry-run.
+
+### Slice 17 installer dry-run reports
+
+**Type:** report
+
+**Ref:** `docs/reports/slice-17-installer-dry-run-report.md`, `docs/reports/slice-17-installer-dry-run-report.zh.md`
+
+**Visibility:** private
+
+**Notes:** Bilingual report for the dry-run installer planner and targeted verification.
+
 ## Execution Prompts
 
 ### 2026-05-25
@@ -2230,6 +2290,24 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 **Result:** Added schema-driven validation, expanded validator regression tests, aligned schema with generated VibeLog data, and fixed generated project fixtures to satisfy the stronger contract.
 
 **Reuse Notes:** Treat this as authorization for local S16 implementation only. It does not authorize GitHub push, npm publishing, package visibility changes, global installer creation, or global Claude Code settings changes.
+
+### 2026-05-27
+
+**Agent / Tool:** Codex
+
+**Prompt Type:** build
+
+**Prompt Visibility:** summary
+
+**Recording Mode:** exact
+
+**Prompt Summary:** User authorized executing Slice 17 installer dry-run prototype.
+
+**Prompt Text:** 执行s17
+
+**Result:** Added a dry-run-only installer planner, private local npm entry, distribution plan update, bilingual guide, bilingual report, and tests that prove dry-run writes nothing and refuses `--write`.
+
+**Reuse Notes:** Treat this as authorization for local S17 implementation only. It does not authorize GitHub push, npm publishing, global installer creation, actual install writes, or global Claude Code/Codex settings changes.
 
 ## Development Log
 
@@ -2860,20 +2938,39 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 
 **Follow-up:** Use the stronger validator as a release gate before installer dry-run, release bundle, package-manager distribution, or future VibeHub upload work.
 
+### 2026-05-27
+**Type:** feature
+
+**Summary:** Added VibeLog installer dry-run prototype.
+
+**Files Changed:** `scripts/vibelog-install.mjs`, `test/vibelog-installer-dry-run.test.mjs`, `package.json`, `test/vibelog-package.test.mjs`, `docs/distribution/vibelog-distribution-plan.json`, `test/vibelog-distribution-plan.test.mjs`, `docs/guides/vibelog-installer-dry-run.md`, `docs/guides/vibelog-installer-dry-run.zh.md`, `docs/guides/vibelog-installer-package-manager-plan.md`, `docs/guides/vibelog-installer-package-manager-plan.zh.md`, `docs/superpowers/specs/2026-05-27-vibelog-installer-dry-run-slice-17-design.md`, `docs/superpowers/specs/2026-05-27-vibelog-installer-dry-run-slice-17-design.zh.md`, `docs/superpowers/plans/2026-05-27-vibelog-installer-dry-run-slice-17.md`, `docs/superpowers/plans/2026-05-27-vibelog-installer-dry-run-slice-17.zh.md`, `docs/reports/slice-17-installer-dry-run-report.md`, `docs/reports/slice-17-installer-dry-run-report.zh.md`, `README.md`, `vibe-log.md`, `vibe-log.json`
+
+**Details:** Added a dependency-free installer planner that outputs JSON with planned copy operations for the skill, scripts, guide docs, README, and package metadata. The planner includes rollback steps, existing target warnings, and safety flags. It is dry-run only and refuses `--write`.
+
+**Bug Symptom:** not applicable
+
+**Root Cause:** not applicable
+
+**Fix:** not applicable
+
+**Verification:** `node --test` passed with 58 tests before local commit. Targeted S17 tests passed for installer dry-run behavior, private package metadata, and distribution plan state. Manual dry-run output reported `dryRun: true` and `writesPerformed: false`.
+
+**Follow-up:** Verify rollback and uninstall behavior in a scratch target before any installer write mode exists.
+
 ## Handoff State
 
 ### Current State
 
-Slice 16 added stronger schema-driven VibeLog validation. The default validator now loads the VibeLog schema, rejects invalid enums, missing required fields, unexpected fields, and invalid nested values, while keeping the repository dependency-free. New project initialization and opt-in verifier fixtures now generate schema-valid VibeLogs.
+Slice 17 added a dry-run-only installer planner. VibeLog can now preview local install operations and rollback steps into a user-selected target root without writing files. The installer path remains safe: clone-local is still the only active distribution channel, and installer write mode is intentionally refused.
 
 ### Project Progress Snapshot
 
-- Project Progress: 39 / 100
+- Project Progress: 42 / 100
 - Change This Task: +3
-- Current Phase: data contract hardening
-- Completed This Task: Added stronger schema-driven validator and schema-valid generated fixtures
-- Next Unlock: installer dry-run prototype or remote clone/release-bundle verification
-- Main Risk: this is a focused VibeLog schema subset, not full JSON Schema support
+- Current Phase: safe installer prototyping
+- Completed This Task: Added dry-run installer planner and safety tests
+- Next Unlock: rollback/uninstall verification
+- Main Risk: S17 proves install planning only; it does not execute writes or verify real uninstall
 - Confidence: high
 
 ### Completed
@@ -2892,14 +2989,16 @@ Slice 16 added stronger schema-driven VibeLog validation. The default validator 
 - Installer/package-manager distribution roadmap added
 - Stronger schema-driven validator added
 - Project init and opt-in fixtures now generate schema-valid VibeLogs
+- Dry-run installer planner added
+- Private local `vibelog:install` npm entry added
 
 ### In Progress
 
-- Final repository verification and local commit for Slice 16
+- Final repository verification and local commit for Slice 17
 
 ### Pending
 
-- Prototype installer dry-run only after rollback rules are stable
+- Verify rollback or uninstall behavior before any installer write mode exists
 - Verify remote clone or release-bundle usage before public distribution
 - Make Stop handoff progress configurable instead of static
 - Optional full live Claude Code verification in an opted-in project
@@ -2910,14 +3009,15 @@ Slice 16 added stronger schema-driven VibeLog validation. The default validator 
 
 ### Next Actions
 
-- Finish Slice 16 repository verification and local commit
-- Plan installer dry-run or remote clone/release-bundle verification
+- Finish Slice 17 repository verification and local commit
+- Plan rollback/uninstall verification
 
 ### Context For Next Agent
 
-- Session: slice-16-codex
+- Session: slice-17-codex
 - Stop hook active: false
 - Default validation now enforces the VibeLog schema subset in `skills/vibelog/assets/vibe-log.schema.json`.
+- Installer work is dry-run only; `scripts/vibelog-install.mjs --write` must fail until rollback/uninstall verification exists.
 ## Public / Private Projection
 
 - Public summary: VibeLog is a Markdown-first, hook-friendly process record skill for vibe-built products.
@@ -3337,6 +3437,21 @@ Slice 16 added stronger schema-driven VibeLog validation. The default validator 
 **Problems:** The previous lightweight validator could miss schema-level drift, and stronger validation exposed that generated project fixtures needed fuller required sections.
 
 **Next:** Finish full repository verification, commit locally, then plan installer dry-run or release-bundle verification.
+
+**Source:** current work session
+
+**Confidence:** high
+
+### 2026-05-27
+**Stage:** prototype
+
+**What Happened:** Added a dry-run-only installer planner for VibeLog.
+
+**Tools Used:** Codex, Node.js, VibeLog
+
+**Problems:** VibeLog needed a safe path toward installation without touching global user directories or adding a real write mode too early.
+
+**Next:** Verify rollback and uninstall behavior in a scratch target before any installer write mode exists.
 
 **Source:** current work session
 

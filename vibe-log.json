@@ -384,6 +384,27 @@
       "ref": "`docs/reports/slice-16-strong-schema-validation-report.md`, `docs/reports/slice-16-strong-schema-validation-report.zh.md`",
       "type": "report",
       "visibility": "private"
+    },
+    {
+      "name": "VibeLog installer dry-run script",
+      "notes": "Dry-run-only installer planner that outputs planned install operations, rollback steps, and safety flags without writing files.",
+      "ref": "`scripts/vibelog-install.mjs`",
+      "type": "script",
+      "visibility": "private"
+    },
+    {
+      "name": "Slice 17 installer dry-run design and plan",
+      "notes": "Bilingual design and implementation plan for S17 installer dry-run.",
+      "ref": "`docs/superpowers/specs/2026-05-27-vibelog-installer-dry-run-slice-17-design.md`, `docs/superpowers/specs/2026-05-27-vibelog-installer-dry-run-slice-17-design.zh.md`, `docs/superpowers/plans/2026-05-27-vibelog-installer-dry-run-slice-17.md`, `docs/superpowers/plans/2026-05-27-vibelog-installer-dry-run-slice-17.zh.md`",
+      "type": "document",
+      "visibility": "private"
+    },
+    {
+      "name": "Slice 17 installer dry-run reports",
+      "notes": "Bilingual report for the dry-run installer planner and targeted verification.",
+      "ref": "`docs/reports/slice-17-installer-dry-run-report.md`, `docs/reports/slice-17-installer-dry-run-report.zh.md`",
+      "type": "report",
+      "visibility": "private"
     }
   ],
   "branch_remix_readiness": {
@@ -581,6 +602,38 @@
       "timestamp": "2026-05-27",
       "type": "feature",
       "verification": "`node --test` passed with 54 tests after the first local S16 commit, including clean clone adoption from the new commit. Root and example VibeLog JSON files validated against the stronger schema, the root JSON drift check passed, Markdown links were checked, S16 placeholder scan produced no matches, JSON parse checks passed, and `git diff --check` produced no output."
+    },
+    {
+      "bug_symptom": "not applicable",
+      "details": "Added a dependency-free installer planner that outputs JSON with planned copy operations for the skill, scripts, guide docs, README, and package metadata. The planner includes rollback steps, existing target warnings, and safety flags. It is dry-run only and refuses `--write`.",
+      "files_changed": [
+        "scripts/vibelog-install.mjs",
+        "test/vibelog-installer-dry-run.test.mjs",
+        "package.json",
+        "test/vibelog-package.test.mjs",
+        "docs/distribution/vibelog-distribution-plan.json",
+        "test/vibelog-distribution-plan.test.mjs",
+        "docs/guides/vibelog-installer-dry-run.md",
+        "docs/guides/vibelog-installer-dry-run.zh.md",
+        "docs/guides/vibelog-installer-package-manager-plan.md",
+        "docs/guides/vibelog-installer-package-manager-plan.zh.md",
+        "docs/superpowers/specs/2026-05-27-vibelog-installer-dry-run-slice-17-design.md",
+        "docs/superpowers/specs/2026-05-27-vibelog-installer-dry-run-slice-17-design.zh.md",
+        "docs/superpowers/plans/2026-05-27-vibelog-installer-dry-run-slice-17.md",
+        "docs/superpowers/plans/2026-05-27-vibelog-installer-dry-run-slice-17.zh.md",
+        "docs/reports/slice-17-installer-dry-run-report.md",
+        "docs/reports/slice-17-installer-dry-run-report.zh.md",
+        "README.md",
+        "vibe-log.md",
+        "vibe-log.json"
+      ],
+      "fix": "not applicable",
+      "follow_up": "Verify rollback and uninstall behavior in a scratch target before any installer write mode exists.",
+      "root_cause": "not applicable",
+      "summary": "Added VibeLog installer dry-run prototype.",
+      "timestamp": "2026-05-27",
+      "type": "feature",
+      "verification": "`node --test` passed with 58 tests before local commit. Targeted S17 tests passed for installer dry-run behavior, private package metadata, and distribution plan state. Manual dry-run output reported `dryRun: true` and `writesPerformed: false`."
     }
   ],
   "code_repositories": [],
@@ -1412,6 +1465,17 @@
       "result": "Added schema-driven validation, expanded validator regression tests, aligned schema with generated VibeLog data, and fixed generated project fixtures to satisfy the stronger contract.",
       "reuse_notes": "Treat this as authorization for local S16 implementation only. It does not authorize GitHub push, npm publishing, package visibility changes, global installer creation, or global Claude Code settings changes.",
       "timestamp": "2026-05-27"
+    },
+    {
+      "agent_or_tool": "Codex",
+      "prompt_summary": "User authorized executing Slice 17 installer dry-run prototype.",
+      "prompt_text": "执行s17",
+      "prompt_type": "build",
+      "prompt_visibility": "summary",
+      "recording_mode": "exact",
+      "result": "Added a dry-run-only installer planner, private local npm entry, distribution plan update, bilingual guide, bilingual report, and tests that prove dry-run writes nothing and refuses `--write`.",
+      "reuse_notes": "Treat this as authorization for local S17 implementation only. It does not authorize GitHub push, npm publishing, global installer creation, actual install writes, or global Claude Code/Codex settings changes.",
+      "timestamp": "2026-05-27"
     }
   ],
   "handoff_state": {
@@ -1432,34 +1496,37 @@
       "Clean clone adoption verifier added",
       "Installer/package-manager distribution roadmap added",
       "Stronger schema-driven validator added",
-      "Project init and opt-in fixtures now generate schema-valid VibeLogs"
+      "Project init and opt-in fixtures now generate schema-valid VibeLogs",
+      "Dry-run installer planner added",
+      "Private local `vibelog:install` npm entry added"
     ],
     "context_for_next_agent": [
-      "Session: slice-16-codex",
+      "Session: slice-17-codex",
       "Stop hook active: false",
-      "Default validation now enforces the VibeLog schema subset in `skills/vibelog/assets/vibe-log.schema.json`."
+      "Default validation now enforces the VibeLog schema subset in `skills/vibelog/assets/vibe-log.schema.json`.",
+      "Installer work is dry-run only; `scripts/vibelog-install.mjs --write` must fail until rollback/uninstall verification exists."
     ],
-    "current_state": "Slice 16 added stronger schema-driven VibeLog validation. The default validator now loads the VibeLog schema, rejects invalid enums, missing required fields, unexpected fields, and invalid nested values, while keeping the repository dependency-free. New project initialization and opt-in verifier fixtures now generate schema-valid VibeLogs.",
+    "current_state": "Slice 17 added a dry-run-only installer planner. VibeLog can now preview local install operations and rollback steps into a user-selected target root without writing files. The installer path remains safe: clone-local is still the only active distribution channel, and installer write mode is intentionally refused.",
     "in_progress": [
-      "Final repository verification and local commit for Slice 16"
+      "Final repository verification and local commit for Slice 17"
     ],
     "next_actions": [
-      "Finish Slice 16 repository verification and local commit",
-      "Plan installer dry-run or remote clone/release-bundle verification"
+      "Finish Slice 17 repository verification and local commit",
+      "Plan rollback/uninstall verification"
     ],
     "pending": [
-      "Prototype installer dry-run only after rollback rules are stable",
+      "Verify rollback or uninstall behavior before any installer write mode exists",
       "Verify remote clone or release-bundle usage before public distribution",
       "Make Stop handoff progress configurable instead of static",
       "Optional full live Claude Code verification in an opted-in project"
     ],
     "project_progress_snapshot": [
-      "Project Progress: 39 / 100",
+      "Project Progress: 42 / 100",
       "Change This Task: +3",
-      "Current Phase: data contract hardening",
-      "Completed This Task: Added stronger schema-driven validator and schema-valid generated fixtures",
-      "Next Unlock: installer dry-run prototype or remote clone/release-bundle verification",
-      "Main Risk: this is a focused VibeLog schema subset, not full JSON Schema support",
+      "Current Phase: safe installer prototyping",
+      "Completed This Task: Added dry-run installer planner and safety tests",
+      "Next Unlock: rollback/uninstall verification",
+      "Main Risk: S17 proves install planning only; it does not execute writes or verify real uninstall",
       "Confidence: high"
     ]
   },
@@ -1714,7 +1781,7 @@
   },
   "implementation_status": {
     "blocked": [
-      "No current Slice 16 blocker. Historical note: `skill-creator` quick validation could not run because the current Python environment is missing the `yaml` package."
+      "No current Slice 17 blocker. Historical note: `skill-creator` quick validation could not run because the current Python environment is missing the `yaml` package."
     ],
     "completed": [
       "Created the VibeLog v0.1 design document.",
@@ -1760,9 +1827,10 @@
       "Added clean clone adoption verification for the clone-local package workflow.",
       "Added a tested installer/package-manager distribution roadmap and safety gates.",
       "Added stronger schema-driven VibeLog JSON validation without adding npm dependencies.",
-      "Aligned init and verifier fixtures so newly generated project VibeLogs satisfy the current data contract."
+      "Aligned init and verifier fixtures so newly generated project VibeLogs satisfy the current data contract.",
+      "Added a dry-run-only installer planner and private local `vibelog:install` npm entry."
     ],
-    "current_state": "The VibeLog skill now has a deterministic Markdown-to-JSON exporter, stronger schema-driven validator, recorder core, Claude Code hook adapter, scratch-local live hook verifier, dry-run-first project-local hook settings generator, real-project-style opt-in acceptance verifier, ordinary project adoption CLI, private clone-local package entry, clean clone adoption verifier, and tested installer/package-manager distribution roadmap. Slice 16 turned the schema into an active validation contract while keeping the project dependency-free.",
+    "current_state": "The VibeLog skill now has a deterministic Markdown-to-JSON exporter, stronger schema-driven validator, recorder core, Claude Code hook adapter, scratch-local live hook verifier, dry-run-first project-local hook settings generator, real-project-style opt-in acceptance verifier, ordinary project adoption CLI, private clone-local package entry, clean clone adoption verifier, tested installer/package-manager distribution roadmap, and dry-run-only installer planner. Slice 17 previews install and rollback operations without writing files.",
     "important_context_for_next_agent": [
       "The current priority is the standalone VibeLog skill, not the website.",
       "The website remains a long-term vision but should not drive the first implementation.",
@@ -1774,21 +1842,22 @@
       "Real-project-style opt-in verification uses scratch project source outside this repository.",
       "Ordinary project adoption now has a local CLI, but it is not yet packaged as a globally installed command.",
       "Strong schema validation is now part of the default validator, but it is a focused VibeLog schema subset rather than full JSON Schema support.",
+      "Installer work is still dry-run only; `--write` is intentionally refused in S17.",
       "Do not push to GitHub without separate explicit user approval.",
       "`scripts/export-vibelog.mjs` supports the current strict Markdown subset and should stay conservative until more examples justify expansion.",
       "Prefer agent dogfood verification over human manual verification when a repeatable vibe scenario can produce evidence."
     ],
     "in_progress": [
-      "Final repository verification and local commit for Slice 16."
+      "Final repository verification and local commit for Slice 17."
     ],
     "next_actions": [
-      "Finish Slice 16 repository verification and local commit.",
-      "Plan installer dry-run or remote clone/release-bundle verification now that schema validation is in place.",
+      "Finish Slice 17 repository verification and local commit.",
+      "Plan rollback/uninstall verification before any installer write mode exists.",
       "Decide whether to install the skill locally or keep iterating inside the repository first."
     ],
     "pending": [
       "Review the updated VibeLog v0.2 draft skill standard.",
-      "Prototype installer dry-run only after rollback rules are stable.",
+      "Verify rollback or uninstall behavior before any installer write mode exists.",
       "Verify remote clone or release-bundle usage before public distribution.",
       "Add richer example Vibe Repos after the adapter exists.",
       "Make Claude Code Stop handoff progress configurable instead of static."
@@ -1839,6 +1908,16 @@
       "`docs/superpowers/plans/2026-05-27-vibelog-strong-schema-validation-slice-16.zh.md`: Chinese Slice 16 implementation plan.",
       "`docs/reports/slice-16-strong-schema-validation-report.md`: English Slice 16 report.",
       "`docs/reports/slice-16-strong-schema-validation-report.zh.md`: Chinese Slice 16 report.",
+      "`scripts/vibelog-install.mjs`: dry-run-only installer planner.",
+      "`test/vibelog-installer-dry-run.test.mjs`: installer dry-run regression tests.",
+      "`docs/guides/vibelog-installer-dry-run.md`: English installer dry-run guide.",
+      "`docs/guides/vibelog-installer-dry-run.zh.md`: Chinese installer dry-run guide.",
+      "`docs/superpowers/specs/2026-05-27-vibelog-installer-dry-run-slice-17-design.md`: English Slice 17 installer dry-run design.",
+      "`docs/superpowers/specs/2026-05-27-vibelog-installer-dry-run-slice-17-design.zh.md`: Chinese Slice 17 installer dry-run design.",
+      "`docs/superpowers/plans/2026-05-27-vibelog-installer-dry-run-slice-17.md`: English Slice 17 implementation plan.",
+      "`docs/superpowers/plans/2026-05-27-vibelog-installer-dry-run-slice-17.zh.md`: Chinese Slice 17 implementation plan.",
+      "`docs/reports/slice-17-installer-dry-run-report.md`: English Slice 17 report.",
+      "`docs/reports/slice-17-installer-dry-run-report.zh.md`: Chinese Slice 17 report.",
       "`docs/guides/vibe-verification-guide.md`: English guide for agent-run VibeLog verification.",
       "`docs/guides/vibe-verification-guide.zh.md`: Chinese guide for agent-run VibeLog verification.",
       "`docs/guides/live-hook-verification.md`: English guide for scratch-local Claude Code live hook verification.",
@@ -2303,6 +2382,17 @@
       "summary": "Ran final Slice 16 repository verification.",
       "timestamp": "2026-05-27",
       "type": "test_result"
+    },
+    {
+      "confidence": "high",
+      "details": "Full `node --test` passed with 58 tests before local commit. Targeted S17 tests passed with 8 tests. The dry-run command printed a plan with `dryRun: true`, `writesPerformed: false`, 5 planned operations, and 5 rollback steps, and it did not create the scratch target path. Root and example VibeLog JSON files validated. Root VibeLog JSON matched Markdown. Markdown link checker scanned 125 Markdown files and found no broken relative links. Slice 17 placeholder scan produced no matches. JSON parse checks passed for `package.json`, `vibe-log.json`, `skills/vibelog/assets/vibe-log.schema.json`, and `docs/distribution/vibelog-distribution-plan.json`. `git diff --check` produced no output.",
+      "evidence_ref": "`node --test`; `node --test test\\vibelog-installer-dry-run.test.mjs test\\vibelog-package.test.mjs test\\vibelog-distribution-plan.test.mjs`; `node scripts\\vibelog-install.mjs --target <scratch-target>`; `node scripts\\validate-vibelog.mjs vibe-log.json`; `node scripts\\validate-vibelog.mjs examples\\vibelog-studio\\vibe-log.json`; `node scripts\\validate-vibelog.mjs examples\\reading-card-lite\\vibe-log.json`; `node scripts\\validate-vibelog.mjs examples\\billmate-lite\\vibe-log.json`; `node scripts\\export-vibelog.mjs vibe-log.md --out vibe-log.json --check`; Markdown relative link checker; Slice 17 placeholder scan; JSON parse checks; `git diff --check`.",
+      "residual_risk": "This verifies planning only. S17 does not write files, run rollback, verify uninstall, publish a package, or push to GitHub.",
+      "result": "passed",
+      "source": "current work session",
+      "summary": "Ran Slice 17 installer dry-run verification.",
+      "timestamp": "2026-05-27",
+      "type": "test_result"
     }
   ],
   "vibe_progress": [
@@ -2648,6 +2738,20 @@
         "VibeLog"
       ],
       "what_happened": "Added stronger schema-driven validation for VibeLog JSON exports."
+    },
+    {
+      "confidence": "high",
+      "next": "Verify rollback and uninstall behavior in a scratch target before any installer write mode exists.",
+      "problems": "VibeLog needed a safe path toward installation without touching global user directories or adding a real write mode too early.",
+      "source": "current work session",
+      "stage": "prototype",
+      "timestamp": "2026-05-27",
+      "tools_used": [
+        "Codex",
+        "Node.js",
+        "VibeLog"
+      ],
+      "what_happened": "Added a dry-run-only installer planner for VibeLog."
     }
   ],
   "visibility": "private"

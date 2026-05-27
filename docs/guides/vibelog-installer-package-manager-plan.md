@@ -33,9 +33,16 @@ Required gates:
 - explicit human approval for release creation;
 - no private project data in examples or artifacts.
 
-## Future Channel: Local Installer Scripts
+## Prototype Channel: Local Installer Scripts
 
-Local installer scripts may eventually copy the VibeLog skill, docs, and CLI helpers into a user-selected location.
+Local installer scripts are now in dry-run prototype state. The current command previews copying the VibeLog skill, scripts, docs, README, and package metadata into a user-selected location, but it writes nothing.
+
+```powershell
+node scripts/vibelog-install.mjs --target "C:\path\to\install-root"
+npm run vibelog:install -- --target "C:\path\to\install-root"
+```
+
+S17 refuses `--write`. Real writing remains blocked until rollback or uninstall behavior is verified.
 
 Required gates:
 
@@ -84,4 +91,4 @@ Required gates:
 
 ## Next Recommended Slice
 
-The strongest next step is JSON Schema validation. It makes future installer, package, VibeHub upload, and community reuse safer because all distribution channels depend on a trustworthy VibeLog data contract.
+The strongest next step is rollback or uninstall verification in a scratch target. It keeps installer work safe before any real write mode exists.
