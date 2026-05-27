@@ -136,8 +136,12 @@ Useful commands:
 ```powershell
 node scripts/claude-code-hook-adapter.mjs --input hook.json --print-events
 node scripts/claude-code-hook-adapter.mjs --input hook.json --log vibe-log.md --json vibe-log.json --event-dir .vibelog-events
+node scripts/claude-code-hook-adapter.mjs --input hook.json --event-stream .vibelog-events/session.jsonl
+node scripts/record-vibelog-event.mjs --events .vibelog-events/session.jsonl --log vibe-log.md --json vibe-log.json
 node --test test/claude-code-hook-adapter.test.mjs
 ```
+
+Use `--event-stream` when multiple hook invocations should be appended to one JSONL file before VibeLog is updated. In this mode the adapter writes only the event stream; it does not modify `vibe-log.md` or `vibe-log.json` until the recorder consumes the stream.
 
 Example settings live at:
 

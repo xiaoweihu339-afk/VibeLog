@@ -16,7 +16,21 @@ Record into VibeLog:
 node scripts/claude-code-hook-adapter.mjs --input hook.json --log vibe-log.md --json vibe-log.json --event-dir .vibelog-events
 ```
 
+Append to a local event stream without updating VibeLog immediately:
+
+```powershell
+node scripts/claude-code-hook-adapter.mjs --input hook.json --event-stream .vibelog-events/session.jsonl
+```
+
+Then consume the stream through the recorder core:
+
+```powershell
+node scripts/record-vibelog-event.mjs --events .vibelog-events/session.jsonl --log vibe-log.md --json vibe-log.json
+```
+
 When used by Claude Code hooks, omit `--input`; the adapter reads hook JSON from stdin.
+
+Use direct record mode for small local experiments. Prefer event stream mode when multiple hook invocations should be reviewed, batched, or replayed before writing `vibe-log.md`.
 
 ## Supported Hook Events
 
@@ -31,6 +45,7 @@ When used by Claude Code hooks, omit `--input`; the adapter reads hook JSON from
 - No automatic hook installation.
 - Secret-like values are redacted before writing Vibe Events.
 - Ordinary idea chat is ignored in this first adapter version.
+- Event stream mode writes JSONL only; it does not modify `vibe-log.md` or `vibe-log.json` until the recorder consumes the stream.
 
 ## Example Settings
 
@@ -59,6 +74,13 @@ node --test test/claude-code-hook-adapter.test.mjs
 node --test
 ```
 
+The focused adapter test covers:
+
+- individual hook-to-event mapping
+- direct record mode
+- event stream append mode
+- multiple hook inputs accumulated into one JSONL stream and consumed by the recorder
+
 For scratch-local live verification, run:
 
 ```powershell
@@ -72,5 +94,6 @@ For project-local setup, see [Claude Code Opt-In Install](claude-code-opt-in-ins
 ## Current Limits
 
 - This is fixture-verified and scratch-live verified, but not installed into a real user project by default.
+- Event stream mode is fixture-verified; live hook verification still uses the reviewed project-local command path and should be updated separately if stream-first hooks become the default.
 - `Stop` handoff is conservative and does not inspect the whole repository.
 - More nuanced idea extraction should be added later after deterministic prompt/tool/test capture is stable.

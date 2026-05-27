@@ -16,7 +16,21 @@ node scripts/claude-code-hook-adapter.mjs --input hook.json --print-events
 node scripts/claude-code-hook-adapter.mjs --input hook.json --log vibe-log.md --json vibe-log.json --event-dir .vibelog-events
 ```
 
+只追加到本地 event stream，暂不更新 VibeLog：
+
+```powershell
+node scripts/claude-code-hook-adapter.mjs --input hook.json --event-stream .vibelog-events/session.jsonl
+```
+
+然后用 recorder core 消费这个 stream：
+
+```powershell
+node scripts/record-vibelog-event.mjs --events .vibelog-events/session.jsonl --log vibe-log.md --json vibe-log.json
+```
+
 当 adapter 由 Claude Code hooks 调用时，省略 `--input`；adapter 会从 stdin 读取 hook JSON。
+
+小型本地实验可以使用 direct record mode。多个 hook invocation 需要先 review、批处理或 replay 时，优先使用 event stream mode。
 
 ## 支持的 Hook Events
 
@@ -31,6 +45,7 @@ node scripts/claude-code-hook-adapter.mjs --input hook.json --log vibe-log.md --
 - 不自动安装 hook。
 - 写入 Vibe Events 前会脱敏 secret-like values。
 - 第一版 adapter 会忽略普通 idea chat。
+- Event stream mode 只写 JSONL；在 recorder 消费 stream 之前，不会修改 `vibe-log.md` 或 `vibe-log.json`。
 
 ## 示例 Settings
 
@@ -59,6 +74,13 @@ node --test test/claude-code-hook-adapter.test.mjs
 node --test
 ```
 
+focused adapter test 覆盖：
+
+- 单个 hook 到 event 的映射
+- direct record mode
+- event stream append mode
+- 多个 hook input 累积到同一个 JSONL stream，再由 recorder 消费
+
 scratch-local live 验证可以运行：
 
 ```powershell
@@ -72,5 +94,6 @@ node scripts/verify-claude-code-live-hook.mjs --workspace "C:\path\to\scratch-ro
 ## 当前限制
 
 - 当前已完成 fixture verification 和 scratch-live verification，但不会默认安装到真实用户项目。
+- Event stream mode 已完成 fixture verification；live hook verification 仍使用已 review 的项目本地命令路径。如果未来 stream-first hooks 成为默认，还需要单独更新 live verification。
 - `Stop` handoff 是保守记录，不会检查整个仓库。
 - 更细腻的 idea extraction 应该等确定性的 prompt/tool/test capture 稳定之后再加。

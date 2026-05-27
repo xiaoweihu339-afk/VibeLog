@@ -158,8 +158,11 @@ The first automation target is Claude Code because its hook system can call dete
 
 ```powershell
 node scripts/claude-code-hook-adapter.mjs --log vibe-log.md --json vibe-log.json --event-dir .vibelog-events
+node scripts/claude-code-hook-adapter.mjs --event-stream .vibelog-events/session.jsonl
 node scripts/configure-claude-code-vibelog-hooks.mjs --project "C:\path\to\project" --adapter "C:\path\to\VibeLog\scripts\claude-code-hook-adapter.mjs"
 ```
+
+The direct adapter command writes VibeLog immediately. The `--event-stream` command appends JSONL events only; run `record-vibelog-event.mjs --events` later to consume the stream.
 
 The hook generator is dry-run by default. Use `--write` only after reviewing the generated project-local settings.
 
@@ -208,7 +211,7 @@ See [Claude Code Adapter](docs/guides/claude-code-adapter.md), [Claude Code Opt-
 - `scripts/export-vibelog.mjs`: export deterministic JSON from Markdown.
 - `scripts/validate-vibelog.mjs`: validate exported VibeLog JSON against the current schema subset.
 - `scripts/record-vibelog-event.mjs`: apply one structured Vibe Event payload or an ordered event stream to Markdown and optionally regenerate JSON.
-- `scripts/claude-code-hook-adapter.mjs`: map Claude Code hook JSON input to Vibe Event JSON and call the recorder core.
+- `scripts/claude-code-hook-adapter.mjs`: map Claude Code hook JSON input to Vibe Event JSON, either recording directly or appending an event stream.
 - `scripts/configure-claude-code-vibelog-hooks.mjs`: preview or write project-local Claude Code VibeLog hook settings.
 - `scripts/vibelog-project.mjs`: project adoption CLI for init, hook preview/enable, verification, and hook disable.
 - `scripts/vibelog-install.mjs`: dry-run installer planner.

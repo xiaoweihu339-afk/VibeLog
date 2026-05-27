@@ -15,21 +15,21 @@ Because the total goal is broad, progress must be conservative. Do not score loc
 Every completed meaningful task report should include:
 
 ```txt
-Project Progress: 18 / 100
+Project Progress: 20 / 100
 Change This Task: +2
 Current Phase: Automatic recording foundation
-Completed This Task: S24 local event stream recording and progress_updated event support
-Next Unlock: Live hook adapters emitting event streams continuously during real work
-Main Risk: Local deterministic event streams are verified, but live hook environments still need separate verification
+Completed This Task: S25 hook adapter event stream verification
+Next Unlock: Stream-first live hook verification in a scratch or opt-in project
+Main Risk: Fixture adapter streams are verified, but stream-first live hook behavior still needs separate verification
 Confidence: medium-high
 ```
 
 ## Current Baseline
 
-Current baseline after S24 local event stream recording:
+Current baseline after S25 hook adapter event stream verification:
 
 ```txt
-Project Progress: 18 / 100
+Project Progress: 20 / 100
 ```
 
 Reason:
@@ -40,8 +40,9 @@ Reason:
 - S22R inserted VibeLog into the current real project mid-stream and produced a private validated dogfood log.
 - S23 proved a small real self-update loop: read local VibeLog, execute a maintenance task, update VibeLog, export JSON, and validate.
 - S24 proved a local event stream loop: read ordered events, update Markdown, append progress, export JSON, and validate without relying on a manual Markdown edit.
+- S25 proved the Claude Code adapter can append multiple hook events to one JSONL stream before the recorder consumes it.
 - VibeHub's product layer, repository storage model, collaboration/remix model, and public community still do not exist.
-- Live hook-driven continuous recording across agent environments is not yet proven.
+- Stream-first live hook-driven continuous recording across agent environments is not yet proven.
 
 ## Progress Bands
 
@@ -78,8 +79,8 @@ Never increase progress just because many files changed. Increase it only when t
 
 ## Current Recommendation
 
-Until live hook adapters prove that VibeLog can update continuously inside real agent environments, keep the project near:
+Until stream-first live hook adapters prove that VibeLog can update continuously inside real agent environments, keep the project near:
 
 ```txt
-Project Progress: 18 / 100
+Project Progress: 20 / 100
 ```

@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { appendFile, mkdir, readFile, writeFile } from "node:fs/promises";
 import { stdin } from "node:process";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -51,12 +51,13 @@ export async function runClaudeCodeHookAdapter({
   logPath = "vibe-log.md",
   jsonPath = "vibe-log.json",
   eventDir = null,
+  eventStreamPath = null,
   printEvents = false,
   timestamp = null
 } = {}) {
   const input = inputPath
-    ? JSON.parse(await readFile(inputPath, "utf8"))
-    : JSON.parse(await readStdin());
+    ? parseJsonText(await readFile(inputPath, "utf8"))
+    : parseJsonText(await readStdin());
   const events = mapClaudeHookToVibeEvents(input, { timestamp: timestamp ?? new Date().toISOString() });
 
   if (printEvents) {
@@ -69,7 +70,18 @@ export async function runClaudeCodeHookAdapter({
   if (events.length === 0) {
     return {
       events,
-      recorded: []
+      recorded: [],
+      eventStreamPath: eventStreamPath ? resolve(eventStreamPath) : null
+    };
+  }
+
+  if (eventStreamPath) {
+    const resolvedEventStreamPath = resolve(eventStreamPath);
+    await appendVibeEventsFile(resolvedEventStreamPath, events);
+    return {
+      events,
+      recorded: [],
+      eventStreamPath: resolvedEventStreamPath
     };
   }
 
@@ -98,6 +110,16 @@ export async function runClaudeCodeHookAdapter({
     events,
     recorded
   };
+}
+
+export async function appendVibeEventsFile(eventStreamPath, events) {
+  await mkdir(dirname(eventStreamPath), { recursive: true });
+  const lines = events.map((event) => JSON.stringify(event)).join("\n");
+  await appendFile(eventStreamPath, `${lines}\n`, "utf8");
+}
+
+function parseJsonText(text) {
+  return JSON.parse(String(text).replace(/^\uFEFF/u, ""));
 }
 
 function mapUserPromptSubmit(input, timestamp) {
@@ -254,6 +276,7 @@ function parseArgs(argv) {
     logPath: "vibe-log.md",
     jsonPath: "vibe-log.json",
     eventDir: null,
+    eventStreamPath: null,
     printEvents: false
   };
 
@@ -268,6 +291,8 @@ function parseArgs(argv) {
       options.jsonPath = args.shift() ?? "";
     } else if (arg === "--event-dir") {
       options.eventDir = args.shift() ?? "";
+    } else if (arg === "--event-stream") {
+      options.eventStreamPath = args.shift() ?? "";
     } else if (arg === "--print-events") {
       options.printEvents = true;
     } else {
@@ -278,6 +303,7 @@ function parseArgs(argv) {
   if (options.logPath === "") throw new Error("--log requires a path");
   if (options.jsonPath === "") throw new Error("--json requires a path");
   if (options.eventDir === "") throw new Error("--event-dir requires a path");
+  if (options.eventStreamPath === "") throw new Error("--event-stream requires a path");
   return options;
 }
 
@@ -288,11 +314,17 @@ async function main() {
     logPath: resolve(options.logPath),
     jsonPath: resolve(options.jsonPath),
     eventDir: options.eventDir ? resolve(options.eventDir) : null,
+    eventStreamPath: options.eventStreamPath ? resolve(options.eventStreamPath) : null,
     printEvents: options.printEvents
   });
 
   if (options.printEvents) {
     process.stdout.write(result.output);
+    return;
+  }
+
+  if (result.eventStreamPath) {
+    console.log(`Claude Code hook adapter appended ${result.events.length} event(s) to ${result.eventStreamPath}.`);
     return;
   }
 

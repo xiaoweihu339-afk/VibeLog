@@ -7,6 +7,8 @@ import { join } from "node:path";
 import { promisify } from "node:util";
 
 import { parseVibeLogMarkdown } from "../scripts/export-vibelog.mjs";
+import { recordVibeLogEventsFile } from "../scripts/record-vibelog-event.mjs";
+import { validateVibeLog } from "../scripts/validate-vibelog.mjs";
 import {
   mapClaudeHookToVibeEvents,
   redactSecrets,
@@ -42,6 +44,28 @@ A fixture for Claude Code adapter tests.
 
 Verify Claude Code hook mapping.
 
+## Implementation Status
+
+### Current State
+
+Adapter fixture is ready.
+
+### Completed
+
+- Base fixture created.
+
+### In Progress
+
+### Pending
+
+- Apply hook events.
+
+### Blocked
+
+### Next Actions
+
+- Apply hook events.
+
 ## Idea Evolution
 
 ## Human-in-the-Loop
@@ -60,6 +84,19 @@ No bugfix or incident entry yet.
 
 - Adapter records events.
 
+### Core User Paths
+
+- Append hook events to a stream.
+- Record the stream into VibeLog.
+
+### Manual Test Steps
+
+- Inspect generated event stream.
+
+### Automated Test Strategy
+
+Use node --test test/claude-code-hook-adapter.test.mjs.
+
 ## Verification Evidence
 
 ## Artifact Index
@@ -77,6 +114,30 @@ Adapter fixture is ready.
 ### Pending
 
 - Apply hook events.
+
+### Blockers
+
+### Next Actions
+
+- Apply hook events.
+
+### Context For Next Agent
+
+- Keep adapter tests deterministic.
+
+## Vibe Progress
+
+### 2026-05-26
+
+**Stage:** prototype
+
+**What Happened:** Created adapter fixture.
+
+**Tools Used:** node:test
+
+**Problems:** none
+
+**Next:** Apply hook events.
 
 ## Public Summary
 
@@ -230,6 +291,129 @@ test("record mode updates VibeLog Markdown and JSON through recorder core", asyn
 
     assert.equal(data.execution_prompts.length, 1);
     assert.equal(json.execution_prompts[0].agent_or_tool, "Claude Code");
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
+test("event stream mode appends mapped events without updating VibeLog", async () => {
+  const dir = await mkdtemp(join(tmpdir(), "claude-adapter-stream-"));
+  const inputPath = join(dir, "hook.json");
+  const logPath = join(dir, "vibe-log.md");
+  const jsonPath = join(dir, "vibe-log.json");
+  const eventStreamPath = join(dir, ".vibelog-events", "session.jsonl");
+
+  try {
+    await writeFile(logPath, baseMarkdown, "utf8");
+    await writeFile(inputPath, JSON.stringify({
+      hook_event_name: "UserPromptSubmit",
+      prompt: "Implement event stream adapter mode and run node --test"
+    }), "utf8");
+
+    const result = await runClaudeCodeHookAdapter({
+      inputPath,
+      logPath,
+      jsonPath,
+      eventStreamPath,
+      printEvents: false
+    });
+
+    const streamLines = (await readFile(eventStreamPath, "utf8")).trim().split(/\r?\n/u);
+    const markdown = await readFile(logPath, "utf8");
+    const data = parseVibeLogMarkdown(markdown);
+
+    assert.equal(result.events.length, 1);
+    assert.equal(result.eventStreamPath, eventStreamPath);
+    assert.equal(streamLines.length, 1);
+    assert.equal(JSON.parse(streamLines[0]).type, "prompt_submitted");
+    assert.equal(data.execution_prompts.length, 0);
+    await assert.rejects(readFile(jsonPath, "utf8"), /ENOENT/);
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
+test("event stream mode accepts a UTF-8 BOM hook input file", async () => {
+  const dir = await mkdtemp(join(tmpdir(), "claude-adapter-stream-bom-"));
+  const inputPath = join(dir, "hook.json");
+  const eventStreamPath = join(dir, ".vibelog-events", "session.jsonl");
+
+  try {
+    await writeFile(inputPath, `\ufeff${JSON.stringify({
+      hook_event_name: "UserPromptSubmit",
+      prompt: "Implement event stream adapter mode and run tests"
+    })}`, "utf8");
+
+    const result = await runClaudeCodeHookAdapter({
+      inputPath,
+      eventStreamPath,
+      printEvents: false
+    });
+    const streamLines = (await readFile(eventStreamPath, "utf8")).trim().split(/\r?\n/u);
+
+    assert.equal(result.events.length, 1);
+    assert.equal(JSON.parse(streamLines[0]).type, "prompt_submitted");
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
+test("event stream mode supports multiple hooks before recorder consumes the stream", async () => {
+  const dir = await mkdtemp(join(tmpdir(), "claude-adapter-stream-flow-"));
+  const logPath = join(dir, "vibe-log.md");
+  const jsonPath = join(dir, "vibe-log.json");
+  const eventStreamPath = join(dir, ".vibelog-events", "session.jsonl");
+
+  try {
+    await writeFile(logPath, baseMarkdown, "utf8");
+
+    const hooks = [
+      {
+        hook_event_name: "UserPromptSubmit",
+        session_id: "session-flow",
+        prompt: "Implement event stream adapter mode and run tests"
+      },
+      {
+        hook_event_name: "PostToolUse",
+        tool_name: "Bash",
+        tool_input: { command: "node --test test/claude-code-hook-adapter.test.mjs" },
+        tool_response: { exit_code: 0, stdout: "tests 12\npass 12\nfail 0" }
+      },
+      {
+        hook_event_name: "Stop",
+        session_id: "session-flow",
+        stop_hook_active: false,
+        last_assistant_message: "Implemented event stream adapter mode and verified the flow."
+      }
+    ];
+
+    for (const [index, hook] of hooks.entries()) {
+      const inputPath = join(dir, `hook-${index + 1}.json`);
+      await writeFile(inputPath, JSON.stringify(hook), "utf8");
+      await runClaudeCodeHookAdapter({
+        inputPath,
+        logPath,
+        jsonPath,
+        eventStreamPath,
+        printEvents: false
+      });
+    }
+
+    const streamLines = (await readFile(eventStreamPath, "utf8")).trim().split(/\r?\n/u);
+    const result = await recordVibeLogEventsFile({
+      eventsPath: eventStreamPath,
+      logPath,
+      jsonPath
+    });
+    const json = JSON.parse(await readFile(jsonPath, "utf8"));
+    const validation = validateVibeLog(json);
+
+    assert.equal(streamLines.length, 3);
+    assert.equal(result.count, 3);
+    assert.equal(validation.valid, true, validation.errors.join("\n"));
+    assert.equal(json.execution_prompts.length, 1);
+    assert.equal(json.verification_evidence.length, 1);
+    assert.match(json.handoff_state.current_state, /event stream adapter/);
   } finally {
     await rm(dir, { recursive: true, force: true });
   }
