@@ -15,21 +15,21 @@ Because the total goal is broad, progress must be conservative. Do not score loc
 Every completed meaningful task report should include:
 
 ```txt
-Project Progress: 22 / 100
-Change This Task: +2
+Project Progress: 23 / 100
+Change This Task: +1
 Current Phase: Hook/adapters and automatic process recording
-Completed This Task: S26 stream-first opt-in project verification
-Next Unlock: Stream-first live hook verification in a real Claude Code session
-Main Risk: Opt-in project stream-first verification is deterministic, but live Claude Code runtime behavior still needs separate verification
+Completed This Task: S27 stream-first live runtime hook probe
+Next Unlock: Authenticated Stop/session-end live hook verification
+Main Risk: The real Claude Code runtime starts the stream-first hook and appends a UserPromptSubmit event, but authentication failure blocks full Stop/session completion
 Confidence: medium-high
 ```
 
 ## Current Baseline
 
-Current baseline after S26 stream-first opt-in project verification:
+Current baseline after S27 stream-first live runtime hook probe:
 
 ```txt
-Project Progress: 22 / 100
+Project Progress: 23 / 100
 ```
 
 Reason:
@@ -42,8 +42,9 @@ Reason:
 - S24 proved a local event stream loop: read ordered events, update Markdown, append progress, export JSON, and validate without relying on a manual Markdown edit.
 - S25 proved the Claude Code adapter can append multiple hook events to one JSONL stream before the recorder consumes it.
 - S26 proved project-local opt-in hook settings can use stream-first commands, accumulate hook events, and then update VibeLog through the recorder.
+- S27 proved the installed Claude Code runtime can load the stream-first scratch settings, fire `UserPromptSubmit`, and append a real runtime event to `.vibelog-events/session.jsonl`.
 - VibeHub's product layer, repository storage model, collaboration/remix model, and public community still do not exist.
-- Stream-first live hook-driven continuous recording inside a real Claude Code runtime session is not yet proven.
+- Full live hook-driven continuous recording through `Stop` or `SessionEnd` is still not proven because the local Claude runtime returned `authentication_failed` before the model turn completed.
 
 ## Progress Bands
 
@@ -80,8 +81,8 @@ Never increase progress just because many files changed. Increase it only when t
 
 ## Current Recommendation
 
-Until stream-first live hook adapters prove that VibeLog can update continuously inside a real Claude Code runtime session, keep the project near:
+Until authenticated live hook adapters prove that VibeLog can update through a completed Claude Code session, keep the project near:
 
 ```txt
-Project Progress: 22 / 100
+Project Progress: 23 / 100
 ```

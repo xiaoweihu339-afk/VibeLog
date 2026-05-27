@@ -7,13 +7,13 @@ const chineseGuidePath = "docs/guides/progress-reporting.zh.md";
 const skillPath = "skills/vibelog/SKILL.md";
 const agentGuidePath = "skills/vibelog/references/agent-usage-guide.md";
 
-test("progress reporting docs use the current S26 baseline", async () => {
+test("progress reporting docs use the current S27 baseline", async () => {
   const english = await readFile(englishGuidePath, "utf8");
   const chinese = await readFile(chineseGuidePath, "utf8");
 
-  assert.match(english, /Project Progress: 22 \/ 100/);
-  assert.match(english, /S26 stream-first opt-in project verification/i);
-  assert.match(english, /stream-first live hook/i);
+  assert.match(english, /Project Progress: 23 \/ 100/);
+  assert.match(english, /S27 stream-first live runtime hook probe/i);
+  assert.match(english, /authenticated Stop\/session-end live hook verification/i);
   assert.doesNotMatch(english, /Project Progress: 10 \/ 100/);
   assert.doesNotMatch(english, /Project Progress: 15 \/ 100/);
   assert.doesNotMatch(english, /Project Progress: 16 \/ 100/);
@@ -22,9 +22,9 @@ test("progress reporting docs use the current S26 baseline", async () => {
   assert.doesNotMatch(english, /Slice 4 implementation plan/);
   assert.doesNotMatch(english, /has not yet completed agent dogfood verification/);
 
-  assert.match(chinese, /项目总进度：22 \/ 100/);
-  assert.match(chinese, /S26/);
-  assert.match(chinese, /stream-first opt-in 项目验证/);
+  assert.match(chinese, /项目总进度：23 \/ 100/);
+  assert.match(chinese, /S27/);
+  assert.match(chinese, /真实 Claude Code runtime/);
   assert.doesNotMatch(chinese, /项目总进度：10 \/ 100/);
   assert.doesNotMatch(chinese, /项目总进度：15 \/ 100/);
   assert.doesNotMatch(chinese, /项目总进度：16 \/ 100/);
@@ -39,8 +39,8 @@ test("agent-facing progress examples point to the current baseline", async () =>
   const agentGuide = await readFile(agentGuidePath, "utf8");
 
   for (const content of [skill, agentGuide]) {
-    assert.match(content, /Project Progress: 22 \/ 100/);
-    assert.match(content, /S26/);
+    assert.match(content, /Project Progress: 23 \/ 100/);
+    assert.match(content, /S27/);
     assert.doesNotMatch(content, /Project Progress: 10 \/ 100/);
     assert.doesNotMatch(content, /Project Progress: 15 \/ 100/);
     assert.doesNotMatch(content, /Project Progress: 16 \/ 100/);

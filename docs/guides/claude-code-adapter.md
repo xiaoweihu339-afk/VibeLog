@@ -100,6 +100,6 @@ For project-local setup, see [Claude Code Opt-In Install](claude-code-opt-in-ins
 ## Current Limits
 
 - This is fixture-verified and scratch-live verified, but not installed into a real user project by default.
-- Event stream mode is fixture-verified; live hook verification still uses the reviewed project-local command path and should be updated separately if stream-first hooks become the default.
+- Event stream mode is fixture-verified and runtime-probed through Claude Code `UserPromptSubmit`; a full live pass still requires an authenticated session that reaches `Stop` or `SessionEnd`.
 - `Stop` handoff is conservative and does not inspect the whole repository.
 - More nuanced idea extraction should be added later after deterministic prompt/tool/test capture is stable.

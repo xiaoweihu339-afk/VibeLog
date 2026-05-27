@@ -1,8 +1,12 @@
-import { execFile, spawn } from "node:child_process";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
-import { join, resolve } from "node:path";
+import { execFile } from "node:child_process";
+import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
+import { delimiter, join, resolve } from "node:path";
 import { promisify } from "node:util";
 import { fileURLToPath, pathToFileURL } from "node:url";
+
+import { recordVibeLogEventsFile } from "./record-vibelog-event.mjs";
+import { validateVibeLog } from "./validate-vibelog.mjs";
+import { runSettingsHookCommand } from "./verify-claude-code-opt-in-project.mjs";
 
 const execFileAsync = promisify(execFile);
 
@@ -40,6 +44,29 @@ Use a scratch workspace to verify local Claude Code hook configuration without c
 
 ## Human-in-the-Loop
 
+## Implementation Status
+
+### Current State
+
+Scratch VibeLog is ready for hook verification.
+
+### Completed
+
+- Scratch workspace created.
+
+### In Progress
+
+### Pending
+
+- Run fixture hook verification.
+- Attempt live Claude Code verification if explicitly enabled.
+
+### Blocked
+
+### Next Actions
+
+- Run the verifier and inspect generated VibeLog output.
+
 ## Execution Prompts
 
 ## Development Log
@@ -55,6 +82,21 @@ No bugfix or incident entry yet.
 - Hook command updates Markdown.
 - Hook command regenerates JSON.
 - No global settings are modified.
+
+### Core User Paths
+
+- Run fixture hook verification.
+- Run opt-in live verification only when explicitly enabled.
+- Inspect generated Markdown and JSON.
+
+### Manual Test Steps
+
+- Run the live hook verifier without --live.
+- Run the live hook verifier with --live only in a scratch workspace.
+
+### Automated Test Strategy
+
+Run node --test test/verify-claude-code-live-hook.test.mjs.
 
 ## Verification Evidence
 
@@ -75,6 +117,30 @@ Scratch VibeLog is ready for hook verification.
 - Run fixture hook verification.
 - Attempt live Claude Code verification if explicitly enabled.
 
+### Blockers
+
+### Next Actions
+
+- Run the verifier and inspect generated VibeLog output.
+
+### Context For Next Agent
+
+- This is a scratch-only live hook verification project.
+
+## Vibe Progress
+
+### 2026-05-27
+
+**Stage:** prototype
+
+**What Happened:** Created the scratch live hook verification fixture.
+
+**Tools Used:** VibeLog
+
+**Problems:** none
+
+**Next:** Execute representative hook commands.
+
 ## Public Summary
 
 Scratch-only VibeLog for Claude Code live hook verification.
@@ -84,20 +150,14 @@ Scratch-only VibeLog for Claude Code live hook verification.
   return logPath;
 }
 
-export async function writeClaudeLocalSettings({ workspace, adapterPath }) {
+export async function writeClaudeLocalSettings({ workspace, adapterPath, eventMode = "direct" }) {
   const claudeDir = join(workspace, ".claude");
   await mkdir(claudeDir, { recursive: true });
 
-  const command = [
-    "node",
-    quotePath(adapterPath),
-    "--log",
-    "vibe-log.md",
-    "--json",
-    "vibe-log.json",
-    "--event-dir",
-    ".vibelog-events"
-  ].join(" ");
+  const command = buildAdapterCommand({
+    adapterPath,
+    eventMode: normalizeEventMode(eventMode)
+  });
 
   const hook = {
     type: "command",
@@ -118,23 +178,28 @@ export async function writeClaudeLocalSettings({ workspace, adapterPath }) {
   return settingsPath;
 }
 
-export async function runFixtureVerification({ workspace, adapterPath }) {
+export async function runFixtureVerification({ workspace, adapterPath, eventMode = "direct" }) {
   const resolvedWorkspace = resolve(workspace);
   const resolvedAdapter = resolve(adapterPath);
+  const normalizedEventMode = normalizeEventMode(eventMode);
   const logPath = await createScratchVibeLog({ workspace: resolvedWorkspace });
   const settingsPath = await writeClaudeLocalSettings({
     workspace: resolvedWorkspace,
-    adapterPath: resolvedAdapter
+    adapterPath: resolvedAdapter,
+    eventMode: normalizedEventMode
   });
   const jsonPath = join(resolvedWorkspace, "vibe-log.json");
   const eventDir = join(resolvedWorkspace, ".vibelog-events");
+  const eventStreamPath = join(eventDir, "session.jsonl");
+  const promptText = "Implement a tiny fixture task and run node --test";
+  const completionText = "Fixture hook verification completed.";
 
   const fixtures = [
     {
       hook_event_name: "UserPromptSubmit",
       session_id: "fixture-session",
       cwd: resolvedWorkspace,
-      prompt: "Implement a tiny fixture task and run node --test"
+      prompt: promptText
     },
     {
       hook_event_name: "PostToolUse",
@@ -154,31 +219,64 @@ export async function runFixtureVerification({ workspace, adapterPath }) {
       hook_event_name: "Stop",
       session_id: "fixture-session",
       stop_hook_active: false,
-      last_assistant_message: "Fixture hook verification completed."
+      last_assistant_message: completionText
     }
   ];
 
+  const settings = JSON.parse(await readFile(settingsPath, "utf8"));
   const commandsRun = [];
   for (const fixture of fixtures) {
-    await runAdapterCommand({
-      adapterPath: resolvedAdapter,
+    await runSettingsHookCommand({
+      command: getVibeLogCommand(settings, fixture.hook_event_name),
       workspace: resolvedWorkspace,
       payload: fixture
     });
     commandsRun.push(fixture.hook_event_name);
   }
 
+  const markdownBeforeConsume = await readFile(logPath, "utf8");
+  const markdownUpdatedBeforeConsume = markdownBeforeConsume.includes(completionText);
+  const eventStreamExists = await exists(eventStreamPath);
+  let streamEventCount = 0;
+
+  if (normalizedEventMode === "stream") {
+    if (!eventStreamExists) {
+      throw new Error(`Expected stream-first event file to exist: ${eventStreamPath}`);
+    }
+
+    const eventStream = await readFile(eventStreamPath, "utf8");
+    streamEventCount = eventStream.split(/\r?\n/u).filter((line) => line.trim().length > 0).length;
+    await recordVibeLogEventsFile({
+      eventsPath: eventStreamPath,
+      logPath,
+      jsonPath
+    });
+  }
+
   const markdown = await readFile(logPath, "utf8");
   const json = JSON.parse(await readFile(jsonPath, "utf8"));
+  const validation = validateVibeLog(json);
 
   return {
-    fixturePassed: markdown.includes("Fixture hook verification completed.") && json.title === "Claude Live Hook Test",
+    fixturePassed: markdown.includes(completionText)
+      && json.title === "Claude Live Hook Test"
+      && validation.valid
+      && (normalizedEventMode !== "stream" || (streamEventCount === fixtures.length && markdownUpdatedBeforeConsume === false)),
+    eventMode: normalizedEventMode,
     workspace: resolvedWorkspace,
     settingsPath,
     logPath,
     jsonPath,
     eventDir,
-    commandsRun
+    eventStreamPath,
+    eventStreamExists,
+    streamEventCount,
+    markdownUpdatedBeforeConsume,
+    commandsRun,
+    validation: {
+      valid: validation.valid,
+      errors: validation.errors
+    }
   };
 }
 
@@ -187,12 +285,16 @@ export async function runLiveVerification({
   adapterPath,
   live = false,
   prompt = "Reply with OK. Do not use tools.",
-  maxBudgetUsd = "0.05"
+  maxBudgetUsd = "0.05",
+  eventMode = "direct",
+  timeoutMs = 120000
 }) {
+  const normalizedEventMode = normalizeEventMode(eventMode);
   if (!live) {
     return {
       attempted: false,
       passed: false,
+      eventMode: normalizedEventMode,
       reason: "Live Claude Code verification requires --live."
     };
   }
@@ -202,8 +304,10 @@ export async function runLiveVerification({
   await createScratchVibeLog({ workspace: resolvedWorkspace });
   const settingsPath = await writeClaudeLocalSettings({
     workspace: resolvedWorkspace,
-    adapterPath: resolvedAdapter
+    adapterPath: resolvedAdapter,
+    eventMode: normalizedEventMode
   });
+  const eventStreamPath = join(resolvedWorkspace, ".vibelog-events", "session.jsonl");
 
   try {
     const { stdout, stderr } = await runClaudeCommand([
@@ -219,9 +323,28 @@ export async function runLiveVerification({
       "--verbose"
     ], {
       cwd: resolvedWorkspace,
-      timeout: 120000,
+      timeout: timeoutMs,
       maxBuffer: 1024 * 1024
     });
+
+    const markdownBeforeConsume = await readFile(join(resolvedWorkspace, "vibe-log.md"), "utf8");
+    const markdownUpdatedBeforeConsume = markdownBeforeConsume.includes("Claude Code hook event captured");
+    const eventStreamExists = await exists(eventStreamPath);
+    let streamEventCount = 0;
+
+    if (normalizedEventMode === "stream") {
+      if (!eventStreamExists) {
+        throw new Error(`Expected stream-first event file to exist: ${eventStreamPath}`);
+      }
+
+      const eventStream = await readFile(eventStreamPath, "utf8");
+      streamEventCount = eventStream.split(/\r?\n/u).filter((line) => line.trim().length > 0).length;
+      await recordVibeLogEventsFile({
+        eventsPath: eventStreamPath,
+        logPath: join(resolvedWorkspace, "vibe-log.md"),
+        jsonPath: join(resolvedWorkspace, "vibe-log.json")
+      });
+    }
 
     const markdown = await readFile(join(resolvedWorkspace, "vibe-log.md"), "utf8");
     const stream = parseStreamJsonLines(stdout);
@@ -239,20 +362,30 @@ export async function runLiveVerification({
 
     return {
       attempted: true,
-      passed: stopHookSucceeded && markdownUpdated,
+      passed: stopHookSucceeded
+        && markdownUpdated
+        && (normalizedEventMode !== "stream" || (eventStreamExists && streamEventCount > 0 && markdownUpdatedBeforeConsume === false)),
+      eventMode: normalizedEventMode,
       maxBudgetUsd,
       settingsPath,
+      timeoutMs,
       result: result?.result ?? "",
       totalCostUsd: result?.total_cost_usd ?? null,
       hookResponses,
+      eventStreamPath,
+      eventStreamExists,
+      streamEventCount,
+      markdownUpdatedBeforeConsume,
       stderr: stderr.trim()
     };
   } catch (error) {
     return {
       attempted: true,
       passed: false,
+      eventMode: normalizedEventMode,
       maxBudgetUsd,
       settingsPath,
+      timeoutMs,
       error: error.message,
       stdout: error.stdout?.toString().trim() ?? "",
       stderr: error.stderr?.toString().trim() ?? ""
@@ -280,87 +413,72 @@ function summarizeText(text, fallback) {
   return clean.length <= 240 ? clean : `${clean.slice(0, 237)}...`;
 }
 
-async function runAdapterCommand({ adapterPath, workspace, payload }) {
-  await execFileWithInput("node", [
-    adapterPath,
+async function runClaudeCommand(args, options) {
+  if (process.platform === "win32") {
+    return execFileAsync(await resolveWindowsClaudeExecutable(), args, options);
+  }
+  return execFileAsync("claude", args, options);
+}
+
+async function resolveWindowsClaudeExecutable() {
+  for (const directory of (process.env.PATH ?? "").split(delimiter).filter(Boolean)) {
+    const directExe = join(directory, "claude.exe");
+    if (await exists(directExe)) return directExe;
+
+    const npmPackageExe = join(directory, "node_modules", "@anthropic-ai", "claude-code", "bin", "claude.exe");
+    if (await exists(npmPackageExe)) return npmPackageExe;
+  }
+
+  return "claude";
+}
+
+function quotePath(path) {
+  const normalized = String(path);
+  return /\s/u.test(normalized) ? `"${normalized.replace(/"/gu, '\\"')}"` : normalized;
+}
+
+function buildAdapterCommand({ adapterPath, eventMode }) {
+  const quotedAdapter = quotePath(adapterPath);
+  if (eventMode === "stream") {
+    return [
+      "node",
+      quotedAdapter,
+      "--event-stream",
+      ".vibelog-events/session.jsonl"
+    ].join(" ");
+  }
+
+  return [
+    "node",
+    quotedAdapter,
     "--log",
     "vibe-log.md",
     "--json",
     "vibe-log.json",
     "--event-dir",
     ".vibelog-events"
-  ], `${JSON.stringify(payload)}\n`, {
-    cwd: workspace,
-    timeout: 30000,
-    maxBuffer: 1024 * 1024
-  });
+  ].join(" ");
 }
 
-async function runClaudeCommand(args, options) {
-  if (process.platform === "win32") {
-    return execFileAsync("cmd.exe", ["/d", "/s", "/c", "claude", ...args], options);
+function getVibeLogCommand(settings, eventName) {
+  const command = settings?.hooks?.[eventName]?.[0]?.hooks?.[0]?.command;
+  if (!command) throw new Error(`Missing VibeLog hook command for ${eventName}`);
+  return command;
+}
+
+function normalizeEventMode(eventMode) {
+  if (eventMode === "direct" || eventMode === "stream") return eventMode;
+  throw new Error("--event-mode must be direct or stream");
+}
+
+async function exists(path) {
+  try {
+    await stat(path);
+    return true;
+  } catch (error) {
+    if (error.code === "ENOENT") return false;
+    throw error;
   }
-  return execFileAsync("claude", args, options);
-}
-
-function execFileWithInput(file, args, input, options = {}) {
-  return new Promise((resolvePromise, reject) => {
-    const child = spawn(file, args, {
-      cwd: options.cwd,
-      stdio: ["pipe", "pipe", "pipe"]
-    });
-    let stdout = "";
-    let stderr = "";
-    let settled = false;
-
-    const finish = (callback, value) => {
-      if (settled) return;
-      settled = true;
-      clearTimeout(timer);
-      callback(value);
-    };
-
-    const timer = setTimeout(() => {
-      child.kill();
-      finish(reject, new Error(`Command timed out: ${file} ${args.join(" ")}`));
-    }, options.timeout ?? 30000);
-
-    child.stdout.on("data", (chunk) => {
-      stdout += chunk.toString();
-      if (options.maxBuffer && stdout.length > options.maxBuffer) {
-        child.kill();
-        finish(reject, new Error(`Command stdout exceeded maxBuffer: ${file}`));
-      }
-    });
-    child.stderr.on("data", (chunk) => {
-      stderr += chunk.toString();
-      if (options.maxBuffer && stderr.length > options.maxBuffer) {
-        child.kill();
-        finish(reject, new Error(`Command stderr exceeded maxBuffer: ${file}`));
-      }
-    });
-    child.on("error", (error) => {
-      finish(reject, error);
-    });
-    child.on("close", (code) => {
-      if (code === 0) {
-        finish(resolvePromise, { stdout, stderr });
-        return;
-      }
-      const error = new Error(`Command failed (${code}): ${file} ${args.join(" ")}`);
-      error.code = code;
-      error.stdout = stdout;
-      error.stderr = stderr;
-      finish(reject, error);
-    });
-
-    child.stdin.end(input);
-  });
-}
-
-function quotePath(path) {
-  const normalized = String(path);
-  return /\s/u.test(normalized) ? `"${normalized.replace(/"/gu, '\\"')}"` : normalized;
 }
 
 function parseArgs(argv) {
@@ -369,7 +487,9 @@ function parseArgs(argv) {
     adapterPath: resolve("scripts/claude-code-hook-adapter.mjs"),
     live: false,
     prompt: "Reply with OK. Do not use tools.",
-    maxBudgetUsd: "0.05"
+    maxBudgetUsd: "0.05",
+    eventMode: "direct",
+    timeoutMs: 120000
   };
 
   const args = [...argv];
@@ -385,6 +505,10 @@ function parseArgs(argv) {
       options.prompt = args.shift() ?? "";
     } else if (arg === "--max-budget-usd") {
       options.maxBudgetUsd = args.shift() ?? "";
+    } else if (arg === "--event-mode") {
+      options.eventMode = args.shift() ?? "";
+    } else if (arg === "--timeout-ms") {
+      options.timeoutMs = Number.parseInt(args.shift() ?? "", 10);
     } else {
       throw new Error(`Unknown argument: ${arg}`);
     }
@@ -394,6 +518,8 @@ function parseArgs(argv) {
   if (!options.adapterPath) throw new Error("--adapter requires a path");
   if (!options.prompt) throw new Error("--prompt requires text");
   if (!options.maxBudgetUsd) throw new Error("--max-budget-usd requires a value");
+  normalizeEventMode(options.eventMode);
+  if (!Number.isInteger(options.timeoutMs) || options.timeoutMs <= 0) throw new Error("--timeout-ms requires a positive integer");
   return options;
 }
 
@@ -401,14 +527,17 @@ async function main() {
   const options = parseArgs(process.argv.slice(2));
   const fixture = await runFixtureVerification({
     workspace: options.workspace,
-    adapterPath: options.adapterPath
+    adapterPath: options.adapterPath,
+    eventMode: options.eventMode
   });
   const live = await runLiveVerification({
     workspace: options.workspace,
     adapterPath: options.adapterPath,
     live: options.live,
     prompt: options.prompt,
-    maxBudgetUsd: options.maxBudgetUsd
+    maxBudgetUsd: options.maxBudgetUsd,
+    eventMode: options.eventMode,
+    timeoutMs: options.timeoutMs
   });
 
   console.log(JSON.stringify({ fixture, live }, null, 2));

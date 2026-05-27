@@ -100,6 +100,6 @@ node scripts/verify-claude-code-live-hook.mjs --workspace "C:\path\to\scratch-ro
 ## 当前限制
 
 - 当前已完成 fixture verification 和 scratch-live verification，但不会默认安装到真实用户项目。
-- Event stream mode 已完成 fixture verification；live hook verification 仍使用已 review 的项目本地命令路径。如果未来 stream-first hooks 成为默认，还需要单独更新 live verification。
+- Event stream mode 已完成 fixture verification，并已通过 Claude Code `UserPromptSubmit` 做 runtime probe；完整 live pass 仍需要一个能到达 `Stop` 或 `SessionEnd` 的已认证 session。
 - `Stop` handoff 是保守记录，不会检查整个仓库。
 - 更细腻的 idea extraction 应该等确定性的 prompt/tool/test capture 稳定之后再加。

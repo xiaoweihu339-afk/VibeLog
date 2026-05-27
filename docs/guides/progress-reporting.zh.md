@@ -1,87 +1,88 @@
-# 项目进度汇报机制
+# 项目进度汇报
 
-这份指南用于向人类汇报 VibeLog 项目的整体进度。
+当需要向人类汇报 VibeLog 项目进度时，使用这份指南。
 
-进度数字衡量的是长期愿景，而不是当前仓库的局部任务：
+进度数字以长期愿景为分母：
 
 ```txt
-VibeHub = VibeLog 标准 + agent 工作流 + hook 自动记录 + Vibe Repo 存储 + 产品展示 + 协作/remix 社区
+VibeHub = VibeLog 标准 + agent 工作流 + hook 自动化 + Vibe Repo 存储 + 产品展示 + 协作 / remix 社区
 ```
 
-因为总目标很宏大，进度必须保守。不能因为本地文档或一个脚本完成了，就把整个平台判断为接近完成。
+因为总目标很大，进度必须保守。不要把本地文档或一个脚本的完成误判成整个平台已经接近完成。
 
-## 必须包含的进度快照
+## 必须包含的快照
 
-每次有意义的任务完成后，汇报都应该包含：
+每个有意义任务完成后的报告都应该包含：
 
 ```txt
-项目总进度：22 / 100
-本次变化：+2
-当前阶段：Hook/adapters 与自动过程记录阶段
-本次完成：S26 stream-first opt-in 项目验证
-下一步解锁：真实 Claude Code session 中的 stream-first live hook 验证
-主要风险：opt-in 项目的 stream-first 验证是确定性的，但真实 Claude Code runtime 行为仍需要单独验证
+项目总进度：23 / 100
+本次变化：+1
+当前阶段：Hook / adapter 与自动过程记录
+本次完成：S27 stream-first live runtime hook probe
+下一步解锁：已认证环境下的 Stop / session-end live hook 验证
+主要风险：真实 Claude Code runtime 已能启动 stream-first hook 并追加 UserPromptSubmit event，但 authentication_failed 阻止了完整 Stop / session 完成
 信心：medium-high
 ```
 
 ## 当前基线
 
-S26 stream-first opt-in 项目验证后，当前基线是：
+S27 stream-first live runtime hook probe 后，当前基线是：
 
 ```txt
-项目总进度：22 / 100
+项目总进度：23 / 100
 ```
 
 原因：
 
-- VibeLog 的想法、标准、skill 结构、文档、示例、exporter、validator、recorder core 和项目接入 CLI 已经存在。
+- VibeLog 的想法、标准、skill 结构、文档、示例、exporter、validator、recorder core 和项目采用 CLI 已经存在。
 - Claude Code hook adapter 和项目本地 hook 验证已经存在。
-- 公开仓库边界、脱敏示例、agent 模板和 clean-clone 模板接入验证已经存在。
-- S22R 已经把 VibeLog 中途接入当前真实项目，并生成了本地私有、已验证的 dogfood log。
-- S23 已经验证一个小型真实自更新闭环：读取本地 VibeLog，执行维护任务，更新 VibeLog，导出 JSON，并通过验证。
-- S24 已经验证本地 event stream 闭环：读取有序 events，更新 Markdown，追加进度，导出 JSON，并在不依赖手动 Markdown 编辑的情况下通过验证。
+- 公共仓库边界、脱敏示例、agent templates、clean-clone template adoption verification 已经存在。
+- S22R 已经把 VibeLog 中途插入当前真实项目，并生成了私有、可验证的 dogfood 日志。
+- S23 已经验证小型真实自更新循环：读取本地 VibeLog、执行维护任务、更新 VibeLog、导出 JSON 并验证。
+- S24 已经验证本地 event stream 循环：读取有序 events、更新 Markdown、追加进度、导出 JSON，并且不依赖手写 Markdown。
 - S25 已经验证 Claude Code adapter 可以把多次 hook event 追加到同一个 JSONL stream，再由 recorder 消费。
 - S26 已经验证项目级 opt-in hook settings 可以使用 stream-first 命令，累积 hook events，再通过 recorder 更新 VibeLog。
-- VibeHub 的产品层、repository 存储模型、协作/remix 模型和公开社区仍然不存在。
-- 真实 Claude Code runtime session 中的 stream-first live hook 连续记录还没有被证明。
+- S27 已经验证本机安装的 Claude Code runtime 可以加载 stream-first scratch settings，触发 `UserPromptSubmit`，并向 `.vibelog-events/session.jsonl` 追加真实 runtime event。
+- VibeHub 的产品层、repository storage model、协作 / remix model、公开社区仍然不存在。
+- 由于本地 Claude runtime 在模型回合完成前返回 `authentication_failed`，通过 `Stop` 或 `SessionEnd` 完整连续记录仍未被证明。
 
 ## 进度区间
 
-使用这些区间让进度汇报保持踏实：
+用这些区间保持汇报克制：
 
 ```txt
-0-10：概念、VibeLog 标准、可复用 skill 基础、早期 examples
-11-20：agent dogfood verification 和可重复 vibe verification protocol
-21-35：hook/adapters，以及跨 agent 环境的自动过程记录
-36-55：VibeHub 或 VibeLog Studio MVP，本地优先的 Vibe Repo 管理
-56-75：Git-backed 代码/产物存储、协作、branch/remix 工作流
-76-90：公开发布、开源包装、社区复用、贡献流程
-91-100：成熟生态，拥有稳定标准、集成和活跃社区
+0-10: 概念、VibeLog 标准、可复用 skill 基础、早期示例
+11-20: agent dogfood 验证与可重复的 vibe 验证协议
+21-35: Hook / adapter 与跨 agent 环境的自动过程记录
+36-55: VibeHub 或 VibeLog Studio MVP，具备 local-first Vibe Repo 管理
+56-75: Git-backed code / artifact storage、协作、branch / remix 工作流
+76-90: 公开发布、开源包装、社区复用、贡献流程
+91-100: 成熟生态，具备可靠标准、集成和活跃社区
 ```
 
 ## 变化规则
 
-- `+0`：文档、措辞或规则澄清，让项目更清楚，但没有解锁新能力。
-- `+1`：一个小的、已验证的能力或指南，让下一步更容易。
-- `+2`：一个完整 slice 已实现、验证并提交。
-- `+3` 或更多：只用于重大里程碑，例如可工作的 hook adapter、端到端 VibeHub MVP slice 或公开发布。
+- `+0`：文档、措辞或规则澄清，提升清晰度但不解锁新能力。
+- `+1`：一个小的、已验证能力或指南，让下一步更容易。
+- `+2`：完整 slice 已实现、验证并提交。
+- `+3` 或更多：只用于重大里程碑，例如可工作的 hook adapter、端到端 VibeHub MVP slice、公开 release。
 
-不要因为改动文件很多就提高进度。只有长期系统能力真的增强时才提高。
+不要因为改了很多文件就提高进度。只有长期系统能力真的变强时才提高。
 
 ## 汇报规则
 
-- 必须写出分母：`/ 100`。
-- 用自然语言说明当前阶段。
-- 说明“下一步解锁”，而不只是下一个任务。
+- 一定写分母：`/ 100`。
+- 用普通语言说明当前阶段。
+- 说清楚下一步解锁，而不是只说下一任务。
 - 至少说明一个真实风险或缺失能力。
-- 如果进度没有变化，要直接说明。
-- 如果工作只是改进文档或计划，进度要保持保守。
-- 如果本地存在 `vibe-log.md`，先读取它，因为最新的私有 dogfood 状态可能比公开文档更新。
+- 如果进度没变，要直接说明。
+- 当工作只是文档或规划时，保持数字保守。
+- 如果本地存在 `vibe-log.md`，先读取它，因为最新私有 dogfood 状态可能比公开文档更新。
 
 ## 当前建议
 
-在 stream-first live hook adapter 证明 VibeLog 能够在真实 Claude Code runtime session 中持续更新之前，项目进度保持在：
+在已认证 live hook adapter 证明 VibeLog 能穿过一个完整 Claude Code session 更新之前，项目保持在：
 
 ```txt
-项目总进度：22 / 100
+项目总进度：23 / 100
 ```
