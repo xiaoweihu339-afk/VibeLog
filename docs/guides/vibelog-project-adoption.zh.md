@@ -35,10 +35,22 @@ node scripts\vibelog-project.mjs enable-hooks --project "C:\path\to\project" --a
 - `wrote` 为 `false`。
 - 输出将要生成的 settings，供用户检查。
 
+预览 stream-first hooks：
+
+```powershell
+node scripts\vibelog-project.mjs enable-hooks --project "C:\path\to\project" --adapter "C:\path\to\VibeLog\scripts\claude-code-hook-adapter.mjs" --event-mode stream
+```
+
 ## 启用 Hooks
 
 ```powershell
 node scripts\vibelog-project.mjs enable-hooks --project "C:\path\to\project" --adapter "C:\path\to\VibeLog\scripts\claude-code-hook-adapter.mjs" --write
+```
+
+确认后启用 stream-first hooks：
+
+```powershell
+node scripts\vibelog-project.mjs enable-hooks --project "C:\path\to\project" --adapter "C:\path\to\VibeLog\scripts\claude-code-hook-adapter.mjs" --event-mode stream --write
 ```
 
 预期结果：
@@ -46,6 +58,8 @@ node scripts\vibelog-project.mjs enable-hooks --project "C:\path\to\project" --a
 - `<project>/.claude/settings.json` 存在。
 - `UserPromptSubmit`、`PostToolUse` 和 `Stop` 都有 VibeLog hooks。
 - 已有无关 settings 被保留。
+
+Stream-first hooks 会把 JSONL events 追加到 `.vibelog-events/session.jsonl`；当你准备更新 `vibe-log.md` 和 `vibe-log.json` 时，再用 recorder `--events` 消费这个 stream。
 
 ## 验证就绪状态
 

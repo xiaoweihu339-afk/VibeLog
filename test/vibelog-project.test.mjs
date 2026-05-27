@@ -114,3 +114,37 @@ test("ordinary user workflow can enable, verify, and disable hooks safely", asyn
     await rm(project, { recursive: true, force: true });
   }
 });
+
+test("ordinary user workflow can enable stream-first hooks", async () => {
+  const project = await mkdtemp(join(tmpdir(), "vibelog-project-stream-workflow-"));
+  const adapterPath = resolve("scripts/claude-code-hook-adapter.mjs");
+
+  try {
+    await initVibeLogProject({
+      projectPath: project,
+      title: "Stream Workflow Test",
+      idea: "Verify stream-first hook adoption."
+    });
+
+    const write = await enableVibeLogHooks({
+      projectPath: project,
+      adapterPath,
+      eventMode: "stream",
+      write: true
+    });
+    const settings = JSON.parse(await readFile(write.settingsPath, "utf8"));
+    const stopCommands = settings.hooks.Stop.flatMap((group) => group.hooks.map((hook) => hook.command));
+
+    assert.equal(write.wrote, true);
+    assert.equal(write.eventMode, "stream");
+    assert.equal(write.vibeLogHookCount, 3);
+    assert.match(stopCommands[0], /--event-stream/);
+    assert.doesNotMatch(stopCommands[0], /--log/);
+
+    const ready = await verifyVibeLogProject({ projectPath: project });
+    assert.equal(ready.ready, true);
+    assert.equal(ready.hooks.enabled, true);
+  } finally {
+    await rm(project, { recursive: true, force: true });
+  }
+});

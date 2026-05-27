@@ -47,6 +47,12 @@ Expected result:
 - `settingsPath` is inside the target project.
 - `generatedSettings.hooks` includes `UserPromptSubmit`, `PostToolUse`, and `Stop`.
 
+To preview stream-first hooks that append JSONL events before VibeLog is updated:
+
+```powershell
+node scripts/configure-claude-code-vibelog-hooks.mjs --project "C:\path\to\project" --adapter "C:\path\to\VibeLog\scripts\claude-code-hook-adapter.mjs" --event-mode stream
+```
+
 ## Write Project Settings
 
 After reviewing the dry-run output:
@@ -54,6 +60,8 @@ After reviewing the dry-run output:
 ```powershell
 node scripts/configure-claude-code-vibelog-hooks.mjs --project "C:\path\to\project" --adapter "C:\path\to\VibeLog\scripts\claude-code-hook-adapter.mjs" --write
 ```
+
+Use `--event-mode stream --write` only after reviewing that the generated hook command writes to `.vibelog-events/session.jsonl`.
 
 Expected result:
 
@@ -71,6 +79,12 @@ Get-Content C:\path\to\project\.claude\settings.json
 ```
 
 Then run a tiny Claude Code session inside the target project and inspect `vibe-log.md` afterward. Do this only after you are comfortable with the generated settings.
+
+For stream-first hooks, consume the local event stream after hook events are produced:
+
+```powershell
+node scripts/record-vibelog-event.mjs --events C:\path\to\project\.vibelog-events\session.jsonl --log C:\path\to\project\vibe-log.md --json C:\path\to\project\vibe-log.json
+```
 
 ## Rollback
 
@@ -94,3 +108,4 @@ If the file was created only for VibeLog and contains no other settings, deletin
 - `Missing vibe-log.md`: create or copy a VibeLog before writing hooks.
 - `Refusing to configure global Claude settings path`: choose a real project folder, not `~/.claude`.
 - Hook appears not to run: use Claude Code `stream-json` output with `--include-hook-events` to inspect hook lifecycle events.
+- Stream-first hooks produce events but VibeLog does not change: run the recorder `--events` command against `.vibelog-events/session.jsonl`.

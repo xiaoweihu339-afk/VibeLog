@@ -41,6 +41,30 @@ test("dry-run generates project-local settings without writing files", async () 
   }
 });
 
+test("dry-run can generate stream-first project-local hook commands", async () => {
+  const project = await mkdtemp(join(tmpdir(), "vibelog-hook-stream-dry-run-"));
+  const adapterPath = resolve("scripts/claude-code-hook-adapter.mjs");
+
+  try {
+    await writeFile(join(project, "vibe-log.md"), "# VibeLog\n", "utf8");
+    const result = await configureClaudeCodeVibeLogHooks({
+      projectPath: project,
+      adapterPath,
+      write: false,
+      eventMode: "stream"
+    });
+    const command = result.generatedSettings.hooks.Stop[0].hooks[0].command;
+
+    assert.equal(result.dryRun, true);
+    assert.match(command, /--event-stream/);
+    assert.match(command, /\.vibelog-events\/session\.jsonl|\.vibelog-events\\session\.jsonl/);
+    assert.doesNotMatch(command, /--log/);
+    assert.doesNotMatch(command, /--json/);
+  } finally {
+    await rm(project, { recursive: true, force: true });
+  }
+});
+
 test("write mode creates project-local settings when vibe-log exists", async () => {
   const project = await mkdtemp(join(tmpdir(), "vibelog-hook-write-"));
   const adapterPath = resolve("scripts/claude-code-hook-adapter.mjs");

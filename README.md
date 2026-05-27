@@ -160,11 +160,12 @@ The first automation target is Claude Code because its hook system can call dete
 node scripts/claude-code-hook-adapter.mjs --log vibe-log.md --json vibe-log.json --event-dir .vibelog-events
 node scripts/claude-code-hook-adapter.mjs --event-stream .vibelog-events/session.jsonl
 node scripts/configure-claude-code-vibelog-hooks.mjs --project "C:\path\to\project" --adapter "C:\path\to\VibeLog\scripts\claude-code-hook-adapter.mjs"
+node scripts/configure-claude-code-vibelog-hooks.mjs --project "C:\path\to\project" --adapter "C:\path\to\VibeLog\scripts\claude-code-hook-adapter.mjs" --event-mode stream
 ```
 
 The direct adapter command writes VibeLog immediately. The `--event-stream` command appends JSONL events only; run `record-vibelog-event.mjs --events` later to consume the stream.
 
-The hook generator is dry-run by default. Use `--write` only after reviewing the generated project-local settings.
+The hook generator is dry-run by default. Use `--write` only after reviewing the generated project-local settings. Use `--event-mode stream` when project hooks should accumulate JSONL events before the recorder updates VibeLog.
 
 Recommended event mapping:
 

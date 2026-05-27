@@ -47,6 +47,12 @@ node scripts/configure-claude-code-vibelog-hooks.mjs --project "C:\path\to\proje
 - `settingsPath` 位于目标项目内部。
 - `generatedSettings.hooks` 包含 `UserPromptSubmit`、`PostToolUse` 和 `Stop`。
 
+如果想预览 stream-first hooks，让 hook 先追加 JSONL events，而不是立刻更新 VibeLog：
+
+```powershell
+node scripts/configure-claude-code-vibelog-hooks.mjs --project "C:\path\to\project" --adapter "C:\path\to\VibeLog\scripts\claude-code-hook-adapter.mjs" --event-mode stream
+```
+
 ## 写入项目级 Settings
 
 确认 dry-run 输出后：
@@ -54,6 +60,8 @@ node scripts/configure-claude-code-vibelog-hooks.mjs --project "C:\path\to\proje
 ```powershell
 node scripts/configure-claude-code-vibelog-hooks.mjs --project "C:\path\to\project" --adapter "C:\path\to\VibeLog\scripts\claude-code-hook-adapter.mjs" --write
 ```
+
+只有在确认生成的 hook command 会写入 `.vibelog-events/session.jsonl` 后，才使用 `--event-mode stream --write`。
 
 预期结果：
 
@@ -71,6 +79,12 @@ Get-Content C:\path\to\project\.claude\settings.json
 ```
 
 然后在目标项目内运行一个很小的 Claude Code session，并检查 `vibe-log.md`。只有在你确认生成的 settings 符合预期后再做这一步。
+
+对于 stream-first hooks，hook 产生 events 后需要再由 recorder 消费本地 event stream：
+
+```powershell
+node scripts/record-vibelog-event.mjs --events C:\path\to\project\.vibelog-events\session.jsonl --log C:\path\to\project\vibe-log.md --json C:\path\to\project\vibe-log.json
+```
 
 ## 回滚
 
@@ -94,3 +108,4 @@ Get-Content C:\path\to\project\.claude\settings.json
 - `Missing vibe-log.md`：先创建或复制一个 VibeLog，再写入 hooks。
 - `Refusing to configure global Claude settings path`：请选择真实项目目录，不要选择 `~/.claude`。
 - hook 看起来没有运行：使用 Claude Code `stream-json` 输出和 `--include-hook-events` 检查 hook lifecycle events。
+- stream-first hooks 已产生 events 但 VibeLog 没变化：对 `.vibelog-events/session.jsonl` 运行 recorder `--events` 命令。

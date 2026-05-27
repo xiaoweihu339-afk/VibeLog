@@ -57,6 +57,40 @@ test("real project opt-in verification installs local hooks and updates VibeLog"
   }
 });
 
+test("stream-first opt-in verification accumulates hook events before recorder consumption", async () => {
+  const project = await mkdtemp(join(tmpdir(), "vibelog-stream-project-opt-in-"));
+  const adapterPath = resolve("scripts/claude-code-hook-adapter.mjs");
+
+  try {
+    const result = await runOptInProjectVerification({
+      workspace: project,
+      adapterPath,
+      eventMode: "stream"
+    });
+
+    assert.equal(result.passed, true);
+    assert.equal(result.write.wrote, true);
+    assert.match(result.settings.stopCommand, /--event-stream/);
+    assert.doesNotMatch(result.settings.stopCommand, /--log/);
+    assert.equal(result.hooks.commandsRun.length, 4);
+    assert.equal(result.hooks.eventStreamExists, true);
+    assert.equal(result.hooks.streamEventCount, 4);
+    assert.equal(result.hooks.markdownUpdatedBeforeConsume, false);
+    assert.equal(result.hooks.markdownUpdated, true);
+    assert.equal(result.hooks.jsonUpdated, true);
+    assert.equal(result.hooks.eventFileCount, 1);
+    assert.deepEqual(result.hooks.eventFiles, ["session.jsonl"]);
+
+    const data = JSON.parse(await readFile(join(project, "vibe-log.json"), "utf8"));
+    const validation = validateVibeLog(data);
+    assert.equal(validation.valid, true, validation.errors.join("\n"));
+    assert.equal(data.execution_prompts.length, 1);
+    assert.equal(data.verification_evidence.length, 1);
+  } finally {
+    await rm(project, { recursive: true, force: true });
+  }
+});
+
 test("real project opt-in verification is repeatable when local settings already exist", async () => {
   const project = await mkdtemp(join(tmpdir(), "vibelog-real-project-opt-in-repeat-"));
   const adapterPath = resolve("scripts/claude-code-hook-adapter.mjs");

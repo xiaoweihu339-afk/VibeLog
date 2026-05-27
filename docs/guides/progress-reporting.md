@@ -15,21 +15,21 @@ Because the total goal is broad, progress must be conservative. Do not score loc
 Every completed meaningful task report should include:
 
 ```txt
-Project Progress: 20 / 100
+Project Progress: 22 / 100
 Change This Task: +2
-Current Phase: Automatic recording foundation
-Completed This Task: S25 hook adapter event stream verification
-Next Unlock: Stream-first live hook verification in a scratch or opt-in project
-Main Risk: Fixture adapter streams are verified, but stream-first live hook behavior still needs separate verification
+Current Phase: Hook/adapters and automatic process recording
+Completed This Task: S26 stream-first opt-in project verification
+Next Unlock: Stream-first live hook verification in a real Claude Code session
+Main Risk: Opt-in project stream-first verification is deterministic, but live Claude Code runtime behavior still needs separate verification
 Confidence: medium-high
 ```
 
 ## Current Baseline
 
-Current baseline after S25 hook adapter event stream verification:
+Current baseline after S26 stream-first opt-in project verification:
 
 ```txt
-Project Progress: 20 / 100
+Project Progress: 22 / 100
 ```
 
 Reason:
@@ -41,8 +41,9 @@ Reason:
 - S23 proved a small real self-update loop: read local VibeLog, execute a maintenance task, update VibeLog, export JSON, and validate.
 - S24 proved a local event stream loop: read ordered events, update Markdown, append progress, export JSON, and validate without relying on a manual Markdown edit.
 - S25 proved the Claude Code adapter can append multiple hook events to one JSONL stream before the recorder consumes it.
+- S26 proved project-local opt-in hook settings can use stream-first commands, accumulate hook events, and then update VibeLog through the recorder.
 - VibeHub's product layer, repository storage model, collaboration/remix model, and public community still do not exist.
-- Stream-first live hook-driven continuous recording across agent environments is not yet proven.
+- Stream-first live hook-driven continuous recording inside a real Claude Code runtime session is not yet proven.
 
 ## Progress Bands
 
@@ -79,8 +80,8 @@ Never increase progress just because many files changed. Increase it only when t
 
 ## Current Recommendation
 
-Until stream-first live hook adapters prove that VibeLog can update continuously inside real agent environments, keep the project near:
+Until stream-first live hook adapters prove that VibeLog can update continuously inside a real Claude Code runtime session, keep the project near:
 
 ```txt
-Project Progress: 20 / 100
+Project Progress: 22 / 100
 ```

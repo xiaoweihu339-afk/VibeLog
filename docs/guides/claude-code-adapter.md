@@ -63,6 +63,12 @@ For safer project-local setup, prefer the dry-run-first generator:
 node scripts/configure-claude-code-vibelog-hooks.mjs --project "C:\path\to\project" --adapter "C:\path\to\VibeLog\scripts\claude-code-hook-adapter.mjs"
 ```
 
+Preview stream-first project hooks:
+
+```powershell
+node scripts/configure-claude-code-vibelog-hooks.mjs --project "C:\path\to\project" --adapter "C:\path\to\VibeLog\scripts\claude-code-hook-adapter.mjs" --event-mode stream
+```
+
 Add `--write` only after reviewing the generated settings.
 
 ## Verification

@@ -35,10 +35,22 @@ Expected result:
 - `wrote` is `false`.
 - The generated settings are printed for review.
 
+Preview stream-first hooks:
+
+```powershell
+node scripts\vibelog-project.mjs enable-hooks --project "C:\path\to\project" --adapter "C:\path\to\VibeLog\scripts\claude-code-hook-adapter.mjs" --event-mode stream
+```
+
 ## Enable Hooks
 
 ```powershell
 node scripts\vibelog-project.mjs enable-hooks --project "C:\path\to\project" --adapter "C:\path\to\VibeLog\scripts\claude-code-hook-adapter.mjs" --write
+```
+
+To enable stream-first hooks after review:
+
+```powershell
+node scripts\vibelog-project.mjs enable-hooks --project "C:\path\to\project" --adapter "C:\path\to\VibeLog\scripts\claude-code-hook-adapter.mjs" --event-mode stream --write
 ```
 
 Expected result:
@@ -46,6 +58,8 @@ Expected result:
 - `<project>/.claude/settings.json` exists.
 - VibeLog hooks are present for `UserPromptSubmit`, `PostToolUse`, and `Stop`.
 - Existing unrelated settings are preserved.
+
+Stream-first hooks append JSONL events to `.vibelog-events/session.jsonl`; run the recorder with `--events` when you are ready to update `vibe-log.md` and `vibe-log.json`.
 
 ## Verify Readiness
 

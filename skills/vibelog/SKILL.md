@@ -421,10 +421,10 @@ Use the long-term VibeHub vision as `100%`, not the local repository task list. 
 Current baseline for this project:
 
 ```txt
-Project Progress: 20 / 100
+Project Progress: 22 / 100
 ```
 
-This baseline reflects S25 hook adapter event stream verification. Read local `vibe-log.md` first when it exists, because private dogfood state may be newer than public docs.
+This baseline reflects S26 stream-first opt-in project verification. Read local `vibe-log.md` first when it exists, because private dogfood state may be newer than public docs.
 
 Include:
 

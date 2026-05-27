@@ -4,6 +4,7 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 import { configureClaudeCodeVibeLogHooks } from "./configure-claude-code-vibelog-hooks.mjs";
+import { recordVibeLogEventsFile } from "./record-vibelog-event.mjs";
 import { validateVibeLog } from "./validate-vibelog.mjs";
 
 const HOOK_EVENTS = ["UserPromptSubmit", "PostToolUse", "Stop"];
@@ -191,7 +192,8 @@ Scratch-only project for VibeLog opt-in hook acceptance.
 
 export async function runOptInProjectVerification({
   workspace = defaultWorkspace(),
-  adapterPath = resolve("scripts/claude-code-hook-adapter.mjs")
+  adapterPath = resolve("scripts/claude-code-hook-adapter.mjs"),
+  eventMode = "direct"
 } = {}) {
   const resolvedWorkspace = resolve(workspace);
   const resolvedAdapter = resolve(adapterPath);
@@ -202,7 +204,8 @@ export async function runOptInProjectVerification({
   const dryRun = await configureClaudeCodeVibeLogHooks({
     projectPath: resolvedWorkspace,
     adapterPath: resolvedAdapter,
-    write: false
+    write: false,
+    eventMode
   });
   const dryRunSettingsExistedAfter = await exists(dryRun.settingsPath);
   const dryRunCreatedSettings = !dryRunSettingsExistedBefore && dryRunSettingsExistedAfter;
@@ -210,7 +213,8 @@ export async function runOptInProjectVerification({
   const write = await configureClaudeCodeVibeLogHooks({
     projectPath: resolvedWorkspace,
     adapterPath: resolvedAdapter,
-    write: true
+    write: true,
+    eventMode
   });
   const settings = JSON.parse(await readFile(write.settingsPath, "utf8"));
 
@@ -226,10 +230,31 @@ export async function runOptInProjectVerification({
     commandsRun.push(payload.hook_event_name);
   }
 
+  const eventDir = join(resolvedWorkspace, ".vibelog-events");
+  const eventStreamPath = join(eventDir, "session.jsonl");
+  const markdownBeforeConsume = await readFile(join(resolvedWorkspace, "vibe-log.md"), "utf8");
+  const markdownUpdatedBeforeConsume = markdownBeforeConsume.includes("Build the opt-in fixture feature and run node --test");
+  const eventStreamExists = await exists(eventStreamPath);
+  let streamEventCount = 0;
+
+  if (eventMode === "stream") {
+    if (!eventStreamExists) {
+      throw new Error(`Expected stream-first event file to exist: ${eventStreamPath}`);
+    }
+
+    const eventStream = await readFile(eventStreamPath, "utf8");
+    streamEventCount = eventStream.split(/\r?\n/u).filter((line) => line.trim().length > 0).length;
+    await recordVibeLogEventsFile({
+      eventsPath: eventStreamPath,
+      logPath: join(resolvedWorkspace, "vibe-log.md"),
+      jsonPath: join(resolvedWorkspace, "vibe-log.json")
+    });
+  }
+
   const markdown = await readFile(join(resolvedWorkspace, "vibe-log.md"), "utf8");
   const json = JSON.parse(await readFile(join(resolvedWorkspace, "vibe-log.json"), "utf8"));
   const validation = validateVibeLog(json);
-  const eventFiles = await listFiles(join(resolvedWorkspace, ".vibelog-events"));
+  const eventFiles = await listFiles(eventDir);
   const stopCommand = getVibeLogCommand(settings, "Stop");
   const markdownUpdated = markdown.includes("Build the opt-in fixture feature and run node --test");
   const jsonUpdated = validation.valid && json.title === "VibeLog Opt-In Fixture Project";
@@ -239,10 +264,12 @@ export async function runOptInProjectVerification({
     passed: dryRun.wrote === false
       && dryRunCreatedSettings === false
       && write.wrote === true
+      && (eventMode !== "stream" || (eventStreamExists && streamEventCount === payloads.length && markdownUpdatedBeforeConsume === false))
       && markdownUpdated
       && jsonUpdated
-      && eventFileCount >= payloads.length,
+      && (eventMode === "stream" ? eventFileCount === 1 : eventFileCount >= payloads.length),
     workspace: resolvedWorkspace,
+    eventMode,
     project,
     dryRun: {
       wrote: dryRun.wrote,
@@ -264,10 +291,14 @@ export async function runOptInProjectVerification({
     hooks: {
       commandsRun,
       markdownUpdated,
+      markdownUpdatedBeforeConsume,
       jsonUpdated,
-      eventDir: join(resolvedWorkspace, ".vibelog-events"),
+      eventDir,
       eventFileCount,
-      eventFiles
+      eventFiles,
+      eventStreamPath,
+      eventStreamExists,
+      streamEventCount
     },
     validation: {
       valid: validation.valid,
@@ -412,7 +443,8 @@ function defaultWorkspace() {
 function parseArgs(argv) {
   const options = {
     workspace: defaultWorkspace(),
-    adapterPath: resolve("scripts/claude-code-hook-adapter.mjs")
+    adapterPath: resolve("scripts/claude-code-hook-adapter.mjs"),
+    eventMode: "direct"
   };
 
   const args = [...argv];
@@ -422,6 +454,8 @@ function parseArgs(argv) {
       options.workspace = args.shift() ?? "";
     } else if (arg === "--adapter") {
       options.adapterPath = args.shift() ?? "";
+    } else if (arg === "--event-mode") {
+      options.eventMode = args.shift() ?? "";
     } else {
       throw new Error(`Unknown argument: ${arg}`);
     }
@@ -429,6 +463,9 @@ function parseArgs(argv) {
 
   if (!options.workspace) throw new Error("--workspace requires a path");
   if (!options.adapterPath) throw new Error("--adapter requires a path");
+  if (!["direct", "stream"].includes(options.eventMode)) {
+    throw new Error("--event-mode must be direct or stream");
+  }
   return options;
 }
 

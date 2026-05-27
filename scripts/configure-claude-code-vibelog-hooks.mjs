@@ -9,9 +9,10 @@ export async function configureClaudeCodeVibeLogHooks({
   projectPath = process.cwd(),
   adapterPath = resolve("scripts/claude-code-hook-adapter.mjs"),
   write = false,
-  allowMissingLog = false
+  allowMissingLog = false,
+  eventMode = "direct"
 } = {}) {
-  const generated = await buildHookSettings({ projectPath, adapterPath });
+  const generated = await buildHookSettings({ projectPath, adapterPath, eventMode });
   const existingSettings = await readExistingSettings(generated.settingsPath);
   const mergedSettings = mergeHookSettings(existingSettings, generated.generatedSettings);
   const warnings = [];
@@ -42,30 +43,28 @@ export async function configureClaudeCodeVibeLogHooks({
     ready: vibeLogExists || allowMissingLog,
     warnings,
     generatedSettings: generated.generatedSettings,
-    mergedSettings
+    mergedSettings,
+    eventMode: generated.eventMode
   };
 }
 
 export async function buildHookSettings({
   projectPath = process.cwd(),
-  adapterPath = resolve("scripts/claude-code-hook-adapter.mjs")
+  adapterPath = resolve("scripts/claude-code-hook-adapter.mjs"),
+  eventMode = "direct"
 } = {}) {
   const resolvedProject = resolve(projectPath);
   rejectGlobalClaudePath(resolvedProject);
+  const normalizedEventMode = normalizeEventMode(eventMode);
 
   const resolvedAdapter = resolve(adapterPath);
   const settingsPath = join(resolvedProject, ".claude", "settings.json");
   const projectVar = process.platform === "win32" ? "$env:CLAUDE_PROJECT_DIR" : "$CLAUDE_PROJECT_DIR";
-  const command = [
-    "node",
-    quotePath(resolvedAdapter),
-    "--log",
-    quotePath(`${projectVar}/vibe-log.md`),
-    "--json",
-    quotePath(`${projectVar}/vibe-log.json`),
-    "--event-dir",
-    quotePath(`${projectVar}/.vibelog-events`)
-  ].join(" ");
+  const command = buildAdapterCommand({
+    adapterPath: resolvedAdapter,
+    projectVar,
+    eventMode: normalizedEventMode
+  });
 
   const hook = {
     type: "command",
@@ -81,6 +80,7 @@ export async function buildHookSettings({
   return {
     projectPath: resolvedProject,
     adapterPath: resolvedAdapter,
+    eventMode: normalizedEventMode,
     settingsPath,
     vibeLogPath: join(resolvedProject, "vibe-log.md"),
     generatedSettings: { hooks }
@@ -92,7 +92,8 @@ export function parseArgs(argv) {
     projectPath: process.cwd(),
     adapterPath: resolve("scripts/claude-code-hook-adapter.mjs"),
     write: false,
-    allowMissingLog: false
+    allowMissingLog: false,
+    eventMode: "direct"
   };
 
   const args = [...argv];
@@ -108,6 +109,8 @@ export function parseArgs(argv) {
       options.write = false;
     } else if (arg === "--allow-missing-log") {
       options.allowMissingLog = true;
+    } else if (arg === "--event-mode") {
+      options.eventMode = args.shift() ?? "";
     } else {
       throw new Error(`Unknown argument: ${arg}`);
     }
@@ -115,7 +118,33 @@ export function parseArgs(argv) {
 
   if (!options.projectPath) throw new Error("--project requires a path");
   if (!options.adapterPath) throw new Error("--adapter requires a path");
+  if (!options.eventMode) throw new Error("--event-mode requires a value");
+  options.eventMode = normalizeEventMode(options.eventMode);
   return options;
+}
+
+function buildAdapterCommand({ adapterPath, projectVar, eventMode }) {
+  const args = ["node", quotePath(adapterPath)];
+
+  if (eventMode === "stream") {
+    args.push("--event-stream", quotePath(`${projectVar}/.vibelog-events/session.jsonl`));
+    return args.join(" ");
+  }
+
+  args.push(
+    "--log",
+    quotePath(`${projectVar}/vibe-log.md`),
+    "--json",
+    quotePath(`${projectVar}/vibe-log.json`),
+    "--event-dir",
+    quotePath(`${projectVar}/.vibelog-events`)
+  );
+  return args.join(" ");
+}
+
+function normalizeEventMode(eventMode) {
+  if (eventMode === "direct" || eventMode === "stream") return eventMode;
+  throw new Error(`Unsupported Claude Code VibeLog hook event mode: ${eventMode}`);
 }
 
 function mergeHookSettings(existingSettings, generatedSettings) {

@@ -63,6 +63,12 @@ skills/vibelog/assets/claude-code-hooks.settings.example.json
 node scripts/configure-claude-code-vibelog-hooks.mjs --project "C:\path\to\project" --adapter "C:\path\to\VibeLog\scripts\claude-code-hook-adapter.mjs"
 ```
 
+预览 stream-first 项目 hooks：
+
+```powershell
+node scripts/configure-claude-code-vibelog-hooks.mjs --project "C:\path\to\project" --adapter "C:\path\to\VibeLog\scripts\claude-code-hook-adapter.mjs" --event-mode stream
+```
+
 只有在 review 生成的 settings 之后，才添加 `--write`。
 
 ## 验证

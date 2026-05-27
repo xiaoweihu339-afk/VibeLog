@@ -45,12 +45,14 @@ export async function initVibeLogProject({
 export async function enableVibeLogHooks({
   projectPath = process.cwd(),
   adapterPath = resolve("scripts/claude-code-hook-adapter.mjs"),
-  write = false
+  write = false,
+  eventMode = "direct"
 } = {}) {
   const result = await configureClaudeCodeVibeLogHooks({
     projectPath,
     adapterPath,
-    write
+    write,
+    eventMode
   });
 
   return {
@@ -423,6 +425,8 @@ function parseArgs(argv) {
       options.write = false;
     } else if (arg === "--force") {
       options.force = true;
+    } else if (arg === "--event-mode") {
+      options.eventMode = args.shift() ?? "";
     } else {
       throw new Error(`Unknown argument: ${arg}`);
     }
@@ -430,6 +434,7 @@ function parseArgs(argv) {
 
   if (!options.projectPath) throw new Error("--project requires a path");
   if (options.adapterPath === "") throw new Error("--adapter requires a path");
+  if (options.eventMode === "") throw new Error("--event-mode requires a value");
   return options;
 }
 
@@ -463,7 +468,7 @@ Project-local VibeLog adoption CLI.
 
 Usage:
   vibelog-project init --project <path> --title <title> --idea <one-line idea> [--force]
-  vibelog-project enable-hooks --project <path> --adapter <adapter path> [--write]
+  vibelog-project enable-hooks --project <path> --adapter <adapter path> [--write] [--event-mode direct|stream]
   vibelog-project verify --project <path>
   vibelog-project disable-hooks --project <path>
   vibelog-project --help
