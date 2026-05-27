@@ -1,6 +1,11 @@
 import { readFile } from "node:fs/promises";
+import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
+
+const defaultSchema = JSON.parse(
+  readFileSync(new URL("../skills/vibelog/assets/vibe-log.schema.json", import.meta.url), "utf8")
+);
 
 const requiredStringFields = [
   "schema",
@@ -31,7 +36,7 @@ const arrayFields = [
   "verification_evidence"
 ];
 
-export function validateVibeLog(data) {
+export function validateVibeLog(data, options = {}) {
   const errors = [];
 
   if (!isPlainObject(data)) {
@@ -40,6 +45,8 @@ export function validateVibeLog(data) {
       errors: ["VibeLog root must be an object"]
     };
   }
+
+  validateSchemaValue(data, options.schema ?? defaultSchema, "", errors);
 
   for (const field of requiredStringFields) {
     if (!hasNonEmptyString(data[field])) {
@@ -77,6 +84,55 @@ export function validateVibeLog(data) {
   };
 }
 
+export function validateSchemaValue(value, schema, path = "", errors = []) {
+  if (!schema || typeof schema !== "object") return errors;
+
+  const expectedTypes = normalizeTypes(schema.type);
+  if (expectedTypes.length > 0 && !expectedTypes.some((type) => matchesType(value, type))) {
+    errors.push(`Invalid ${formatPath(path)}: expected ${expectedTypes.join(" or ")}`);
+    return errors;
+  }
+
+  if (Array.isArray(schema.enum) && !schema.enum.some((allowed) => allowed === value)) {
+    errors.push(`Invalid ${formatPath(path)}: expected one of ${formatEnum(schema.enum)}`);
+    return errors;
+  }
+
+  if (isPlainObject(value)) {
+    validateObjectSchema(value, schema, path, errors);
+  } else if (Array.isArray(value) && schema.items) {
+    value.forEach((item, index) => {
+      validateSchemaValue(item, schema.items, `${path}[${index}]`, errors);
+    });
+  }
+
+  return errors;
+}
+
+function validateObjectSchema(value, schema, path, errors) {
+  const properties = schema.properties ?? {};
+
+  for (const field of schema.required ?? []) {
+    if (value[field] === undefined) {
+      errors.push(`Missing required field: ${joinPath(path, field)}`);
+    }
+  }
+
+  if (schema.additionalProperties === false) {
+    for (const field of Object.keys(value)) {
+      if (properties[field] === undefined) {
+        errors.push(`Unexpected field: ${joinPath(path, field)}`);
+      }
+    }
+  }
+
+  for (const [field, fieldSchema] of Object.entries(properties)) {
+    if (value[field] !== undefined) {
+      validateSchemaValue(value[field], fieldSchema, joinPath(path, field), errors);
+    }
+  }
+}
+
 function validateExecutionPrompts(prompts, errors) {
   if (!Array.isArray(prompts)) return;
 
@@ -106,6 +162,32 @@ function hasNonEmptyString(value) {
 
 function isPlainObject(value) {
   return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+
+function normalizeTypes(type) {
+  if (Array.isArray(type)) return type;
+  if (typeof type === "string") return [type];
+  return [];
+}
+
+function matchesType(value, type) {
+  if (type === "array") return Array.isArray(value);
+  if (type === "object") return isPlainObject(value);
+  if (type === "integer") return Number.isInteger(value);
+  if (type === "null") return value === null;
+  return typeof value === type;
+}
+
+function formatPath(path) {
+  return path || "VibeLog root";
+}
+
+function joinPath(path, field) {
+  return path ? `${path}.${field}` : field;
+}
+
+function formatEnum(values) {
+  return values.map((value) => JSON.stringify(value)).join(", ");
 }
 
 async function main() {

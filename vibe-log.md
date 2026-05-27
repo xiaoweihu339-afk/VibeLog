@@ -395,15 +395,15 @@ The long-term product may become VibeHub, a GitHub-like platform around Vibe Rep
 
 ## Open Questions
 
-- Should the next validator use the existing JSON Schema file directly or keep the lightweight validator as the default fast path?
 - Should the skill be installed immediately into the user's Codex skill directory or kept as a distributable repo package first?
 - Which agent ecosystem should get the next adapter after Codex: Claude Code, Cursor rules, or AGENTS.md?
+- What is the safest installer dry-run boundary after schema validation is stable: release bundle verification, local installer rollback, or remote clone verification?
 
 ## Implementation Status
 
 ### Current State
 
-The VibeLog skill now has a deterministic Markdown-to-JSON exporter, lightweight validator, recorder core, Claude Code hook adapter, scratch-local live hook verifier, dry-run-first project-local hook settings generator, real-project-style opt-in acceptance verifier, ordinary project adoption CLI, private clone-local package entry, clean clone adoption verifier, and tested installer/package-manager distribution roadmap. Slice 15 defined safe future distribution channels without publishing, pushing, or installing globally.
+The VibeLog skill now has a deterministic Markdown-to-JSON exporter, stronger schema-driven validator, recorder core, Claude Code hook adapter, scratch-local live hook verifier, dry-run-first project-local hook settings generator, real-project-style opt-in acceptance verifier, ordinary project adoption CLI, private clone-local package entry, clean clone adoption verifier, and tested installer/package-manager distribution roadmap. Slice 16 turned the schema into an active validation contract while keeping the project dependency-free.
 
 ### Completed
 
@@ -449,27 +449,29 @@ The VibeLog skill now has a deterministic Markdown-to-JSON exporter, lightweight
 - Added a private clone-local package entry and npm script for the VibeLog project CLI.
 - Added clean clone adoption verification for the clone-local package workflow.
 - Added a tested installer/package-manager distribution roadmap and safety gates.
+- Added stronger schema-driven VibeLog JSON validation without adding npm dependencies.
+- Aligned init and verifier fixtures so newly generated project VibeLogs satisfy the current data contract.
 
 ### In Progress
 
-- Final repository verification and local commit for Slice 15.
+- Final repository verification and local commit for Slice 16.
 
 ### Pending
 
 - Review the updated VibeLog v0.2 draft skill standard.
-- Add stronger JSON Schema validation.
-- Prototype installer dry-run only after schema validation and rollback rules are stable.
+- Prototype installer dry-run only after rollback rules are stable.
+- Verify remote clone or release-bundle usage before public distribution.
 - Add richer example Vibe Repos after the adapter exists.
 - Make Claude Code Stop handoff progress configurable instead of static.
 
 ### Blocked
 
-- No current Slice 15 blocker. Historical note: `skill-creator` quick validation could not run because the current Python environment is missing the `yaml` package.
+- No current Slice 16 blocker. Historical note: `skill-creator` quick validation could not run because the current Python environment is missing the `yaml` package.
 
 ### Next Actions
 
-- Add stronger JSON Schema validation.
-- Prototype installer dry-run only after schema validation and rollback rules are stable.
+- Finish Slice 16 repository verification and local commit.
+- Plan installer dry-run or remote clone/release-bundle verification now that schema validation is in place.
 - Decide whether to install the skill locally or keep iterating inside the repository first.
 
 ### Important Context for Next Agent
@@ -483,6 +485,7 @@ The VibeLog skill now has a deterministic Markdown-to-JSON exporter, lightweight
 - Claude Code is the preferred first execution environment because its hooks can update VibeLog automatically during the vibe process.
 - Real-project-style opt-in verification uses scratch project source outside this repository.
 - Ordinary project adoption now has a local CLI, but it is not yet packaged as a globally installed command.
+- Strong schema validation is now part of the default validator, but it is a focused VibeLog schema subset rather than full JSON Schema support.
 - Do not push to GitHub without separate explicit user approval.
 - `scripts/export-vibelog.mjs` supports the current strict Markdown subset and should stay conservative until more examples justify expansion.
 - Prefer agent dogfood verification over human manual verification when a repeatable vibe scenario can produce evidence.
@@ -1024,6 +1027,24 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 
 **Confidence:** high
 
+### 2026-05-27
+
+**Type:** test_result
+
+**Summary:** Ran final Slice 16 repository verification.
+
+**Evidence Ref:** `node --test`; `node scripts\validate-vibelog.mjs vibe-log.json`; `node scripts\validate-vibelog.mjs examples\vibelog-studio\vibe-log.json`; `node scripts\validate-vibelog.mjs examples\reading-card-lite\vibe-log.json`; `node scripts\validate-vibelog.mjs examples\billmate-lite\vibe-log.json`; `node scripts\export-vibelog.mjs vibe-log.md --out vibe-log.json --check`; Markdown relative link checker; Slice 16 placeholder scan; JSON parse checks; `git diff --check`.
+
+**Result:** passed
+
+**Details:** Full `node --test` passed with 54 tests after the first local S16 commit, including clean clone adoption from commit `cfee1bf`. Root and example VibeLog JSON files validated against the stronger schema. Root VibeLog JSON matched Markdown. Markdown link checker scanned 117 tracked Markdown files and found no broken relative links. Slice 16 placeholder scan produced no matches. JSON parse checks passed for `package.json`, `vibe-log.json`, `skills/vibelog/assets/vibe-log.schema.json`, and `docs/distribution/vibelog-distribution-plan.json`. `git diff --check` produced no output.
+
+**Residual Risk:** S16 enforces the VibeLog schema subset currently used by the project. It is not full JSON Schema support and does not create an installer, release bundle, package-manager distribution, or VibeHub upload flow.
+
+**Source:** current work session
+
+**Confidence:** high
+
 ## Project Context
 
 ### Repo / Workspace
@@ -1058,6 +1079,12 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 - `docs/guides/vibelog-installer-package-manager-plan.md`: English installer and package-manager distribution roadmap.
 - `docs/guides/vibelog-installer-package-manager-plan.zh.md`: Chinese installer and package-manager distribution roadmap.
 - `docs/distribution/vibelog-distribution-plan.json`: machine-readable distribution plan and safety gates.
+- `docs/superpowers/specs/2026-05-27-vibelog-strong-schema-validation-slice-16-design.md`: English Slice 16 strong schema validation design.
+- `docs/superpowers/specs/2026-05-27-vibelog-strong-schema-validation-slice-16-design.zh.md`: Chinese Slice 16 strong schema validation design.
+- `docs/superpowers/plans/2026-05-27-vibelog-strong-schema-validation-slice-16.md`: English Slice 16 implementation plan.
+- `docs/superpowers/plans/2026-05-27-vibelog-strong-schema-validation-slice-16.zh.md`: Chinese Slice 16 implementation plan.
+- `docs/reports/slice-16-strong-schema-validation-report.md`: English Slice 16 report.
+- `docs/reports/slice-16-strong-schema-validation-report.zh.md`: Chinese Slice 16 report.
 - `docs/guides/vibe-verification-guide.md`: English guide for agent-run VibeLog verification.
 - `docs/guides/vibe-verification-guide.zh.md`: Chinese guide for agent-run VibeLog verification.
 - `docs/guides/live-hook-verification.md`: English guide for scratch-local Claude Code live hook verification.
@@ -1668,6 +1695,36 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 
 **Notes:** Bilingual report for the tested distribution roadmap and safety gates.
 
+### Strong schema validator
+
+**Type:** script
+
+**Ref:** `scripts/validate-vibelog.mjs`
+
+**Visibility:** private
+
+**Notes:** Dependency-free validator that enforces the VibeLog schema subset plus practical VibeLog checks.
+
+### Slice 16 strong schema validation design and plan
+
+**Type:** document
+
+**Ref:** `docs/superpowers/specs/2026-05-27-vibelog-strong-schema-validation-slice-16-design.md`, `docs/superpowers/specs/2026-05-27-vibelog-strong-schema-validation-slice-16-design.zh.md`, `docs/superpowers/plans/2026-05-27-vibelog-strong-schema-validation-slice-16.md`, `docs/superpowers/plans/2026-05-27-vibelog-strong-schema-validation-slice-16.zh.md`
+
+**Visibility:** private
+
+**Notes:** Bilingual design and implementation plan for making schema validation active.
+
+### Slice 16 strong schema validation reports
+
+**Type:** report
+
+**Ref:** `docs/reports/slice-16-strong-schema-validation-report.md`, `docs/reports/slice-16-strong-schema-validation-report.zh.md`
+
+**Visibility:** private
+
+**Notes:** Bilingual report for stronger schema validation, fixture updates, and final verification.
+
 ## Execution Prompts
 
 ### 2026-05-25
@@ -2155,6 +2212,24 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 **Result:** Added a tested machine-readable distribution plan, bilingual installer/package-manager roadmap docs, and bilingual Slice 15 report.
 
 **Reuse Notes:** Treat this as authorization for local S15 design and guardrail implementation only. It does not authorize GitHub push, npm publishing, package visibility changes, global installer creation, or global Claude Code settings changes.
+
+### 2026-05-27
+
+**Agent / Tool:** Codex
+
+**Prompt Type:** build
+
+**Prompt Visibility:** summary
+
+**Recording Mode:** exact
+
+**Prompt Summary:** User authorized executing Slice 16 stronger schema validation.
+
+**Prompt Text:** 执行s16
+
+**Result:** Added schema-driven validation, expanded validator regression tests, aligned schema with generated VibeLog data, and fixed generated project fixtures to satisfy the stronger contract.
+
+**Reuse Notes:** Treat this as authorization for local S16 implementation only. It does not authorize GitHub push, npm publishing, package visibility changes, global installer creation, or global Claude Code settings changes.
 
 ## Development Log
 
@@ -2766,21 +2841,40 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 
 **Follow-up:** Add stronger JSON Schema validation before implementing a public package or installer dry-run prototype.
 
+### 2026-05-27
+**Type:** feature
+
+**Summary:** Added stronger schema-driven VibeLog validation.
+
+**Files Changed:** `scripts/validate-vibelog.mjs`, `skills/vibelog/assets/vibe-log.schema.json`, `test/validate-vibelog.test.mjs`, `scripts/vibelog-project.mjs`, `scripts/verify-claude-code-opt-in-project.mjs`, `test/record-vibelog-event.test.mjs`, `docs/guides/export-json.md`, `README.md`, `docs/superpowers/specs/2026-05-27-vibelog-strong-schema-validation-slice-16-design.md`, `docs/superpowers/specs/2026-05-27-vibelog-strong-schema-validation-slice-16-design.zh.md`, `docs/superpowers/plans/2026-05-27-vibelog-strong-schema-validation-slice-16.md`, `docs/superpowers/plans/2026-05-27-vibelog-strong-schema-validation-slice-16.zh.md`, `docs/reports/slice-16-strong-schema-validation-report.md`, `docs/reports/slice-16-strong-schema-validation-report.zh.md`, `vibe-log.md`, `vibe-log.json`
+
+**Details:** Added a dependency-free schema subset validator for `type`, type arrays, `enum`, `required`, `properties`, `items`, and `additionalProperties: false`. Updated the schema to match current generated VibeLog data while still rejecting invalid enums, missing required objects, and unexpected fields. Updated generated project fixtures so new and scratch VibeLogs satisfy the stronger data contract.
+
+**Bug Symptom:** The old validator could accept JSON with invalid visibility values, missing handoff state, unexpected top-level fields, or invalid nested verification results.
+
+**Root Cause:** `validate-vibelog.mjs` checked only a small practical subset and did not execute the schema file.
+
+**Fix:** Loaded `skills/vibelog/assets/vibe-log.schema.json` from the validator and added recursive schema subset validation before the existing practical checks.
+
+**Verification:** `node --test` passed with 54 tests after the first local S16 commit, including clean clone adoption from the new commit. Root and example VibeLog JSON files validated against the stronger schema, the root JSON drift check passed, Markdown links were checked, S16 placeholder scan produced no matches, JSON parse checks passed, and `git diff --check` produced no output.
+
+**Follow-up:** Use the stronger validator as a release gate before installer dry-run, release bundle, package-manager distribution, or future VibeHub upload work.
+
 ## Handoff State
 
 ### Current State
 
-Slice 15 added a tested installer/package-manager distribution roadmap. Clone-local remains the only active channel, npm package distribution is deferred, and public distribution now has explicit gates for license selection, stronger schema validation, publish dry-run evidence, and human approval.
+Slice 16 added stronger schema-driven VibeLog validation. The default validator now loads the VibeLog schema, rejects invalid enums, missing required fields, unexpected fields, and invalid nested values, while keeping the repository dependency-free. New project initialization and opt-in verifier fixtures now generate schema-valid VibeLogs.
 
 ### Project Progress Snapshot
 
-- Project Progress: 36 / 100
-- Change This Task: +2
-- Current Phase: installer/package-manager distribution design
-- Completed This Task: Added tested distribution roadmap and safety gates
-- Next Unlock: stronger JSON Schema validation or installer dry-run prototype
-- Main Risk: this is a distribution design and guardrail slice, not an actual installer or package release
-- Confidence: medium-high
+- Project Progress: 39 / 100
+- Change This Task: +3
+- Current Phase: data contract hardening
+- Completed This Task: Added stronger schema-driven validator and schema-valid generated fixtures
+- Next Unlock: installer dry-run prototype or remote clone/release-bundle verification
+- Main Risk: this is a focused VibeLog schema subset, not full JSON Schema support
+- Confidence: high
 
 ### Completed
 
@@ -2796,15 +2890,17 @@ Slice 15 added a tested installer/package-manager distribution roadmap. Clone-lo
 - Private clone-local package entry added
 - Clean clone adoption verifier added
 - Installer/package-manager distribution roadmap added
+- Stronger schema-driven validator added
+- Project init and opt-in fixtures now generate schema-valid VibeLogs
 
 ### In Progress
 
-- Final repository verification and local commit for Slice 15
+- Final repository verification and local commit for Slice 16
 
 ### Pending
 
-- Add stronger JSON Schema validation
-- Prototype installer dry-run only after schema validation and rollback rules are stable
+- Prototype installer dry-run only after rollback rules are stable
+- Verify remote clone or release-bundle usage before public distribution
 - Make Stop handoff progress configurable instead of static
 - Optional full live Claude Code verification in an opted-in project
 
@@ -2814,13 +2910,14 @@ Slice 15 added a tested installer/package-manager distribution roadmap. Clone-lo
 
 ### Next Actions
 
-- Finish Slice 15 repository verification and local commit
-- Plan stronger JSON Schema validation
+- Finish Slice 16 repository verification and local commit
+- Plan installer dry-run or remote clone/release-bundle verification
 
 ### Context For Next Agent
 
-- Session: slice-15-codex
+- Session: slice-16-codex
 - Stop hook active: false
+- Default validation now enforces the VibeLog schema subset in `skills/vibelog/assets/vibe-log.schema.json`.
 ## Public / Private Projection
 
 - Public summary: VibeLog is a Markdown-first, hook-friendly process record skill for vibe-built products.
@@ -3225,6 +3322,21 @@ Slice 15 added a tested installer/package-manager distribution roadmap. Clone-lo
 **Problems:** VibeLog needed a clear path from clone-local use toward future release bundles, installers, package-manager distribution, and agent templates without prematurely publishing.
 
 **Next:** Add stronger JSON Schema validation before any public package or installer prototype.
+
+**Source:** current work session
+
+**Confidence:** high
+
+### 2026-05-27
+**Stage:** prototype
+
+**What Happened:** Added stronger schema-driven validation for VibeLog JSON exports.
+
+**Tools Used:** Codex, Node.js, VibeLog
+
+**Problems:** The previous lightweight validator could miss schema-level drift, and stronger validation exposed that generated project fixtures needed fuller required sections.
+
+**Next:** Finish full repository verification, commit locally, then plan installer dry-run or release-bundle verification.
 
 **Source:** current work session
 

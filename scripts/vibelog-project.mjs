@@ -191,6 +191,32 @@ ${idea}
 
 ## Human-in-the-Loop
 
+## Implementation Status
+
+### Current State
+
+VibeLog initialized for this project.
+
+### Completed
+
+- Created initial VibeLog files.
+
+### In Progress
+
+### Pending
+
+- Preview and optionally enable project-local hooks.
+
+### Blocked
+
+### Next Actions
+
+- Run verify after enabling hooks.
+
+### Important Context for Next Agent
+
+- Markdown is the source of truth.
+
 ## Execution Prompts
 
 ## Development Log
@@ -214,6 +240,14 @@ No bugfix or incident entry yet.
 - Enable hooks after review.
 - Verify readiness.
 - Disable hooks if needed.
+
+### Manual Test Steps
+
+- Run the project adoption CLI verify command.
+
+### Automated Test Strategy
+
+Use the VibeLog validator and JSON drift check after every automated update.
 
 ### Risks / Safety / Privacy Checks
 
@@ -249,13 +283,35 @@ VibeLog initialized for this project.
 
 - Created initial VibeLog files.
 
+### In Progress
+
 ### Pending
 
 - Preview and optionally enable project-local hooks.
 
+### Blockers
+
 ### Next Actions
 
 - Run verify after enabling hooks.
+
+### Context For Next Agent
+
+- Markdown is the source of truth.
+
+## Vibe Progress
+
+### ${date}
+
+**Stage:** idea
+
+**What Happened:** Initialized a local VibeLog project.
+
+**Tools Used:** VibeLog
+
+**Problems:** none
+
+**Next:** Preview hooks and verify readiness.
 
 ## Public Summary
 

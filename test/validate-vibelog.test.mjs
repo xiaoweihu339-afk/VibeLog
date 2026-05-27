@@ -39,3 +39,43 @@ test("rejects an invalid execution prompt recording mode", async () => {
   assert.equal(result.valid, false);
   assert.match(result.errors.join("\n"), /execution_prompts\[0\]\.recording_mode/);
 });
+
+test("rejects an invalid top-level schema enum", async () => {
+  const data = await loadBillMateData();
+  data.visibility = "friends_only";
+
+  const result = validateVibeLog(data);
+
+  assert.equal(result.valid, false);
+  assert.match(result.errors.join("\n"), /visibility/);
+});
+
+test("rejects a missing required schema object", async () => {
+  const data = await loadBillMateData();
+  delete data.handoff_state;
+
+  const result = validateVibeLog(data);
+
+  assert.equal(result.valid, false);
+  assert.match(result.errors.join("\n"), /handoff_state/);
+});
+
+test("rejects an unexpected top-level property", async () => {
+  const data = await loadBillMateData();
+  data.private_notes_dump = "raw chat transcript";
+
+  const result = validateVibeLog(data);
+
+  assert.equal(result.valid, false);
+  assert.match(result.errors.join("\n"), /private_notes_dump/);
+});
+
+test("rejects an invalid nested schema enum", async () => {
+  const data = await loadBillMateData();
+  data.verification_evidence[0].result = "sort_of_passed";
+
+  const result = validateVibeLog(data);
+
+  assert.equal(result.valid, false);
+  assert.match(result.errors.join("\n"), /verification_evidence\[0\]\.result/);
+});

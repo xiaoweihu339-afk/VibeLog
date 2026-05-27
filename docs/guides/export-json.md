@@ -2,7 +2,7 @@
 
 VibeLog is Markdown-first. Treat `vibe-log.md` as the source of truth, then regenerate `vibe-log.json` for tools, uploads, search, or future website import.
 
-Slice 3 adds a deterministic exporter for the strict Markdown subset used by the current templates and examples.
+Slice 3 added a deterministic exporter for the strict Markdown subset used by the current templates and examples. Slice 16 adds stronger schema validation for exported JSON.
 
 ## Export
 
@@ -20,20 +20,21 @@ node scripts/export-vibelog.mjs examples/billmate-lite/vibe-log.md --out tmp/bil
 
 ## Validate
 
-Run the lightweight validator on an exported JSON file:
+Run the validator on an exported JSON file:
 
 ```powershell
 node scripts/validate-vibelog.mjs vibe-log.json
 ```
 
-The validator checks practical core requirements:
+The validator enforces the VibeLog schema subset used by `skills/vibelog/assets/vibe-log.schema.json`:
 
-- required identity fields such as `schema`, `title`, `one_line_vibe`, `stage`, and `current_idea`
-- known schema and stage values
-- key array fields such as `idea_evolution`, `human_in_the_loop`, `execution_prompts`, `development_log`, and `verification_evidence`
-- `execution_prompts[].recording_mode` values
+- required fields and required nested objects
+- type checks, including string-or-array fields used by the current Markdown exporter
+- enum checks for schema, stage, visibility, creation mode, prompt types, verification results, artifact types, and similar controlled values
+- unexpected-field checks where the schema sets `additionalProperties: false`
+- practical VibeLog checks such as non-empty identity strings and readable execution prompt fields
 
-This is not full JSON Schema validation yet. It is a small gate for catching common drift before upload or handoff.
+This is not full JSON Schema support. It is a dependency-free subset designed for the current VibeLog data contract, examples, upload preparation, and agent handoff.
 
 ## Check Drift
 

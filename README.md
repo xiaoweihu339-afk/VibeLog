@@ -336,7 +336,7 @@ The JSON schema for VibeLog v0.2 draft exports.
 
 ### `scripts/`
 
-Dependency-free Node.js tools for deterministic Markdown-to-JSON export and lightweight validation.
+Dependency-free Node.js tools for deterministic Markdown-to-JSON export and schema-driven validation.
 
 - `export-vibelog.mjs`: regenerate JSON from Markdown.
 - `record-vibelog-event.mjs`: apply one structured Vibe Event JSON file to Markdown and optionally regenerate JSON.
@@ -346,7 +346,7 @@ Dependency-free Node.js tools for deterministic Markdown-to-JSON export and ligh
 - `verify-claude-code-opt-in-project.mjs`: verify project-local opt-in hooks in a realistic scratch project by executing generated settings commands.
 - `vibelog-project.mjs`: ordinary project adoption CLI for init, hook preview/enable, readiness verification, and hook disable.
 - `verify-clean-clone-adoption.mjs`: clone this repository into a scratch directory and verify `npm run vibelog` works from the clean clone.
-- `validate-vibelog.mjs`: lightweight VibeLog JSON validator.
+- `validate-vibelog.mjs`: dependency-free VibeLog schema subset validator plus practical VibeLog checks.
 
 ### `package.json`
 
@@ -427,6 +427,8 @@ User-review reports for completed slices:
 - [Slice 13 Clean Clone Adoption 报告](docs/reports/slice-13-clean-clone-adoption-report.zh.md)
 - [Slice 15 installer and package manager report](docs/reports/slice-15-installer-package-manager-report.md)
 - [Slice 15 Installer and Package Manager 报告](docs/reports/slice-15-installer-package-manager-report.zh.md)
+- [Slice 16 strong schema validation report](docs/reports/slice-16-strong-schema-validation-report.md)
+- [Slice 16 强 Schema 校验报告](docs/reports/slice-16-strong-schema-validation-report.zh.md)
 
 ### `examples/`
 
@@ -452,16 +454,16 @@ This repository contains the VibeLog v0.2 draft prototype:
 - clean clone adoption verifier
 - tested installer/package-manager distribution roadmap
 - deterministic Markdown-to-JSON exporter
-- lightweight JSON validator
+- stronger schema-driven JSON validator
 - design spec
 - self-recorded project VibeLog
 
-It is ready for local testing, generated example review, scratch-local Claude Code hook verification, dry-run project-local hook settings generation, ordinary project adoption through the local CLI, clone-local npm script use, clean clone adoption verification, and distribution roadmap review. It is not yet a polished public package.
+It is ready for local testing, generated example review, scratch-local Claude Code hook verification, dry-run project-local hook settings generation, ordinary project adoption through the local CLI, clone-local npm script use, clean clone adoption verification, distribution roadmap review, and schema-validated JSON export. It is not yet a polished public package.
 
 ## Next Steps
 
-- Add full JSON Schema validation.
-- Prototype installer dry-run only after schema validation and rollback rules are stable.
+- Prototype installer dry-run only after rollback rules are stable.
+- Verify remote clone or release-bundle usage before public distribution.
 - Install and test the skill in real agent sessions.
 - Add adapters for other agent environments, such as Codex hooks, Cursor rules, or AGENTS.md.
 - Add more generated VibeLog examples produced by real agent sessions.

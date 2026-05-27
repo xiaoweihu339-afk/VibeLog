@@ -47,6 +47,28 @@ Use structured events to update Markdown-first VibeLog records.
 
 ## Human-in-the-Loop
 
+## Implementation Status
+
+### Current State
+
+Recorder fixture is ready.
+
+### Completed
+
+- Base fixture created.
+
+### In Progress
+
+### Pending
+
+- Apply events.
+
+### Blocked
+
+### Next Actions
+
+- Apply recorder events.
+
 ## Execution Prompts
 
 ## Development Log
@@ -60,6 +82,18 @@ No bugfix or incident entry yet.
 ### Success Criteria
 
 - Recorder updates Markdown.
+
+### Core User Paths
+
+- Apply structured events.
+
+### Manual Test Steps
+
+- Run recorder tests.
+
+### Automated Test Strategy
+
+Use node --test test/record-vibelog-event.test.mjs.
 
 ## Verification Evidence
 
@@ -75,9 +109,35 @@ Recorder fixture is ready.
 
 - Base fixture created.
 
+### In Progress
+
 ### Pending
 
 - Apply events.
+
+### Blockers
+
+### Next Actions
+
+- Apply recorder events.
+
+### Context For Next Agent
+
+- Keep Markdown as the source of truth.
+
+## Vibe Progress
+
+### 2026-05-26
+
+**Stage:** prototype
+
+**What Happened:** Created the recorder fixture.
+
+**Tools Used:** Codex
+
+**Problems:** none
+
+**Next:** Apply structured events.
 
 ## Public Summary
 

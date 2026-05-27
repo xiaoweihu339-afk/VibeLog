@@ -47,7 +47,7 @@ visibility: private
 code_visibility: hidden
 prompt_visibility: summary
 collaboration_status: closed
-creation_mode: ai_assisted
+creation_mode: human_led_ai_assisted
 process_level: core
 tools: ["Claude Code", "VibeLog"]
 tags: ["vibelog", "claude-code", "opt-in", "acceptance-test"]
@@ -69,6 +69,29 @@ BillMate Lite is a tiny scratch billing utility used to verify that project-loca
 
 ## Human-in-the-Loop
 
+## Implementation Status
+
+### Current State
+
+Scratch project is ready for opt-in hook acceptance verification.
+
+### Completed
+
+- Tiny project fixture created.
+
+### In Progress
+
+### Pending
+
+- Run project-local hook settings generator.
+- Execute generated hook commands.
+
+### Blocked
+
+### Next Actions
+
+- Enable local hooks and verify generated VibeLog output.
+
 ## Execution Prompts
 
 ## Development Log
@@ -86,6 +109,21 @@ No bugfix or incident entry yet.
 - Generated hook commands update Markdown and JSON.
 - Event files stay inside the project-local .vibelog-events directory.
 
+### Core User Paths
+
+- Preview project-local hook settings.
+- Write project-local hook settings after review.
+- Execute representative hook commands.
+- Validate updated VibeLog JSON.
+
+### Manual Test Steps
+
+- Run the opt-in project verifier.
+
+### Automated Test Strategy
+
+Run node --test test/verify-claude-code-opt-in-project.test.mjs.
+
 ## Verification Evidence
 
 ## Artifact Index
@@ -100,10 +138,36 @@ Scratch project is ready for opt-in hook acceptance verification.
 
 - Tiny project fixture created.
 
+### In Progress
+
 ### Pending
 
 - Run project-local hook settings generator.
 - Execute generated hook commands.
+
+### Blockers
+
+### Next Actions
+
+- Enable local hooks and validate generated JSON.
+
+### Context For Next Agent
+
+- This is a scratch-only opt-in verification project.
+
+## Vibe Progress
+
+### 2026-05-27
+
+**Stage:** prototype
+
+**What Happened:** Created the opt-in verification fixture.
+
+**Tools Used:** VibeLog
+
+**Problems:** none
+
+**Next:** Execute representative hook commands.
 
 ## Public Summary
 

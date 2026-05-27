@@ -87,26 +87,29 @@
     "vibe_intake": {
       "type": "object",
       "properties": {
-        "problem": { "type": "string" },
+        "problem": { "type": ["string", "array"], "items": { "type": "string" } },
         "target_users": { "type": "array", "items": { "type": "string" } },
-        "desired_outcome": { "type": "string" },
+        "desired_outcome": { "type": ["string", "array"], "items": { "type": "string" } },
         "current_stage": { "type": "string" },
-        "tools_or_agents": { "type": "array", "items": { "type": "string" } }
+        "tools_or_agents": { "type": "array", "items": { "type": "string" } },
+        "tools_agents": { "type": "array", "items": { "type": "string" } }
       },
       "additionalProperties": false
     },
     "idea_expansion": {
       "type": "object",
       "properties": {
-        "product_hypothesis": { "type": "string" },
-        "problem": { "type": "string" },
+        "product_hypothesis": { "type": ["string", "array"], "items": { "type": "string" } },
+        "problem": { "type": ["string", "array"], "items": { "type": "string" } },
         "target_users": { "type": "array", "items": { "type": "string" } },
-        "why_it_matters": { "type": "string" },
-        "core_value": { "type": "string" },
+        "why_it_matters": { "type": ["string", "array"], "items": { "type": "string" } },
+        "core_value": { "type": ["string", "array"], "items": { "type": "string" } },
         "core_features": { "type": "array", "items": { "type": "string" } },
-        "use_cases": { "type": "array", "items": { "type": "string" } },
-        "non_goals": { "type": "array", "items": { "type": "string" } },
-        "assumptions": { "type": "array", "items": { "type": "string" } }
+        "core_features_implemented_in_slice_1": { "type": ["string", "array"], "items": { "type": "string" } },
+        "use_cases": { "type": ["string", "array"], "items": { "type": "string" } },
+        "non_goals": { "type": ["string", "array"], "items": { "type": "string" } },
+        "non_goals_for_slice_1": { "type": ["string", "array"], "items": { "type": "string" } },
+        "assumptions": { "type": ["string", "array"], "items": { "type": "string" } }
       },
       "additionalProperties": false
     },
@@ -146,6 +149,7 @@
           "timestamp": { "type": "string" },
           "decision": { "type": "string" },
           "why": { "type": "string" },
+          "impact": { "type": "string" },
           "source": { "type": "string" },
           "confidence": { "enum": ["high", "medium", "low"] }
         },
@@ -170,6 +174,7 @@
               "risk",
               "naming",
               "prioritization",
+              "architecture",
               "privacy",
               "release"
             ]
@@ -213,10 +218,11 @@
         "success_criteria": { "type": "array", "items": { "type": "string" } },
         "core_user_paths": { "type": "array", "items": { "type": "string" } },
         "manual_test_steps": { "type": "array", "items": { "type": "string" } },
-        "automated_test_strategy": { "type": "string" },
+        "automated_test_strategy": { "type": ["string", "array"], "items": { "type": "string" } },
         "edge_cases": { "type": "array", "items": { "type": "string" } },
         "regression_points": { "type": "array", "items": { "type": "string" } },
         "risks_safety_privacy": { "type": "array", "items": { "type": "string" } },
+        "risks_safety_privacy_checks": { "type": "array", "items": { "type": "string" } },
         "owner": { "type": "string" }
       },
       "additionalProperties": false
@@ -239,6 +245,7 @@
             ]
           },
           "summary": { "type": "string" },
+          "details": { "type": "string" },
           "evidence_ref": { "type": "string" },
           "result": { "enum": ["passed", "failed", "partial", "not_run"] },
           "residual_risk": { "type": "string" },
@@ -254,9 +261,11 @@
       "properties": {
         "repo_url": { "type": "string" },
         "workspace_path": { "type": "string" },
+        "repo_workspace": { "type": "string" },
         "important_files": { "type": "array", "items": { "type": "string" } },
         "run_commands": { "type": "array", "items": { "type": "string" } },
         "test_commands": { "type": "array", "items": { "type": "string" } },
+        "run_test_commands": { "type": "array", "items": { "type": "string" } },
         "known_issues": { "type": "array", "items": { "type": "string" } },
         "do_not_change": { "type": "array", "items": { "type": "string" } }
       },
@@ -267,14 +276,17 @@
       "items": {
         "type": "object",
         "properties": {
+          "name": { "type": "string" },
           "provider": {
             "enum": ["github", "gitlab", "bitbucket", "local", "vibehub_future", "other"]
           },
           "url": { "type": "string" },
+          "url_path": { "type": "string" },
           "remote_name": { "type": "string" },
           "default_branch": { "type": "string" },
           "current_branch": { "type": "string" },
           "latest_commit_sha": { "type": "string" },
+          "latest_verification": { "type": "string" },
           "sync_status": {
             "enum": ["unlinked", "local_only", "linked", "pushed", "mirrored", "hosted"]
           },
@@ -315,17 +327,27 @@
         "properties": {
           "type": {
             "enum": [
+              "code",
               "code_repo",
+              "code_workspace",
+              "data",
               "demo",
               "design",
               "document",
+              "guide",
+              "report",
               "screenshot",
+              "script",
+              "test",
               "video",
               "test_output",
               "release",
               "dataset",
               "prompt_library",
               "agent_config",
+              "vibelog_json",
+              "vibelog_markdown",
+              "vibelog_example",
               "other"
             ]
           },
@@ -372,7 +394,7 @@
           "root_cause": { "type": "string" },
           "fix": { "type": "string" },
           "verification": { "type": "string" },
-          "follow_up": { "type": "array", "items": { "type": "string" } },
+          "follow_up": { "type": ["string", "array"], "items": { "type": "string" } },
           "source": { "type": "string" },
           "confidence": { "enum": ["high", "medium", "low"] }
         },
@@ -386,16 +408,23 @@
         "type": "object",
         "properties": {
           "timestamp": { "type": "string" },
+          "type": { "enum": ["feature", "bugfix", "refactor", "test", "docs", "chore", "release", "deployment", "config"] },
+          "summary": { "type": "string" },
           "symptom": { "type": "string" },
+          "bug_symptom": { "type": "string" },
           "root_cause": { "type": "string" },
           "fix": { "type": "string" },
           "affected_area": { "type": "string" },
+          "files_changed": { "type": "array", "items": { "type": "string" } },
+          "details": { "type": "string" },
           "verification": { "type": "string" },
+          "follow_up": { "type": ["string", "array"], "items": { "type": "string" } },
           "prevention_or_follow_up": { "type": "array", "items": { "type": "string" } },
+          "prevention_follow_up": { "type": ["string", "array"], "items": { "type": "string" } },
           "source": { "type": "string" },
           "confidence": { "enum": ["high", "medium", "low"] }
         },
-        "required": ["timestamp", "symptom", "fix"],
+        "required": ["timestamp", "fix"],
         "additionalProperties": false
       }
     },
@@ -409,14 +438,15 @@
         "pending": { "type": "array", "items": { "type": "string" } },
         "blockers": { "type": "array", "items": { "type": "string" } },
         "next_actions": { "type": "array", "items": { "type": "string" } },
-        "context_for_next_agent": { "type": "array", "items": { "type": "string" } }
+        "context_for_next_agent": { "type": "array", "items": { "type": "string" } },
+        "project_progress_snapshot": { "type": ["string", "array"], "items": { "type": "string" } }
       },
       "additionalProperties": false
     },
     "public_private_projection": {
       "type": "object",
       "properties": {
-        "public_summary": { "type": "string" },
+        "public_summary": { "type": ["string", "array"], "items": { "type": "string" } },
         "code_visibility": { "enum": ["hidden", "open_source", "team_only", "not_applicable"] },
         "prompt_visibility": { "enum": ["hidden", "summary", "full"] },
         "collaboration_status": {
@@ -431,16 +461,17 @@
           ]
         },
         "remix_permission": { "enum": ["not_allowed", "allowed_with_attribution", "allowed", "unknown"] },
-        "license_or_usage_note": { "type": "string" }
+        "license_or_usage_note": { "type": "string" },
+        "license_usage_note": { "type": "string" }
       },
       "additionalProperties": false
     },
     "branch_remix_readiness": {
       "type": "object",
       "properties": {
-        "remix_allowed": { "type": "boolean" },
-        "what_can_be_reused": { "type": "array", "items": { "type": "string" } },
-        "what_should_not_be_reused": { "type": "array", "items": { "type": "string" } },
+        "remix_allowed": { "enum": [true, false, "true", "false", "unknown", ""] },
+        "what_can_be_reused": { "type": ["string", "array"], "items": { "type": "string" } },
+        "what_should_not_be_reused": { "type": ["string", "array"], "items": { "type": "string" } },
         "suggested_contribution_areas": { "type": "array", "items": { "type": "string" } },
         "attribution_requirements": { "type": "string" }
       },
@@ -454,9 +485,9 @@
           "timestamp": { "type": "string" },
           "stage": { "enum": ["idea", "brief", "prototype", "mvp", "beta", "shipped", "paused", "abandoned"] },
           "what_happened": { "type": "string" },
-          "tools_used": { "type": "array", "items": { "type": "string" } },
-          "problems": { "type": "array", "items": { "type": "string" } },
-          "next": { "type": "array", "items": { "type": "string" } },
+          "tools_used": { "type": ["string", "array"], "items": { "type": "string" } },
+          "problems": { "type": ["string", "array"], "items": { "type": "string" } },
+          "next": { "type": ["string", "array"], "items": { "type": "string" } },
           "source": { "type": "string" },
           "confidence": { "enum": ["high", "medium", "low"] }
         },
