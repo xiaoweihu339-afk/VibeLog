@@ -1,0 +1,24 @@
+---
+description: Use VibeLog when recording or updating vibe product ideas, engineering prompts, implementation status, validation evidence, artifacts, bug fixes, or agent handoff.
+globs:
+alwaysApply: false
+---
+
+# VibeLog Rule
+
+When a task involves product idea evolution, vibe coding, implementation progress, validation, verification, or handoff, use VibeLog.
+
+- Read `vibe-log.md` before meaningful work if it exists.
+- Create `vibe-log.md` from `<path-to-VibeLog>/skills/vibelog/assets/vibe-log-template.md` if missing.
+- Keep `vibe-log.md` as source of truth and export `vibe-log.json`.
+- Record engineering execution prompts in `Execution Prompts`.
+- Redact secrets, credentials, tokens, private personal data, and sensitive business data.
+- Update implementation status, validation design, verification evidence, development log, bugfix / incident log, artifacts, and handoff state when evidence exists.
+
+Export and validate:
+
+```powershell
+node <path-to-VibeLog>/scripts/export-vibelog.mjs vibe-log.md --out vibe-log.json
+node <path-to-VibeLog>/scripts/validate-vibelog.mjs vibe-log.json
+node <path-to-VibeLog>/scripts/export-vibelog.mjs vibe-log.md --out vibe-log.json --check
+```

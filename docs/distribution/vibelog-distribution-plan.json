@@ -179,24 +179,30 @@
     {
       "id": "agent_templates",
       "label": "Agent-specific templates",
-      "state": "planned",
+      "state": "prototype_templates_added",
       "human_approval_required": true,
-      "description": "Future helper packs for Codex, Claude Code, Cursor, AGENTS.md, and other agent environments.",
+      "description": "Copyable template pack for Codex/AGENTS.md, Claude Code, Cursor, Gemini CLI, Windsurf, Cline, Roo-compatible environments, and GitHub Copilot. Templates are smoke-tested for structure and safety, but real agent adherence must still be verified in each target environment.",
+      "verified_by": [
+        "test/agent-compatibility.test.mjs"
+      ],
       "required_gates": [
         "adapter_docs_verified",
         "template_smoke_tests_passed",
         "explicit_release_approval"
+      ],
+      "verified_gates": [
+        "template_smoke_tests_passed"
       ]
     }
   ],
   "next_recommended_slices": [
     {
-      "id": "backup_restore_verification",
-      "reason": "Scratch backup/restore is now verified; future work can turn this into a user-visible installer design only after explicit approval."
+      "id": "agent_template_live_validation",
+      "reason": "Run low-cost, opt-in live checks in selected agents after template smoke tests, starting with Codex and Claude Code because they are already locally available."
     },
     {
-      "id": "post_slice_20_push_decision",
-      "reason": "Slice 20 reaches the planned GitHub push discussion milestone, but any push still requires a separate explicit approval."
+      "id": "release_readiness_review",
+      "reason": "Review public README, templates, privacy boundaries, and package contents before creating any GitHub release bundle."
     },
     {
       "id": "user_visible_installer_write_mode_design",

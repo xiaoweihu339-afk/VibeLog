@@ -20,7 +20,9 @@
     "vibelog:verify-installer-rollback": "node scripts/verify-installer-rollback.mjs"
   },
   "files": [
+    "AGENTS.md",
     "README.md",
+    "agent-templates",
     "docs",
     "scripts",
     "skills",

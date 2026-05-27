@@ -14,7 +14,7 @@ Project Artifacts = code, demos, tests, docs, screenshots, releases, or other pr
 
 This repository is at **VibeLog v0.2 draft**.
 
-The current draft focuses on a reusable local skill, a stable Markdown-to-JSON contract, deterministic helper scripts, and opt-in automation hooks. It is designed to work before any VibeHub website exists.
+The current draft focuses on a reusable local skill, a stable Markdown-to-JSON contract, deterministic helper scripts, copyable agent templates, and opt-in automation hooks. It is designed to work before any VibeHub website exists.
 
 ## Core Principle
 
@@ -87,6 +87,23 @@ For an existing project, the agent should read current files, docs, git history,
 
 See [Quickstart](docs/guides/quickstart.md) and [Agent usage guide](skills/vibelog/references/agent-usage-guide.md).
 
+## Agent Templates
+
+Agents that cannot load Codex skills directly can still adopt the VibeLog workflow through copyable templates in `agent-templates/`.
+
+Current template targets:
+
+- Codex and other agents that read `AGENTS.md`
+- Claude Code through `CLAUDE.md`
+- Gemini CLI through `GEMINI.md`
+- Cursor through `.cursor/rules/vibelog.mdc`
+- Windsurf through `.windsurf/rules/vibelog.md`
+- Cline through `.clinerules/vibelog.md`
+- Roo-compatible environments through `.roo/rules/vibelog.md`
+- GitHub Copilot through `.github/copilot-instructions.md`
+
+See [Agent compatibility](docs/guides/agent-compatibility.md) and [Agent compatibility 中文](docs/guides/agent-compatibility.zh.md).
+
 ## Clone-Local CLI
 
 This repository is marked `private` in `package.json` because the current package path is for clone-local reuse, not npm publishing.
@@ -149,6 +166,8 @@ See [Claude Code Adapter](docs/guides/claude-code-adapter.md), [Claude Code Opt-
 
 ```txt
 .
+|-- AGENTS.md
+|-- agent-templates/
 |-- package.json
 |-- skills/
 |   `-- vibelog/
@@ -200,6 +219,8 @@ Example folders may contain only:
 - [Claude Code Opt-In Install](docs/guides/claude-code-opt-in-install.md)
 - [VibeLog Project Adoption](docs/guides/vibelog-project-adoption.md)
 - [VibeLog Install and Distribution](docs/guides/vibelog-install-distribution.md)
+- [Agent compatibility](docs/guides/agent-compatibility.md)
+- [Agent compatibility 中文](docs/guides/agent-compatibility.zh.md)
 - [Vibe verification guide](docs/guides/vibe-verification-guide.md)
 - [Agent dogfood protocol](docs/guides/agent-dogfood-protocol.md)
 - [Validation checklist](docs/guides/validation-checklist.md)
@@ -226,7 +247,7 @@ node scripts/verify-release-bundle.mjs --repo "C:\path\to\VibeLog" --scratch-roo
 
 ## Current Status
 
-VibeLog v0.2 draft is ready for local skill testing, JSON export, schema validation, project-local adoption, Claude Code hook preview, scratch-only verification, and sanitized public example review.
+VibeLog v0.2 draft is ready for local skill testing, JSON export, schema validation, project-local adoption, copyable agent-template smoke testing, Claude Code hook preview, scratch-only verification, and sanitized public example review.
 
 It is not yet a polished public package manager release. The next major step is to test the skill across more real agent sessions while keeping private VibeLogs outside this repository.
 

@@ -52,6 +52,15 @@ test("distribution plan keeps clone-local active and public package channels gat
   assert.ok(installerChannel.verified_gates.includes("uninstall_or_rollback_verified"));
   assert.ok(installerChannel.forbidden_actions.some((action) => action.includes("--write")));
 
+  const agentTemplatesChannel = plan.channels.find((channel) => channel.id === "agent_templates");
+  assert.equal(agentTemplatesChannel.state, "prototype_templates_added");
+  assert.equal(agentTemplatesChannel.human_approval_required, true);
+  assert.ok(agentTemplatesChannel.verified_by.includes("test/agent-compatibility.test.mjs"));
+  assert.ok(agentTemplatesChannel.required_gates.includes("adapter_docs_verified"));
+  assert.ok(agentTemplatesChannel.required_gates.includes("template_smoke_tests_passed"));
+  assert.ok(agentTemplatesChannel.required_gates.includes("explicit_release_approval"));
+  assert.ok(agentTemplatesChannel.verified_gates.includes("template_smoke_tests_passed"));
+
   for (const gateId of [
     "no_push_without_explicit_approval",
     "no_publish_without_explicit_approval",
