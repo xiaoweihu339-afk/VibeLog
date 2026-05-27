@@ -1,0 +1,21 @@
+{
+  "name": "vibelog",
+  "version": "0.2.0-draft.0",
+  "private": true,
+  "type": "module",
+  "description": "Markdown-first process log skill and local adoption CLI for vibe-built projects.",
+  "bin": {
+    "vibelog-project": "./scripts/vibelog-project.mjs"
+  },
+  "scripts": {
+    "test": "node --test",
+    "vibelog": "node scripts/vibelog-project.mjs"
+  },
+  "files": [
+    "README.md",
+    "docs",
+    "scripts",
+    "skills",
+    "examples"
+  ]
+}

@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
 import { homedir } from "node:os";
 import { join, resolve } from "node:path";
@@ -344,7 +345,9 @@ function isPlainObject(value) {
 
 function parseArgs(argv) {
   const [command, ...rest] = argv;
-  if (!command) throw new Error("Expected command: init, enable-hooks, verify, or disable-hooks");
+  if (!command || command === "--help" || command === "-h" || command === "help") {
+    return { command: "help" };
+  }
   const options = { command, projectPath: process.cwd(), write: false, force: false };
   const args = [...rest];
 
@@ -378,7 +381,10 @@ async function main() {
   const options = parseArgs(process.argv.slice(2));
   let result;
 
-  if (options.command === "init") {
+  if (options.command === "help") {
+    console.log(helpText());
+    return;
+  } else if (options.command === "init") {
     result = await initVibeLogProject(options);
   } else if (options.command === "enable-hooks") {
     result = await enableVibeLogHooks(options);
@@ -392,6 +398,31 @@ async function main() {
 
   console.log(JSON.stringify(result, null, 2));
   if (result.ready === false || result.valid === false) process.exitCode = 1;
+}
+
+function helpText() {
+  return `vibelog-project
+
+Project-local VibeLog adoption CLI.
+
+Usage:
+  vibelog-project init --project <path> --title <title> --idea <one-line idea> [--force]
+  vibelog-project enable-hooks --project <path> --adapter <adapter path> [--write]
+  vibelog-project verify --project <path>
+  vibelog-project disable-hooks --project <path>
+  vibelog-project --help
+
+Commands:
+  init           Create vibe-log.md and vibe-log.json for a project.
+  enable-hooks   Preview project-local Claude Code hooks by default; write only with --write.
+  verify         Check VibeLog validity, JSON sync, and project-local hook status.
+  disable-hooks  Remove only VibeLog hook commands from project-local settings.
+
+Safety:
+  - Project-local by default.
+  - Does not edit global Claude Code settings.
+  - Does not push, publish, or upload project data.
+`;
 }
 
 if (import.meta.url === pathToFileURL(fileURLToPath(import.meta.url)).href) {
