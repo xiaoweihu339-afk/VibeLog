@@ -142,6 +142,13 @@ node scripts/verify-installer-rollback.mjs --scratch-root "C:\path\to\scratch-ro
 npm run vibelog:verify-installer-rollback -- --scratch-root "C:\path\to\scratch-root"
 ```
 
+The scratch-only installer backup/restore verifier is:
+
+```powershell
+node scripts/verify-installer-backup-restore.mjs --scratch-root "C:\path\to\scratch-root"
+npm run vibelog:verify-installer-backup-restore -- --scratch-root "C:\path\to\scratch-root"
+```
+
 ## Repository Identity
 
 This repository is skill-first. Its primary purpose is to make the `vibelog` skill, schema, and documentation easy for others to reuse.
@@ -255,6 +262,7 @@ See [Claude Code adapter notes](skills/vibelog/references/claude-code-hooks-adap
 |   |-- vibelog-project.mjs
 |   |-- verify-clean-clone-adoption.mjs
 |   |-- verify-claude-code-live-hook.mjs
+|   |-- verify-installer-backup-restore.mjs
 |   |-- verify-installer-rollback.mjs
 |   `-- validate-vibelog.mjs
 |-- test/
@@ -264,6 +272,7 @@ See [Claude Code adapter notes](skills/vibelog/references/claude-code-hooks-adap
 |   |-- record-vibelog-event.test.mjs
 |   |-- vibelog-distribution-plan.test.mjs
 |   |-- vibelog-installer-dry-run.test.mjs
+|   |-- vibelog-installer-backup-restore.test.mjs
 |   |-- vibelog-installer-rollback.test.mjs
 |   |-- vibelog-package.test.mjs
 |   |-- vibelog-project.test.mjs
@@ -369,6 +378,7 @@ Dependency-free Node.js tools for deterministic Markdown-to-JSON export and sche
 - `verify-claude-code-live-hook.mjs`: create scratch Claude Code settings, run fixture hook payloads, and optionally verify a tiny live Claude Code hook session.
 - `verify-claude-code-opt-in-project.mjs`: verify project-local opt-in hooks in a realistic scratch project by executing generated settings commands.
 - `vibelog-install.mjs`: dry-run-only installer planner that prints planned install operations and rollback steps without writing files.
+- `verify-installer-backup-restore.mjs`: scratch-only verifier that backs up an existing target, simulates install overwrite behavior, and restores the original snapshot.
 - `verify-installer-rollback.mjs`: scratch-only verifier that copies the installer plan into a temporary target and removes it again.
 - `vibelog-project.mjs`: ordinary project adoption CLI for init, hook preview/enable, readiness verification, and hook disable.
 - `verify-clean-clone-adoption.mjs`: clone this repository into a scratch directory and verify `npm run vibelog` works from the clean clone.
@@ -381,6 +391,7 @@ Private clone-local package entry for local reuse. It exposes:
 - `npm run vibelog -- --help`
 - `npm run vibelog -- init --project "C:\path\to\project" --title "My Vibe Project" --idea "One sentence describing the product idea."`
 - `npm run vibelog:install -- --target "C:\path\to\install-root"`
+- `npm run vibelog:verify-installer-backup-restore -- --scratch-root "C:\path\to\scratch-root"`
 - `npm run vibelog:verify-installer-rollback -- --scratch-root "C:\path\to\scratch-root"`
 - `npm test`
 
@@ -463,6 +474,8 @@ User-review reports for completed slices:
 - [Slice 17 Installer Dry-Run 报告](docs/reports/slice-17-installer-dry-run-report.zh.md)
 - [Slice 18 installer rollback report](docs/reports/slice-18-installer-rollback-report.md)
 - [Slice 18 Installer Rollback 报告](docs/reports/slice-18-installer-rollback-report.zh.md)
+- [Slice 19 installer backup/restore report](docs/reports/slice-19-installer-backup-restore-report.md)
+- [Slice 19 Installer Backup/Restore 报告](docs/reports/slice-19-installer-backup-restore-report.zh.md)
 
 ### `examples/`
 
@@ -488,18 +501,19 @@ This repository contains the VibeLog v0.2 draft prototype:
 - clean clone adoption verifier
 - tested installer/package-manager distribution roadmap
 - dry-run-only installer planner
+- scratch-only installer backup/restore verifier
 - scratch-only installer rollback verifier
 - deterministic Markdown-to-JSON exporter
 - stronger schema-driven JSON validator
 - design spec
 - self-recorded project VibeLog
 
-It is ready for local testing, generated example review, scratch-local Claude Code hook verification, dry-run project-local hook settings generation, ordinary project adoption through the local CLI, clone-local npm script use, clean clone adoption verification, installer dry-run review, scratch-only installer rollback verification, distribution roadmap review, and schema-validated JSON export. It is not yet a polished public package.
+It is ready for local testing, generated example review, scratch-local Claude Code hook verification, dry-run project-local hook settings generation, ordinary project adoption through the local CLI, clone-local npm script use, clean clone adoption verification, installer dry-run review, scratch-only installer rollback verification, scratch-only installer backup/restore verification, distribution roadmap review, and schema-validated JSON export. It is not yet a polished public package.
 
 ## Next Steps
 
-- Verify backup/restore behavior for existing install targets before any installer write mode exists.
 - Verify remote clone or release-bundle usage before public distribution.
+- Design a user-visible installer write mode only after explicit approval.
 - Install and test the skill in real agent sessions.
 - Add adapters for other agent environments, such as Codex hooks, Cursor rules, or AGENTS.md.
 - Add more generated VibeLog examples produced by real agent sessions.

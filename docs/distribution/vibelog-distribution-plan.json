@@ -42,6 +42,11 @@
       "description": "Any installer must have a verified uninstall or rollback path before user-visible write mode exists."
     },
     {
+      "id": "backup_restore_verified",
+      "required": true,
+      "description": "Any installer that updates existing targets must have verified backup and restore behavior before user-visible write mode exists."
+    },
+    {
       "id": "dry_run_only",
       "required": true,
       "description": "The public installer command remains preview-only; scratch-only verification may write and roll back inside temporary targets."
@@ -92,18 +97,22 @@
     {
       "id": "local_installer_scripts",
       "label": "Local installer scripts",
-      "state": "prototype_scratch_rollback_verified",
+      "state": "prototype_scratch_backup_restore_verified",
       "human_approval_required": true,
-      "description": "Dry-run-only public installer planner plus a scratch-only rollback verifier that copies VibeLog files into a temporary target and removes them again.",
+      "description": "Dry-run-only public installer planner plus scratch-only rollback and backup/restore verifiers for temporary targets.",
       "verified_by": [
+        "test/vibelog-installer-backup-restore.test.mjs",
         "test/vibelog-installer-dry-run.test.mjs",
         "test/vibelog-installer-rollback.test.mjs",
         "scripts/vibelog-install.mjs",
+        "scripts/verify-installer-backup-restore.mjs",
         "scripts/verify-installer-rollback.mjs"
       ],
       "allowed_commands": [
         "node scripts/vibelog-install.mjs --target <install-root>",
         "npm run vibelog:install -- --target <install-root>",
+        "node scripts/verify-installer-backup-restore.mjs --scratch-root <scratch-root>",
+        "npm run vibelog:verify-installer-backup-restore -- --scratch-root <scratch-root>",
         "node scripts/verify-installer-rollback.mjs --scratch-root <scratch-root>",
         "npm run vibelog:verify-installer-rollback -- --scratch-root <scratch-root>"
       ],
@@ -115,6 +124,7 @@
         "git push"
       ],
       "required_gates": [
+        "backup_restore_verified",
         "dry_run_only",
         "uninstall_or_rollback_verified",
         "project_local_hooks_only",
@@ -122,6 +132,7 @@
         "explicit_install_approval"
       ],
       "verified_gates": [
+        "backup_restore_verified",
         "uninstall_or_rollback_verified"
       ]
     },
@@ -155,7 +166,7 @@
   "next_recommended_slices": [
     {
       "id": "backup_restore_verification",
-      "reason": "Existing-target backup and restore behavior is required before installer write mode can update real user directories."
+      "reason": "Scratch backup/restore is now verified; future work can turn this into a user-visible installer design only after explicit approval."
     },
     {
       "id": "remote_clone_or_release_bundle_verification",

@@ -35,7 +35,7 @@ Required gates:
 
 ## Prototype Channel: Local Installer Scripts
 
-Local installer scripts are now in scratch rollback verified prototype state. The public installer command previews copying the VibeLog skill, scripts, docs, README, and package metadata into a user-selected location, but it writes nothing.
+Local installer scripts are now in scratch backup/restore verified prototype state. The public installer command previews copying the VibeLog skill, scripts, docs, README, and package metadata into a user-selected location, but it writes nothing.
 
 ```powershell
 node scripts/vibelog-install.mjs --target "C:\path\to\install-root"
@@ -51,11 +51,20 @@ npm run vibelog:verify-installer-rollback -- --scratch-root "C:\path\to\scratch-
 
 The verifier copies planned files into a temporary scratch target, confirms the install shape, removes the target, and confirms rollback removed the created content. The public installer still refuses `--write`.
 
+S19 adds a scratch-only backup/restore verifier:
+
+```powershell
+node scripts/verify-installer-backup-restore.mjs --scratch-root "C:\path\to\scratch-root"
+npm run vibelog:verify-installer-backup-restore -- --scratch-root "C:\path\to\scratch-root"
+```
+
+The verifier creates an existing scratch target with user-owned content, backs up installer operation targets, simulates install overwrite behavior, restores from backup, and confirms the restored target matches the pre-install snapshot.
+
 Required gates:
 
 - dry-run mode;
 - scratch rollback verification;
-- backup or restore verification before writing over existing targets;
+- scratch backup/restore verification before writing over existing targets;
 - project-local hook setup by default;
 - no global Claude Code settings edits by default;
 - explicit human approval before writing outside the current repository.
@@ -92,11 +101,11 @@ Required gates:
 - No publish without explicit human approval.
 - No public package before license selection.
 - No public package before stronger JSON Schema validation.
-- No global installer before rollback verification and explicit approval.
+- No global installer before rollback plus backup/restore verification and explicit approval.
 - Markdown remains the source of truth.
 - JSON remains an export format.
 - Hook setup remains project-local and opt-in by default.
 
 ## Next Recommended Slice
 
-The strongest next step is backup/restore verification for existing targets or release-bundle verification. User-visible installer write mode still needs explicit approval.
+The strongest next step is release-bundle verification or an explicit user-visible installer write-mode design. User-visible installer write mode still needs explicit approval.

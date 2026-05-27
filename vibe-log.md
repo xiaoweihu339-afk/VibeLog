@@ -414,13 +414,13 @@ The long-term product may become VibeHub, a GitHub-like platform around Vibe Rep
 
 - Should the skill be installed immediately into the user's Codex skill directory or kept as a distributable repo package first?
 - Which agent ecosystem should get the next adapter after Codex: Claude Code, Cursor rules, or AGENTS.md?
-- What backup and restore guarantees are required before a future installer can update existing user targets?
+- What user-facing approval, backup location, and recovery UX are required before a future installer can update real user targets?
 
 ## Implementation Status
 
 ### Current State
 
-The VibeLog skill now has a deterministic Markdown-to-JSON exporter, stronger schema-driven validator, recorder core, Claude Code hook adapter, scratch-local live hook verifier, dry-run-first project-local hook settings generator, real-project-style opt-in acceptance verifier, ordinary project adoption CLI, private clone-local package entry, clean clone adoption verifier, tested installer/package-manager distribution roadmap, dry-run-only installer planner, and scratch-only installer rollback verifier. Slice 18 proves newly created scratch install targets can be removed again while the public installer stays dry-run-only.
+The VibeLog skill now has a deterministic Markdown-to-JSON exporter, stronger schema-driven validator, recorder core, Claude Code hook adapter, scratch-local live hook verifier, dry-run-first project-local hook settings generator, real-project-style opt-in acceptance verifier, ordinary project adoption CLI, private clone-local package entry, clean clone adoption verifier, tested installer/package-manager distribution roadmap, dry-run-only installer planner, scratch-only installer rollback verifier, and scratch-only installer backup/restore verifier. Slice 19 proves an existing scratch target with user-owned content can be backed up, overwritten in an install simulation, and restored to its exact pre-install snapshot while the public installer stays dry-run-only.
 
 ### Completed
 
@@ -470,27 +470,28 @@ The VibeLog skill now has a deterministic Markdown-to-JSON exporter, stronger sc
 - Aligned init and verifier fixtures so newly generated project VibeLogs satisfy the current data contract.
 - Added a dry-run-only installer planner and private local `vibelog:install` npm entry.
 - Added a scratch-only installer rollback verifier and private local `vibelog:verify-installer-rollback` npm entry.
+- Added a scratch-only installer backup/restore verifier and private local `vibelog:verify-installer-backup-restore` npm entry.
 
 ### In Progress
 
-- Final repository verification and local commit for Slice 18.
+- Final repository verification and local commit for Slice 19.
 
 ### Pending
 
 - Review the updated VibeLog v0.2 draft skill standard.
-- Verify backup/restore behavior for existing install targets before any installer write mode exists.
 - Verify remote clone or release-bundle usage before public distribution.
+- Design user-visible installer write mode only after explicit approval.
 - Add richer example Vibe Repos after the adapter exists.
 - Make Claude Code Stop handoff progress configurable instead of static.
 
 ### Blocked
 
-- No current Slice 17 blocker. Historical note: `skill-creator` quick validation could not run because the current Python environment is missing the `yaml` package.
+- No current Slice 19 blocker. Historical note: `skill-creator` quick validation could not run because the current Python environment is missing the `yaml` package.
 
 ### Next Actions
 
-- Finish Slice 18 repository verification and local commit.
-- Plan backup/restore verification before any installer write mode exists.
+- Finish Slice 19 repository verification and local commit.
+- Plan release-bundle verification or explicit installer write-mode design.
 - Decide whether to install the skill locally or keep iterating inside the repository first.
 
 ### Important Context for Next Agent
@@ -505,7 +506,7 @@ The VibeLog skill now has a deterministic Markdown-to-JSON exporter, stronger sc
 - Real-project-style opt-in verification uses scratch project source outside this repository.
 - Ordinary project adoption now has a local CLI, but it is not yet packaged as a globally installed command.
 - Strong schema validation is now part of the default validator, but it is a focused VibeLog schema subset rather than full JSON Schema support.
-- Installer work is still dry-run only for user-visible commands; `--write` is intentionally refused, while `scripts/verify-installer-rollback.mjs` may write only inside scratch targets it removes again.
+- Installer work is still dry-run only for user-visible commands; `--write` is intentionally refused, while `scripts/verify-installer-rollback.mjs` and `scripts/verify-installer-backup-restore.mjs` may write only inside scratch targets they control.
 - Do not push to GitHub without separate explicit user approval.
 - `scripts/export-vibelog.mjs` supports the current strict Markdown subset and should stay conservative until more examples justify expansion.
 - Prefer agent dogfood verification over human manual verification when a repeatable vibe scenario can produce evidence.
@@ -1101,6 +1102,24 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 
 **Confidence:** high
 
+### 2026-05-27
+
+**Type:** test_result
+
+**Summary:** Ran Slice 19 installer backup/restore verification.
+
+**Evidence Ref:** Isolated checks: `node --test test\vibelog-installer-backup-restore.test.mjs`; `node --test test\vibelog-installer-rollback.test.mjs`; `node --test test\vibelog-installer-dry-run.test.mjs`; `node --test test\vibelog-package.test.mjs`; `node --test test\vibelog-distribution-plan.test.mjs`; `node scripts\verify-installer-backup-restore.mjs --scratch-root "C:\Users\HXW\Documents\vibelog-scratch\slice-19-installer-backup-restore"`. Flow checks: `node --test test\vibelog-installer-backup-restore.test.mjs test\vibelog-installer-rollback.test.mjs test\vibelog-installer-dry-run.test.mjs test\vibelog-package.test.mjs test\vibelog-distribution-plan.test.mjs`; `node --test`. Quality checks: `node scripts\validate-vibelog.mjs vibe-log.json`; `node scripts\export-vibelog.mjs vibe-log.md --out vibe-log.json --check`; Markdown relative link checker; Slice 19 placeholder scan; JSON parse checks; `git diff --check`.
+
+**Result:** passed
+
+**Details:** Isolated checks passed: backup/restore verifier tests passed with 3 tests, rollback verifier tests passed with 3 tests, installer dry-run tests passed with 4 tests, package metadata tests passed with 2 tests, and distribution plan tests passed with 2 tests. The verifier CLI output reported `passed: true`, `backupPerformed: true`, `installPerformed: true`, `restorePerformed: true`, `plannedOperations: 5`, `preInstallFileCount: 8`, `postInstallFileCount: 53`, `postRestoreFileCount: 8`, `existingContentRestored: true`, `unrelatedContentPreserved: true`, and `newInstallerFilesRemoved: true`. Flow checks passed: combined installer flow tests passed with 14 tests and full `node --test` passed with 64 tests. Root and example VibeLog JSON files validated. Root VibeLog JSON matched Markdown. Markdown link checker scanned 137 Markdown files and found no broken relative links. Slice 19 placeholder scan produced no matches. JSON parse checks passed for `package.json`, `vibe-log.json`, `skills/vibelog/assets/vibe-log.schema.json`, and `docs/distribution/vibelog-distribution-plan.json`. `git diff --check` produced no output.
+
+**Residual Risk:** S19 verifies backup/restore inside scratch targets only. A future user-visible installer write mode still needs explicit approval, backup location design, failure handling, and recovery messaging.
+
+**Source:** current work session
+
+**Confidence:** high
+
 ## Project Context
 
 ### Repo / Workspace
@@ -1159,6 +1178,14 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 - `docs/superpowers/plans/2026-05-27-vibelog-installer-rollback-slice-18.zh.md`: Chinese Slice 18 implementation plan.
 - `docs/reports/slice-18-installer-rollback-report.md`: English Slice 18 report.
 - `docs/reports/slice-18-installer-rollback-report.zh.md`: Chinese Slice 18 report.
+- `scripts/verify-installer-backup-restore.mjs`: scratch-only installer backup/restore verifier.
+- `test/vibelog-installer-backup-restore.test.mjs`: installer backup/restore verifier regression tests.
+- `docs/superpowers/specs/2026-05-27-vibelog-installer-backup-restore-slice-19-design.md`: English Slice 19 installer backup/restore design.
+- `docs/superpowers/specs/2026-05-27-vibelog-installer-backup-restore-slice-19-design.zh.md`: Chinese Slice 19 installer backup/restore design.
+- `docs/superpowers/plans/2026-05-27-vibelog-installer-backup-restore-slice-19.md`: English Slice 19 implementation plan.
+- `docs/superpowers/plans/2026-05-27-vibelog-installer-backup-restore-slice-19.zh.md`: Chinese Slice 19 implementation plan.
+- `docs/reports/slice-19-installer-backup-restore-report.md`: English Slice 19 report.
+- `docs/reports/slice-19-installer-backup-restore-report.zh.md`: Chinese Slice 19 report.
 - `docs/guides/vibe-verification-guide.md`: English guide for agent-run VibeLog verification.
 - `docs/guides/vibe-verification-guide.zh.md`: Chinese guide for agent-run VibeLog verification.
 - `docs/guides/live-hook-verification.md`: English guide for scratch-local Claude Code live hook verification.
@@ -1233,6 +1260,8 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 - `node --test test/vibelog-distribution-plan.test.mjs`
 - `node --test test/vibelog-installer-rollback.test.mjs`
 - `node scripts/verify-installer-rollback.mjs --scratch-root "C:\Users\HXW\Documents\vibelog-scratch\slice-18-installer-rollback"`
+- `node --test test/vibelog-installer-backup-restore.test.mjs`
+- `node scripts/verify-installer-backup-restore.mjs --scratch-root "C:\Users\HXW\Documents\vibelog-scratch\slice-19-installer-backup-restore"`
 - `node --test test/verify-clean-clone-adoption.test.mjs`
 - `node scripts/verify-clean-clone-adoption.mjs --workspace "C:\Users\HXW\Documents\vibelog-scratch\slice-13-clean-clone-adoption"`
 - `node --test test/configure-claude-code-vibelog-hooks.test.mjs`
@@ -1861,6 +1890,36 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 
 **Notes:** Bilingual report for isolated and flow verification of the scratch-only rollback verifier.
 
+### VibeLog installer backup/restore verifier
+
+**Type:** script
+
+**Ref:** `scripts/verify-installer-backup-restore.mjs`
+
+**Visibility:** private
+
+**Notes:** Scratch-only verifier that backs up existing installer operation targets, simulates install overwrite behavior, restores from backup, and verifies the target matches the pre-install snapshot.
+
+### Slice 19 installer backup/restore design and plan
+
+**Type:** document
+
+**Ref:** `docs/superpowers/specs/2026-05-27-vibelog-installer-backup-restore-slice-19-design.md`, `docs/superpowers/specs/2026-05-27-vibelog-installer-backup-restore-slice-19-design.zh.md`, `docs/superpowers/plans/2026-05-27-vibelog-installer-backup-restore-slice-19.md`, `docs/superpowers/plans/2026-05-27-vibelog-installer-backup-restore-slice-19.zh.md`
+
+**Visibility:** private
+
+**Notes:** Bilingual design and implementation plan for S19 scratch-only installer backup/restore verification.
+
+### Slice 19 installer backup/restore reports
+
+**Type:** report
+
+**Ref:** `docs/reports/slice-19-installer-backup-restore-report.md`, `docs/reports/slice-19-installer-backup-restore-report.zh.md`
+
+**Visibility:** private
+
+**Notes:** Bilingual report for isolated and flow verification of the scratch-only backup/restore verifier.
+
 ## Execution Prompts
 
 ### 2026-05-25
@@ -2420,6 +2479,24 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 **Result:** S18 verification reporting was split into isolated checks and combined flow checks.
 
 **Reuse Notes:** Future slices should keep reporting both isolated component checks and combined flow checks.
+
+### 2026-05-27
+
+**Agent / Tool:** Codex
+
+**Prompt Type:** build
+
+**Prompt Visibility:** summary
+
+**Recording Mode:** exact
+
+**Prompt Summary:** User authorized executing Slice 19 installer backup/restore verification.
+
+**Prompt Text:** 执行s19
+
+**Result:** Added a scratch-only installer backup/restore verifier, private local npm entry, distribution plan update, bilingual guide/report updates, and tests proving existing scratch target content can be restored exactly.
+
+**Reuse Notes:** Treat this as authorization for local S19 implementation only. It does not authorize GitHub push, npm publishing, public installer write mode, global installer creation, or global Claude Code/Codex settings changes.
 
 ## Development Log
 
@@ -3088,20 +3165,39 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 
 **Follow-up:** Verify backup/restore behavior for existing install targets before any user-visible installer write mode exists.
 
+### 2026-05-27
+**Type:** feature
+
+**Summary:** Added VibeLog installer backup/restore verifier.
+
+**Files Changed:** `scripts/verify-installer-backup-restore.mjs`, `test/vibelog-installer-backup-restore.test.mjs`, `package.json`, `test/vibelog-package.test.mjs`, `docs/distribution/vibelog-distribution-plan.json`, `test/vibelog-distribution-plan.test.mjs`, `docs/guides/vibelog-installer-dry-run.md`, `docs/guides/vibelog-installer-dry-run.zh.md`, `docs/guides/vibelog-installer-package-manager-plan.md`, `docs/guides/vibelog-installer-package-manager-plan.zh.md`, `docs/superpowers/specs/2026-05-27-vibelog-installer-backup-restore-slice-19-design.md`, `docs/superpowers/specs/2026-05-27-vibelog-installer-backup-restore-slice-19-design.zh.md`, `docs/superpowers/plans/2026-05-27-vibelog-installer-backup-restore-slice-19.md`, `docs/superpowers/plans/2026-05-27-vibelog-installer-backup-restore-slice-19.zh.md`, `docs/reports/slice-19-installer-backup-restore-report.md`, `docs/reports/slice-19-installer-backup-restore-report.zh.md`, `README.md`, `vibe-log.md`, `vibe-log.json`
+
+**Details:** Added a dependency-free scratch-only verifier that creates an existing target with user-owned content, snapshots it, backs up installer operation targets, simulates installer copy operations, restores the backups, and verifies the restored target matches the pre-install snapshot. The public installer remains dry-run-only and still refuses `--write`.
+
+**Bug Symptom:** not applicable
+
+**Root Cause:** not applicable
+
+**Fix:** not applicable
+
+**Verification:** Isolated checks passed for backup/restore verifier, rollback verifier, dry-run installer, package metadata, and distribution plan tests. Combined installer flow tests passed with 14 tests. Full `node --test` passed with 64 tests. The verifier CLI reported `existingContentRestored: true`, `unrelatedContentPreserved: true`, and `newInstallerFilesRemoved: true`.
+
+**Follow-up:** Verify release-bundle usage or design a user-visible installer write mode only after explicit approval.
+
 ## Handoff State
 
 ### Current State
 
-Slice 18 added a scratch-only installer rollback verifier. VibeLog can now preview local install operations, verify scratch-only copying into a temporary target, remove the created target, and report rollback evidence. The public installer path remains safe: clone-local is still the only active distribution channel, and user-visible installer write mode is intentionally refused.
+Slice 19 added a scratch-only installer backup/restore verifier. VibeLog can now preview local install operations, verify scratch-only copying into a temporary target, remove newly created targets, and verify that existing scratch targets can be restored to their exact pre-install snapshot. The public installer path remains safe: clone-local is still the only active distribution channel, and user-visible installer write mode is intentionally refused.
 
 ### Project Progress Snapshot
 
-- Project Progress: 45 / 100
+- Project Progress: 48 / 100
 - Change This Task: +3
 - Current Phase: safe installer prototyping
-- Completed This Task: Added scratch-only installer rollback verifier and safety tests
-- Next Unlock: backup/restore verification for existing install targets or release-bundle verification
-- Main Risk: S18 proves rollback only for newly created scratch content; it does not yet prove backup/restore over existing user targets
+- Completed This Task: Added scratch-only installer backup/restore verifier and safety tests
+- Next Unlock: release-bundle verification or explicit installer write-mode design
+- Main Risk: S19 proves scratch backup/restore only; user-visible write mode still needs approval and a narrower UX design
 - Confidence: high
 
 ### Completed
@@ -3124,15 +3220,17 @@ Slice 18 added a scratch-only installer rollback verifier. VibeLog can now previ
 - Private local `vibelog:install` npm entry added
 - Scratch-only installer rollback verifier added
 - Private local `vibelog:verify-installer-rollback` npm entry added
+- Scratch-only installer backup/restore verifier added
+- Private local `vibelog:verify-installer-backup-restore` npm entry added
 
 ### In Progress
 
-- Final repository verification and local commit for Slice 18
+- Final repository verification and local commit for Slice 19
 
 ### Pending
 
-- Verify backup/restore behavior for existing install targets before any installer write mode exists
 - Verify remote clone or release-bundle usage before public distribution
+- Design user-visible installer write mode only after explicit approval
 - Make Stop handoff progress configurable instead of static
 - Optional full live Claude Code verification in an opted-in project
 
@@ -3142,16 +3240,17 @@ Slice 18 added a scratch-only installer rollback verifier. VibeLog can now previ
 
 ### Next Actions
 
-- Finish Slice 18 repository verification and local commit
-- Plan backup/restore verification or release-bundle verification
+- Finish Slice 19 repository verification and local commit
+- Plan release-bundle verification or explicit installer write-mode design
 
 ### Context For Next Agent
 
-- Session: slice-18-codex
+- Session: slice-19-codex
 - Stop hook active: false
 - Default validation now enforces the VibeLog schema subset in `skills/vibelog/assets/vibe-log.schema.json`.
 - Public installer work is dry-run only; `scripts/vibelog-install.mjs --write` must fail until a future explicit approval changes that boundary.
 - Scratch rollback verification is available through `scripts/verify-installer-rollback.mjs`, but it must only write inside scratch targets.
+- Scratch backup/restore verification is available through `scripts/verify-installer-backup-restore.mjs`, but it must only write inside scratch targets.
 ## Public / Private Projection
 
 - Public summary: VibeLog is a Markdown-first, hook-friendly process record skill for vibe-built products.
@@ -3601,6 +3700,21 @@ Slice 18 added a scratch-only installer rollback verifier. VibeLog can now previ
 **Problems:** The project needed to prove installer reversibility without exposing real user directories or global settings to write risk.
 
 **Next:** Verify backup/restore behavior for existing install targets or verify release-bundle usage before public distribution.
+
+**Source:** current work session
+
+**Confidence:** high
+
+### 2026-05-27
+**Stage:** prototype
+
+**What Happened:** Added a scratch-only installer backup/restore verifier for VibeLog.
+
+**Tools Used:** Codex, Node.js, VibeLog
+
+**Problems:** The project needed evidence that an existing target with user-owned content can be protected before any future installer write mode exists.
+
+**Next:** Verify release-bundle usage or design a user-visible installer write mode after explicit approval.
 
 **Source:** current work session
 
