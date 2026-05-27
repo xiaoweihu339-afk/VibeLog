@@ -120,6 +120,14 @@ The clean clone adoption verifier is:
 node scripts/verify-clean-clone-adoption.mjs --workspace "C:\Users\HXW\Documents\vibelog-scratch\slice-13-clean-clone-adoption"
 ```
 
+The installer and package-manager distribution roadmap is:
+
+```txt
+docs/distribution/vibelog-distribution-plan.json
+docs/guides/vibelog-installer-package-manager-plan.md
+docs/guides/vibelog-installer-package-manager-plan.zh.md
+```
+
 ## Repository Identity
 
 This repository is skill-first. Its primary purpose is to make the `vibelog` skill, schema, and documentation easy for others to reuse.
@@ -162,11 +170,15 @@ See [Claude Code adapter notes](skills/vibelog/references/claude-code-hooks-adap
 |           |-- vibe-event-format.md
 |           `-- vibelog-format.md
 |-- docs/
+|   |-- distribution/
+|   |   `-- vibelog-distribution-plan.json
 |   |-- guides/
 |   |   |-- agent-dogfood-protocol.md
 |   |   |-- agent-dogfood-protocol.zh.md
 |   |   |-- claude-code-adapter.md
 |   |   |-- claude-code-adapter.zh.md
+|   |   |-- vibelog-installer-package-manager-plan.md
+|   |   |-- vibelog-installer-package-manager-plan.zh.md
 |   |   |-- vibelog-install-distribution.md
 |   |   |-- vibelog-install-distribution.zh.md
 |   |   |-- export-json.md
@@ -193,7 +205,9 @@ See [Claude Code adapter notes](skills/vibelog/references/claude-code-hooks-adap
 |   |   |-- slice-12-packaging-report.md
 |   |   |-- slice-12-packaging-report.zh.md
 |   |   |-- slice-13-clean-clone-adoption-report.md
-|   |   `-- slice-13-clean-clone-adoption-report.zh.md
+|   |   |-- slice-13-clean-clone-adoption-report.zh.md
+|   |   |-- slice-15-installer-package-manager-report.md
+|   |   `-- slice-15-installer-package-manager-report.zh.md
 |   |-- releases/
 |   |   `-- v0.2-draft.md
 |   `-- superpowers/
@@ -226,6 +240,7 @@ See [Claude Code adapter notes](skills/vibelog/references/claude-code-hooks-adap
 |   |-- configure-claude-code-vibelog-hooks.test.mjs
 |   |-- export-vibelog.test.mjs
 |   |-- record-vibelog-event.test.mjs
+|   |-- vibelog-distribution-plan.test.mjs
 |   |-- vibelog-package.test.mjs
 |   |-- vibelog-project.test.mjs
 |   |-- verify-clean-clone-adoption.test.mjs
@@ -345,6 +360,12 @@ Private clone-local package entry for local reuse. It exposes:
 
 Product strategy and MVP requirements for the future VibeHub / VibeLog Studio direction.
 
+### `docs/distribution/`
+
+Machine-readable distribution planning:
+
+- `vibelog-distribution-plan.json`: current and future distribution channels, safety gates, and next recommended slices.
+
 ### `docs/guides/`
 
 Practical guides for using and testing the skill:
@@ -354,6 +375,8 @@ Practical guides for using and testing the skill:
 - [Claude Code Adapter 指南](docs/guides/claude-code-adapter.zh.md)
 - [Claude Code Opt-In Install](docs/guides/claude-code-opt-in-install.md)
 - [Claude Code Opt-In 安装指南](docs/guides/claude-code-opt-in-install.zh.md)
+- [VibeLog Installer and Package Manager Plan](docs/guides/vibelog-installer-package-manager-plan.md)
+- [VibeLog Installer and Package Manager 计划](docs/guides/vibelog-installer-package-manager-plan.zh.md)
 - [VibeLog Install and Distribution](docs/guides/vibelog-install-distribution.md)
 - [VibeLog 安装与分发指南](docs/guides/vibelog-install-distribution.zh.md)
 - [VibeLog Project Adoption](docs/guides/vibelog-project-adoption.md)
@@ -402,6 +425,8 @@ User-review reports for completed slices:
 - [Slice 12 包装路径报告](docs/reports/slice-12-packaging-report.zh.md)
 - [Slice 13 clean clone adoption report](docs/reports/slice-13-clean-clone-adoption-report.md)
 - [Slice 13 Clean Clone Adoption 报告](docs/reports/slice-13-clean-clone-adoption-report.zh.md)
+- [Slice 15 installer and package manager report](docs/reports/slice-15-installer-package-manager-report.md)
+- [Slice 15 Installer and Package Manager 报告](docs/reports/slice-15-installer-package-manager-report.zh.md)
 
 ### `examples/`
 
@@ -425,17 +450,18 @@ This repository contains the VibeLog v0.2 draft prototype:
 - ordinary project adoption CLI
 - private clone-local package entry and npm script
 - clean clone adoption verifier
+- tested installer/package-manager distribution roadmap
 - deterministic Markdown-to-JSON exporter
 - lightweight JSON validator
 - design spec
 - self-recorded project VibeLog
 
-It is ready for local testing, generated example review, scratch-local Claude Code hook verification, dry-run project-local hook settings generation, ordinary project adoption through the local CLI, clone-local npm script use, and clean clone adoption verification. It is not yet a polished public package.
+It is ready for local testing, generated example review, scratch-local Claude Code hook verification, dry-run project-local hook settings generation, ordinary project adoption through the local CLI, clone-local npm script use, clean clone adoption verification, and distribution roadmap review. It is not yet a polished public package.
 
 ## Next Steps
 
-- Decide between installer/package-manager design and stronger JSON Schema validation.
 - Add full JSON Schema validation.
+- Prototype installer dry-run only after schema validation and rollback rules are stable.
 - Install and test the skill in real agent sessions.
 - Add adapters for other agent environments, such as Codex hooks, Cursor rules, or AGENTS.md.
 - Add more generated VibeLog examples produced by real agent sessions.

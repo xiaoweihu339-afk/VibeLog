@@ -1,0 +1,137 @@
+{
+  "schema": "vibelog-distribution-plan@0.1",
+  "status": "draft",
+  "current_channel": "clone_local",
+  "updated_at": "2026-05-27",
+  "principles": [
+    "Markdown remains the source of truth.",
+    "JSON remains an export format.",
+    "Project-local hook setup stays opt-in.",
+    "Publishing requires explicit human approval.",
+    "Global installation requires uninstall or rollback verification."
+  ],
+  "safety_gates": [
+    {
+      "id": "no_push_without_explicit_approval",
+      "required": true,
+      "description": "Do not push repository changes without a direct human approval for that push."
+    },
+    {
+      "id": "no_publish_without_explicit_approval",
+      "required": true,
+      "description": "Do not publish any package without a direct human approval for that publish action."
+    },
+    {
+      "id": "no_public_package_without_license",
+      "required": true,
+      "description": "Do not distribute a public package before a repository license is selected."
+    },
+    {
+      "id": "no_public_package_without_schema_validation",
+      "required": true,
+      "description": "Do not distribute a public package before stronger JSON Schema validation is in place."
+    },
+    {
+      "id": "project_local_hooks_only",
+      "required": true,
+      "description": "Keep hook setup project-local unless a future global installer has rollback verification and explicit approval."
+    },
+    {
+      "id": "uninstall_or_rollback_verified",
+      "required": true,
+      "description": "Any installer must have a verified uninstall or rollback path before use."
+    }
+  ],
+  "channels": [
+    {
+      "id": "clone_local",
+      "label": "Clone-local repository usage",
+      "state": "active",
+      "human_approval_required": false,
+      "description": "Use VibeLog from a local clone through npm scripts and direct Node entrypoints.",
+      "verified_by": [
+        "test/vibelog-package.test.mjs",
+        "test/verify-clean-clone-adoption.test.mjs",
+        "scripts/verify-clean-clone-adoption.mjs"
+      ],
+      "allowed_commands": [
+        "npm run vibelog -- --help",
+        "npm run vibelog -- init --project <path> --title <title> --idea <idea>",
+        "npm run vibelog -- enable-hooks --project <path> --adapter <path>",
+        "npm run vibelog -- verify --project <path>",
+        "npm run vibelog -- disable-hooks --project <path>"
+      ],
+      "forbidden_actions": [
+        "git push",
+        "npm publish",
+        "editing global Claude Code settings"
+      ],
+      "required_gates": [
+        "project_local_hooks_only"
+      ]
+    },
+    {
+      "id": "release_bundle",
+      "label": "GitHub release bundle",
+      "state": "planned",
+      "human_approval_required": true,
+      "description": "Package a tagged repository archive for download after remote clone and archive verification.",
+      "required_gates": [
+        "no_push_without_explicit_approval",
+        "no_public_package_without_license",
+        "strong_schema_validation",
+        "remote_clone_verified",
+        "archive_verification_passed"
+      ]
+    },
+    {
+      "id": "local_installer_scripts",
+      "label": "Local installer scripts",
+      "state": "planned",
+      "human_approval_required": true,
+      "description": "Future PowerShell and shell helper scripts that install or update local VibeLog skill files and CLI helpers.",
+      "required_gates": [
+        "uninstall_or_rollback_verified",
+        "project_local_hooks_only",
+        "clean_clone_verified",
+        "explicit_install_approval"
+      ]
+    },
+    {
+      "id": "npm_package",
+      "label": "npm package",
+      "state": "deferred",
+      "human_approval_required": true,
+      "description": "Future package-manager distribution after the data contract, license, package metadata, and publish dry-run are ready.",
+      "required_gates": [
+        "license_selected",
+        "strong_schema_validation",
+        "package_name_checked",
+        "publish_dry_run_verified",
+        "explicit_publish_approval"
+      ]
+    },
+    {
+      "id": "agent_templates",
+      "label": "Agent-specific templates",
+      "state": "planned",
+      "human_approval_required": true,
+      "description": "Future helper packs for Codex, Claude Code, Cursor, AGENTS.md, and other agent environments.",
+      "required_gates": [
+        "adapter_docs_verified",
+        "template_smoke_tests_passed",
+        "explicit_release_approval"
+      ]
+    }
+  ],
+  "next_recommended_slices": [
+    {
+      "id": "strong_schema_validation",
+      "reason": "A stronger data contract makes future public package and upload flows safer."
+    },
+    {
+      "id": "installer_dry_run_prototype",
+      "reason": "A dry-run installer can test install and rollback design before touching global state."
+    }
+  ]
+}
