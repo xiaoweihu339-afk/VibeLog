@@ -10,17 +10,17 @@ import {
   parseVibeLogMarkdown
 } from "../scripts/export-vibelog.mjs";
 
-const billmateMarkdownPath = "examples/billmate-lite/vibe-log.md";
+const publicSampleMarkdownPath = "examples/public-sample/vibe-log.md";
 
 test("parses frontmatter fields and inline arrays", async () => {
-  const markdown = await readFile(billmateMarkdownPath, "utf8");
+  const markdown = await readFile(publicSampleMarkdownPath, "utf8");
   const data = parseVibeLogMarkdown(markdown);
 
-  assert.equal(data.title, "BillMate Lite");
+  assert.equal(data.title, "Pocket Recipe Planner");
   assert.equal(data.stage, "prototype");
-  assert.equal(data.visibility, "private");
+  assert.equal(data.visibility, "public_progress");
   assert.deepEqual(data.tools, ["Codex", "Node.js", "node:test"]);
-  assert.deepEqual(data.tags, ["billing", "dogfood", "manual-test", "vibelog"]);
+  assert.deepEqual(data.tags, ["public-sample", "meal-planning", "vibelog"]);
 });
 
 test("parses frontmatter block arrays", () => {
@@ -51,29 +51,27 @@ Support YAML-like block arrays in addition to inline arrays.
   assert.deepEqual(data.tags, ["vibelog", "exporter"]);
 });
 
-test("exports core BillMate VibeLog sections", async () => {
-  const markdown = await readFile(billmateMarkdownPath, "utf8");
+test("exports core public sample VibeLog sections", async () => {
+  const markdown = await readFile(publicSampleMarkdownPath, "utf8");
   const data = parseVibeLogMarkdown(markdown);
 
-  assert.match(data.one_line_vibe, /tiny bill splitter/);
-  assert.match(data.current_idea, /BillMate Lite is a small local Node.js domain utility/);
+  assert.match(data.one_line_vibe, /three-day recipe plan/);
+  assert.match(data.current_idea, /Pocket Recipe Planner is a small local-first product concept/);
   assert.equal(data.idea_evolution.length, 2);
   assert.equal(data.human_in_the_loop.length, 1);
   assert.equal(data.execution_prompts.length, 1);
   assert.equal(data.development_log.length, 2);
   assert.equal(data.verification_evidence.length, 2);
-  assert.equal(data.handoff_state.completed.length, 5);
-  assert.match(data.public_summary, /tiny local bill splitter/);
+  assert.equal(data.handoff_state.completed.length, 7);
+  assert.match(data.public_summary, /synthetic VibeLog example/);
 });
 
-test("preserves Chinese execution prompt text", async () => {
-  const markdown = await readFile(billmateMarkdownPath, "utf8");
+test("keeps public sample execution prompt summary-only", async () => {
+  const markdown = await readFile(publicSampleMarkdownPath, "utf8");
   const data = parseVibeLogMarkdown(markdown);
 
-  assert.equal(
-    data.execution_prompts[0].prompt_text,
-    "必须得我手动吗？你不可以模拟一个小项目，做一个账单啥的小项目去测试吗？"
-  );
+  assert.equal(data.execution_prompts[0].recording_mode, "summary_only");
+  assert.equal(data.execution_prompts[0].prompt_text, "not published in this public sample");
 });
 
 test("writes parseable JSON to an output file", async () => {
@@ -81,11 +79,11 @@ test("writes parseable JSON to an output file", async () => {
   const outPath = join(dir, "vibe-log.json");
 
   try {
-    await exportVibeLogFile(billmateMarkdownPath, outPath);
+    await exportVibeLogFile(publicSampleMarkdownPath, outPath);
     const exported = JSON.parse(await readFile(outPath, "utf8"));
 
-    assert.equal(exported.title, "BillMate Lite");
-    assert.equal(exported.execution_prompts[0].recording_mode, "exact");
+    assert.equal(exported.title, "Pocket Recipe Planner");
+    assert.equal(exported.execution_prompts[0].recording_mode, "summary_only");
   } finally {
     await rm(dir, { recursive: true, force: true });
   }
@@ -96,11 +94,11 @@ test("detects JSON drift in check mode", async () => {
   const outPath = join(dir, "vibe-log.json");
 
   try {
-    await exportVibeLogFile(billmateMarkdownPath, outPath);
-    assert.equal(await isSameJsonFile(billmateMarkdownPath, outPath), true);
+    await exportVibeLogFile(publicSampleMarkdownPath, outPath);
+    assert.equal(await isSameJsonFile(publicSampleMarkdownPath, outPath), true);
 
     await writeFile(outPath, JSON.stringify({ title: "Different" }, null, 2));
-    assert.equal(await isSameJsonFile(billmateMarkdownPath, outPath), false);
+    assert.equal(await isSameJsonFile(publicSampleMarkdownPath, outPath), false);
   } finally {
     await rm(dir, { recursive: true, force: true });
   }

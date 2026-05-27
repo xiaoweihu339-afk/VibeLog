@@ -38,3 +38,9 @@ playwright-report/
 .env
 .env.*
 !.env.example
+
+# VibeLog local project memory
+/vibe-log.md
+/vibe-log.json
+/.vibelog-events/
+/vibelog-scratch/

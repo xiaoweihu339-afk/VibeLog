@@ -50,9 +50,9 @@ Run the exporter, validator, drift check, and repository test suite together. Th
 Recommended commands:
 
 ```powershell
-node scripts/export-vibelog.mjs examples/reading-card-lite/vibe-log.md --out examples/reading-card-lite/vibe-log.json
-node scripts/validate-vibelog.mjs examples/reading-card-lite/vibe-log.json
-node scripts/export-vibelog.mjs examples/reading-card-lite/vibe-log.md --out examples/reading-card-lite/vibe-log.json --check
+node scripts/export-vibelog.mjs examples/public-sample/vibe-log.md --out examples/public-sample/vibe-log.json
+node scripts/validate-vibelog.mjs examples/public-sample/vibe-log.json
+node scripts/export-vibelog.mjs examples/public-sample/vibe-log.md --out examples/public-sample/vibe-log.json --check
 node --test
 ```
 

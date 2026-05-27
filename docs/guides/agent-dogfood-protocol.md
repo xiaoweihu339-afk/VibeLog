@@ -2,19 +2,19 @@
 
 Use this protocol to verify VibeLog through a scratch vibe project when no suitable real project is available.
 
-The goal is not to ship the scratch product. The goal is to prove that VibeLog can record a real agent-led vibe coding process, preserve important decisions, export JSON, validate the result, and leave a useful handoff.
+The goal is not to ship the scratch product. The goal is to prove that VibeLog can record an agent-led vibe coding process, preserve important decisions, export JSON, validate the result, and leave a useful handoff.
 
 ## Repository Boundary
 
-Create scratch source outside this repository. Copy only generated VibeLog records into `examples/<case-name>/`.
+Create scratch source outside this repository. Keep real or experimental dogfood source, raw prompts, hook payloads, package files, tests, and temporary artifacts outside this repository.
 
-For the `reading-card-lite` case, the example directory may contain only:
+Only commit a generated VibeLog example after it is synthetic or explicitly sanitized for public reuse. A public example directory may contain only:
 
 - `README.md`
 - `vibe-log.md`
 - `vibe-log.json`
 
-Scratch source code, package files, tests, and temporary artifacts must stay outside this repository.
+The default public sample is `examples/public-sample/`. Do not replace it with a private project log.
 
 ## Required Scenario Events
 
@@ -23,7 +23,7 @@ The scratch run must include:
 - initial product idea
 - one idea change
 - one human-in-the-loop decision
-- one exact engineering execution prompt
+- one engineering execution prompt record, using `summary_only` or redacted text if the example will be public
 - at least one development log entry
 - one bugfix or incident entry
 - validation design
@@ -35,9 +35,9 @@ The scratch run must include:
 Run these repository checks after the generated example exists:
 
 ```powershell
-node scripts/export-vibelog.mjs examples/reading-card-lite/vibe-log.md --out examples/reading-card-lite/vibe-log.json
-node scripts/validate-vibelog.mjs examples/reading-card-lite/vibe-log.json
-node scripts/export-vibelog.mjs examples/reading-card-lite/vibe-log.md --out examples/reading-card-lite/vibe-log.json --check
+node scripts/export-vibelog.mjs examples/public-sample/vibe-log.md --out examples/public-sample/vibe-log.json
+node scripts/validate-vibelog.mjs examples/public-sample/vibe-log.json
+node scripts/export-vibelog.mjs examples/public-sample/vibe-log.md --out examples/public-sample/vibe-log.json --check
 node --test
 ```
 
@@ -49,9 +49,9 @@ The final report should state:
 
 - what was generated
 - which commands passed
-- where the scratch source stayed
+- where the scratch source stayed, if a scratch run was used
 - which files entered the repository
 - what risk remains
 - the conservative project progress snapshot
 
-Do not claim the dogfood run is complete until the scratch tests, example validation, drift check, repository tests, and repository boundary check have all been run.
+Do not claim the dogfood run is complete until the scratch tests, example validation, drift check, repository tests, privacy audit, and repository boundary check have all been run.

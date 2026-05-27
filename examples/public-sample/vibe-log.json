@@ -1,0 +1,371 @@
+{
+  "artifact_index": [
+    {
+      "name": "Public sample Markdown",
+      "notes": "Human-readable source of truth.",
+      "ref": "examples/public-sample/vibe-log.md",
+      "type": "vibelog_markdown",
+      "visibility": "public"
+    },
+    {
+      "name": "Public sample JSON",
+      "notes": "Generated from Markdown.",
+      "ref": "examples/public-sample/vibe-log.json",
+      "type": "vibelog_json",
+      "visibility": "public"
+    }
+  ],
+  "branch_remix_readiness": {
+    "attribution_requirements": "follow the repository license once selected",
+    "remix_allowed": "unknown",
+    "suggested_contribution_areas": [
+      "agent adapters",
+      "schema examples",
+      "validation edge cases"
+    ],
+    "what_can_be_reused": [
+      "format structure",
+      "validation approach",
+      "public-safe example pattern"
+    ],
+    "what_should_not_be_reused": [
+      "private prompts",
+      "scratch outputs",
+      "local machine paths"
+    ]
+  },
+  "bugfix_incident_log": [
+    {
+      "affected_area": "documentation and examples",
+      "confidence": "high",
+      "fix": "Remove internal dogfood artifacts from the public boundary and replace them with a synthetic public sample.",
+      "follow_up": "Keep future real examples outside this repository unless intentionally sanitized.",
+      "root_cause": "Early validation data lived beside reusable skill assets during development.",
+      "source": "repository maintenance",
+      "summary": "Prevented private dogfood artifacts from being treated as public examples.",
+      "symptom": "Public documentation referenced internal dogfood examples and local scratch paths.",
+      "timestamp": "2026-05-27T10:10:00Z",
+      "type": "bugfix",
+      "verification": "Run privacy audit, exporter, validator, drift check, and full tests before push."
+    }
+  ],
+  "code_repositories": [],
+  "code_visibility": "not_applicable",
+  "collaboration_status": "open_to_feedback",
+  "created_at": "2026-05-27",
+  "creation_mode": "human_ai_co_created",
+  "current_idea": "Pocket Recipe Planner is a small local-first product concept for people who want to use ingredients they already have. The first prototype stores a pantry list, suggests a three-day meal plan, and records substitutions when an ingredient is missing.",
+  "decisions": [
+    {
+      "confidence": "high",
+      "decision": "Publish only a synthetic sample in this repository.",
+      "impact": "Real project VibeLogs remain project-local unless intentionally sanitized for publication.",
+      "source": "repository policy",
+      "timestamp": "2026-05-27T09:30:00Z",
+      "why": "The public skill repo should demonstrate the format without exposing private project memory."
+    }
+  ],
+  "development_log": [
+    {
+      "confidence": "high",
+      "details": "The example demonstrates the VibeLog structure without including private project data.",
+      "files_changed": [
+        "examples/public-sample/README.md",
+        "examples/public-sample/vibe-log.md",
+        "examples/public-sample/vibe-log.json"
+      ],
+      "source": "repository maintenance",
+      "summary": "Added a public-safe VibeLog sample.",
+      "timestamp": "2026-05-27T10:00:00Z",
+      "type": "docs"
+    },
+    {
+      "confidence": "high",
+      "details": "Tests validate that examples contain only generated VibeLog artifacts and that JSON stays synchronized with Markdown.",
+      "files_changed": [
+        "test/vibelog-examples.test.mjs",
+        "test/export-vibelog.test.mjs",
+        "test/validate-vibelog.test.mjs"
+      ],
+      "source": "repository maintenance",
+      "summary": "Updated example tests to target the public sample.",
+      "timestamp": "2026-05-27T10:05:00Z",
+      "type": "test"
+    }
+  ],
+  "execution_prompts": [
+    {
+      "agent_or_tool": "Codex",
+      "prompt_summary": "Prepare the repository for public push by completing README/docs and excluding private or experimental data.",
+      "prompt_text": "not published in this public sample",
+      "prompt_type": "docs",
+      "prompt_visibility": "summary",
+      "recording_mode": "summary_only",
+      "result": "Public-safe documentation and example data were prepared for validation.",
+      "reuse_notes": "Record exact prompts in private project logs when safe; publish only summaries when sharing sanitized examples.",
+      "timestamp": "2026-05-27T09:40:00Z"
+    }
+  ],
+  "handoff_state": {
+    "blockers": [
+      "No license has been selected."
+    ],
+    "completed": [
+      "Public-safe one-line idea",
+      "Idea evolution",
+      "Human privacy decision",
+      "Implementation status",
+      "Validation design",
+      "Execution prompt summary",
+      "Handoff state"
+    ],
+    "context_for_next_agent": [
+      "Treat this as a format sample, not a real product log.",
+      "Preserve the rule that public examples must be synthetic or explicitly sanitized."
+    ],
+    "current_state": "Public sample is ready to be exported, validated, and used by repository tests.",
+    "in_progress": [
+      "Release verification for public push."
+    ],
+    "next_actions": [
+      "Export JSON.",
+      "Validate JSON.",
+      "Run drift check.",
+      "Run full repository tests.",
+      "Push only after privacy audit passes."
+    ],
+    "pending": [
+      "License selection",
+      "More public examples after explicit sanitization",
+      "Package-manager distribution decision"
+    ]
+  },
+  "human_in_the_loop": [
+    {
+      "agent_proposal": "Replace dogfood examples with a synthetic public sample.",
+      "confidence": "high",
+      "final_decision": "Use a public-safe sample and document the repository boundary.",
+      "human_input": "Keep public examples useful but do not publish private data, raw prompts, local paths, or experimental scratch output.",
+      "impact": "The repository remains reusable as a skill while still showing the expected format.",
+      "source": "repository policy",
+      "timestamp": "2026-05-27T09:35:00Z",
+      "type": "privacy",
+      "why_it_mattered": "It protects future users from treating private VibeLogs as publish-by-default artifacts."
+    }
+  ],
+  "idea_evolution": [
+    {
+      "after": "Build a tiny pantry-to-recipe planner.",
+      "before": "none",
+      "confidence": "high",
+      "reason": "Start with a simple product idea that can be explained in one sentence.",
+      "source": "synthetic public sample",
+      "timestamp": "2026-05-27T09:00:00Z",
+      "type": "initial"
+    },
+    {
+      "after": "Limit the first prototype to a three-day pantry-based plan.",
+      "before": "Build a recipe planner.",
+      "confidence": "high",
+      "reason": "A short planning horizon makes the MVP easier to test and hand off.",
+      "source": "synthetic public sample",
+      "timestamp": "2026-05-27T09:20:00Z",
+      "type": "refinement"
+    }
+  ],
+  "idea_expansion": {
+    "assumptions": "users prefer fast suggestions over complex nutritional optimization",
+    "core_features": [
+      "pantry list",
+      "recipe suggestions",
+      "substitutions",
+      "three-day plan",
+      "exportable summary"
+    ],
+    "core_value": "turn available ingredients into an actionable short meal plan",
+    "non_goals": [
+      "social feed",
+      "grocery delivery",
+      "calorie tracking"
+    ],
+    "product_hypothesis": "A lightweight pantry-first planner is easier to finish than a full recipe platform.",
+    "use_cases": [
+      "plan dinners",
+      "use leftovers",
+      "prepare a shopping list"
+    ],
+    "why_it_matters": "It reduces waste and helps users decide what to cook without starting from a blank page."
+  },
+  "implementation_status": {
+    "blocked": [
+      "License decision is not selected yet."
+    ],
+    "completed": [
+      "One-line vibe captured.",
+      "Idea evolution captured.",
+      "Human privacy decision captured.",
+      "Validation design captured.",
+      "Public-safe execution prompt summary captured."
+    ],
+    "current_state": "Synthetic public sample drafted for validation and public documentation.",
+    "important_context_for_next_agent": [
+      "This example is synthetic and should remain public-safe.",
+      "Do not replace it with a real private project log."
+    ],
+    "in_progress": [
+      "JSON export and repository verification."
+    ],
+    "next_actions": [
+      "Run exporter, validator, drift check, and full test suite.",
+      "Review public docs for private path or prompt leakage."
+    ],
+    "pending": [
+      "Broader real-session testing outside the public repository.",
+      "Future package-manager distribution decision."
+    ]
+  },
+  "one_line_vibe": "A tiny meal-planning app that turns pantry ingredients into a three-day recipe plan.",
+  "open_questions": [
+    "Which license should be selected before broad reuse?",
+    "Which agent environments should receive first-class adapters after Claude Code?"
+  ],
+  "process_level": "core",
+  "project_context": {
+    "do_not_change": [
+      "Do not add private raw prompts to public examples.",
+      "Do not add scratch project source code to public examples."
+    ],
+    "important_files": [
+      "skills/vibelog/SKILL.md",
+      "skills/vibelog/assets/vibe-log-template.md",
+      "skills/vibelog/assets/vibe-log.schema.json",
+      "scripts/export-vibelog.mjs",
+      "scripts/validate-vibelog.mjs",
+      "examples/public-sample/vibe-log.md"
+    ],
+    "known_issues": [
+      "License is not selected.",
+      "Package-manager publishing is not enabled."
+    ],
+    "repo_workspace": "Public VibeLog skill repository.",
+    "run_test_commands": [
+      "node scripts/export-vibelog.mjs examples/public-sample/vibe-log.md --out examples/public-sample/vibe-log.json",
+      "node scripts/validate-vibelog.mjs examples/public-sample/vibe-log.json",
+      "node scripts/export-vibelog.mjs examples/public-sample/vibe-log.md --out examples/public-sample/vibe-log.json --check",
+      "node --test"
+    ]
+  },
+  "prompt_visibility": "summary",
+  "public_private_projection": {
+    "code_visibility": "not_applicable",
+    "collaboration_status": "open_to_feedback",
+    "license_usage_note": "Repository license is not selected yet.",
+    "prompt_visibility": "summary",
+    "public_summary": "Synthetic example of a VibeLog for a tiny pantry-based recipe planner.",
+    "remix_permission": "allowed_with_attribution"
+  },
+  "public_summary": "Pocket Recipe Planner is a synthetic VibeLog example for a tiny meal-planning product. It shows how VibeLog records idea evolution, human decisions, implementation state, validation design, verification evidence, development logs, bug fixes, execution prompts, artifacts, and handoff context without exposing private project data.",
+  "schema": "vibelog@0.2-draft",
+  "stage": "prototype",
+  "tags": [
+    "public-sample",
+    "meal-planning",
+    "vibelog"
+  ],
+  "title": "Pocket Recipe Planner",
+  "tools": [
+    "Codex",
+    "Node.js",
+    "node:test"
+  ],
+  "updated_at": "2026-05-27",
+  "validation_design": {
+    "automated_test_strategy": "Run exporter, validator, drift check, and `node --test`.",
+    "core_user_paths": [
+      "A reader understands what a VibeLog records.",
+      "An agent can parse the JSON export for handoff.",
+      "A maintainer can regenerate the example JSON."
+    ],
+    "edge_cases": [
+      "Missing required sections.",
+      "Invalid enum values.",
+      "Stale JSON export.",
+      "Raw private prompt accidentally pasted into a public example."
+    ],
+    "manual_test_steps": [
+      "Read the sample and confirm it contains no private project data.",
+      "Check that public summary, handoff state, and validation design are understandable."
+    ],
+    "regression_points": [
+      "Example folders contain only README, Markdown, and JSON.",
+      "Execution prompt recording mode remains summary-only for this public sample."
+    ],
+    "risks_safety_privacy_checks": [
+      "Avoid local absolute paths.",
+      "Avoid real raw prompt text.",
+      "Avoid scratch project source code.",
+      "Avoid secrets or account identifiers."
+    ],
+    "success_criteria": [
+      "The Markdown sample can be exported to JSON.",
+      "The JSON validates against the VibeLog v0.2 draft schema subset.",
+      "The JSON matches the Markdown source in drift-check mode.",
+      "Repository tests pass with the public sample."
+    ]
+  },
+  "verification_evidence": [
+    {
+      "confidence": "high",
+      "details": "The sample names no real user, machine path, token, account, or private project.",
+      "evidence_ref": "examples/public-sample/vibe-log.md",
+      "residual_risk": "Future maintainers could accidentally add real private examples without running the privacy audit.",
+      "result": "passed",
+      "source": "repository review",
+      "summary": "Public sample designed as synthetic data.",
+      "timestamp": "2026-05-27T09:50:00Z",
+      "type": "review"
+    },
+    {
+      "confidence": "medium",
+      "details": "The exact command results are produced during release verification, not manually pasted into this sample.",
+      "evidence_ref": "README.md#test",
+      "residual_risk": "This placeholder must be replaced or accompanied by actual release verification in the publishing report.",
+      "result": "not_run",
+      "source": "repository checklist",
+      "summary": "Export, validation, drift check, and repository tests should be run before publishing.",
+      "timestamp": "2026-05-27T09:55:00Z",
+      "type": "command_output"
+    }
+  ],
+  "vibe_intake": {
+    "current_stage": "prototype",
+    "desired_outcome": "create a simple three-day meal plan from pantry items",
+    "problem": "People forget what they already bought and waste ingredients.",
+    "target_users": [
+      "solo cooks",
+      "students",
+      "busy families"
+    ],
+    "tools_agents": [
+      "Codex",
+      "Node.js",
+      "node:test"
+    ]
+  },
+  "vibe_progress": [
+    {
+      "confidence": "high",
+      "next": "Validate export, run tests, and publish only after privacy audit.",
+      "problems": "Public examples must be useful without leaking private process memory.",
+      "source": "repository maintenance",
+      "stage": "prototype",
+      "timestamp": "2026-05-27T10:15:00Z",
+      "tools_used": [
+        "Codex",
+        "Node.js"
+      ],
+      "what_happened": "A synthetic public-safe VibeLog example was created to replace internal dogfood examples."
+    }
+  ],
+  "visibility": "public_progress"
+}

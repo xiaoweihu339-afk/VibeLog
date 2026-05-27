@@ -29,7 +29,7 @@ https://docs.anthropic.com/en/docs/claude-code/hooks
 先运行不调用 Claude 的本地命令链路验证：
 
 ```powershell
-node scripts/verify-claude-code-live-hook.mjs --workspace "C:\Users\HXW\Documents\vibelog-scratch\claude-live-hook-test" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs"
+node scripts/verify-claude-code-live-hook.mjs --workspace "C:\path\to\scratch-root\claude-live-hook-test" --adapter "C:\path\to\VibeLog\scripts\claude-code-hook-adapter.mjs"
 ```
 
 预期结果：
@@ -43,7 +43,7 @@ node scripts/verify-claude-code-live-hook.mjs --workspace "C:\Users\HXW\Document
 只有明确需要 live verification 时，才运行一个很小的 Claude Code session：
 
 ```powershell
-node scripts/verify-claude-code-live-hook.mjs --workspace "C:\Users\HXW\Documents\vibelog-scratch\claude-live-hook-test-live" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs" --live --prompt "Reply with OK. Do not use tools." --max-budget-usd 0.05
+node scripts/verify-claude-code-live-hook.mjs --workspace "C:\path\to\scratch-root\claude-live-hook-test-live" --adapter "C:\path\to\VibeLog\scripts\claude-code-hook-adapter.mjs" --live --prompt "Reply with OK. Do not use tools." --max-budget-usd 0.05
 ```
 
 预期结果：

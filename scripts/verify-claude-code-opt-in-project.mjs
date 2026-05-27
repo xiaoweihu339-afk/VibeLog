@@ -11,12 +11,12 @@ const HOOK_EVENTS = ["UserPromptSubmit", "PostToolUse", "Stop"];
 export async function createRealProjectFixture({ workspace }) {
   const resolvedWorkspace = resolve(workspace);
   const files = {
-    "README.md": `# BillMate Lite Opt-In
+    "README.md": `# VibeLog Opt-In Fixture
 
 Scratch project used to verify project-local VibeLog Claude Code hooks.
 `,
     "package.json": `${JSON.stringify({
-      name: "billmate-lite-opt-in",
+      name: "vibelog-opt-in-fixture",
       version: "0.0.0",
       private: true,
       type: "module",
@@ -24,23 +24,23 @@ Scratch project used to verify project-local VibeLog Claude Code hooks.
         test: "node --test"
       }
     }, null, 2)}\n`,
-    "src/billmate.js": `export function formatBillTotal(items) {
+    "src/receipt-total.js": `export function formatReceiptTotal(items) {
   const total = items.reduce((sum, item) => sum + item.amount, 0);
   return total.toFixed(2);
 }
 `,
-    "test/billmate.test.js": `import test from "node:test";
+    "test/receipt-total.test.js": `import test from "node:test";
 import assert from "node:assert/strict";
 
-import { formatBillTotal } from "../src/billmate.js";
+import { formatReceiptTotal } from "../src/receipt-total.js";
 
-test("formats bill totals", () => {
-  assert.equal(formatBillTotal([{ amount: 12 }, { amount: 3.5 }]), "15.50");
+test("formats receipt totals", () => {
+  assert.equal(formatReceiptTotal([{ amount: 12 }, { amount: 3.5 }]), "15.50");
 });
 `,
     "vibe-log.md": `---
 schema: vibelog@0.2-draft
-title: "BillMate Lite Opt-In Project"
+title: "VibeLog Opt-In Fixture Project"
 one_line_vibe: "Verify a real project can opt in to VibeLog Claude Code hooks locally."
 stage: prototype
 visibility: private
@@ -63,7 +63,7 @@ Verify a real project can opt in to VibeLog Claude Code hooks locally.
 
 ## Current Idea
 
-BillMate Lite is a tiny scratch billing utility used to verify that project-local Claude Code hook settings can update a VibeLog without touching global settings.
+This is a tiny scratch receipt-total utility used to verify that project-local Claude Code hook settings can update a VibeLog without touching global settings.
 
 ## Idea Evolution
 
@@ -231,8 +231,8 @@ export async function runOptInProjectVerification({
   const validation = validateVibeLog(json);
   const eventFiles = await listFiles(join(resolvedWorkspace, ".vibelog-events"));
   const stopCommand = getVibeLogCommand(settings, "Stop");
-  const markdownUpdated = markdown.includes("Build the BillMate Lite scratch feature and run node --test");
-  const jsonUpdated = validation.valid && json.title === "BillMate Lite Opt-In Project";
+  const markdownUpdated = markdown.includes("Build the opt-in fixture feature and run node --test");
+  const jsonUpdated = validation.valid && json.title === "VibeLog Opt-In Fixture Project";
   const eventFileCount = eventFiles.length;
 
   return {
@@ -302,13 +302,13 @@ function representativeHookPayloads(workspace) {
       hook_event_name: "UserPromptSubmit",
       session_id: "slice-10-opt-in",
       cwd: workspace,
-      prompt: "Build the BillMate Lite scratch feature and run node --test."
+      prompt: "Build the opt-in fixture feature and run node --test."
     },
     {
       hook_event_name: "PostToolUse",
       session_id: "slice-10-opt-in",
       tool_name: "Write",
-      tool_input: { file_path: "src/billmate.js" },
+      tool_input: { file_path: "src/receipt-total.js" },
       tool_response: { success: true }
     },
     {
@@ -322,7 +322,7 @@ function representativeHookPayloads(workspace) {
       hook_event_name: "Stop",
       session_id: "slice-10-opt-in",
       stop_hook_active: false,
-      last_assistant_message: "BillMate Lite opt-in hook acceptance completed."
+      last_assistant_message: "VibeLog opt-in hook acceptance completed."
     }
   ];
 }
@@ -406,7 +406,7 @@ async function exists(path) {
 }
 
 function defaultWorkspace() {
-  return join(resolve(".."), "vibelog-scratch", "slice-10-real-project-opt-in");
+  return join(resolve(".."), "vibelog-scratch", "vibelog-opt-in-fixture");
 }
 
 function parseArgs(argv) {

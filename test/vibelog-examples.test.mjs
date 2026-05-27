@@ -6,11 +6,7 @@ import { join } from "node:path";
 import { isSameJsonFile } from "../scripts/export-vibelog.mjs";
 import { validateVibeLog } from "../scripts/validate-vibelog.mjs";
 
-const exampleDirs = [
-  "examples/vibelog-studio",
-  "examples/billmate-lite",
-  "examples/reading-card-lite"
-];
+const exampleDirs = ["examples/public-sample"];
 const allowedFiles = new Set(["README.md", "vibe-log.md", "vibe-log.json"]);
 
 test("examples contain only generated VibeLog artifacts", async () => {
@@ -45,7 +41,7 @@ test("example JSON files match their Markdown source", async () => {
   }
 });
 
-test("examples include core dogfood evidence sections", async () => {
+test("examples include core public VibeLog sections", async () => {
   const requiredSections = [
     "## One-Line Vibe",
     "## Current Idea",

@@ -45,7 +45,7 @@ skills/vibelog/assets/claude-code-hooks.settings.example.json
 更安全的项目级设置方式是先使用默认 dry-run 的 generator：
 
 ```powershell
-node scripts/configure-claude-code-vibelog-hooks.mjs --project "C:\path\to\project" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs"
+node scripts/configure-claude-code-vibelog-hooks.mjs --project "C:\path\to\project" --adapter "C:\path\to\VibeLog\scripts\claude-code-hook-adapter.mjs"
 ```
 
 只有在 review 生成的 settings 之后，才添加 `--write`。
@@ -62,7 +62,7 @@ node --test
 scratch-local live 验证可以运行：
 
 ```powershell
-node scripts/verify-claude-code-live-hook.mjs --workspace "C:\Users\HXW\Documents\vibelog-scratch\claude-live-hook-test-live" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs" --live --prompt "Reply with OK. Do not use tools." --max-budget-usd 0.05
+node scripts/verify-claude-code-live-hook.mjs --workspace "C:\path\to\scratch-root\claude-live-hook-test-live" --adapter "C:\path\to\VibeLog\scripts\claude-code-hook-adapter.mjs" --live --prompt "Reply with OK. Do not use tools." --max-budget-usd 0.05
 ```
 
 详见 [Live Hook 验证指南](live-hook-verification.zh.md)。

@@ -26,7 +26,7 @@ node scripts\vibelog-project.mjs init --project "C:\path\to\project" --title "My
 ## 预览 Hooks
 
 ```powershell
-node scripts\vibelog-project.mjs enable-hooks --project "C:\path\to\project" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs"
+node scripts\vibelog-project.mjs enable-hooks --project "C:\path\to\project" --adapter "C:\path\to\VibeLog\scripts\claude-code-hook-adapter.mjs"
 ```
 
 预期结果：
@@ -38,7 +38,7 @@ node scripts\vibelog-project.mjs enable-hooks --project "C:\path\to\project" --a
 ## 启用 Hooks
 
 ```powershell
-node scripts\vibelog-project.mjs enable-hooks --project "C:\path\to\project" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs" --write
+node scripts\vibelog-project.mjs enable-hooks --project "C:\path\to\project" --adapter "C:\path\to\VibeLog\scripts\claude-code-hook-adapter.mjs" --write
 ```
 
 预期结果：

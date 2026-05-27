@@ -36,8 +36,8 @@ test("real project opt-in verification installs local hooks and updates VibeLog"
     assert.deepEqual(result.project.filesCreated.sort(), [
       "README.md",
       "package.json",
-      "src/billmate.js",
-      "test/billmate.test.js",
+      "src/receipt-total.js",
+      "test/receipt-total.test.js",
       "vibe-log.md"
     ].sort());
 
@@ -51,7 +51,7 @@ test("real project opt-in verification installs local hooks and updates VibeLog"
     const data = JSON.parse(await readFile(join(project, "vibe-log.json"), "utf8"));
     const validation = validateVibeLog(data);
     assert.equal(validation.valid, true, validation.errors.join("\n"));
-    assert.match(data.title, /BillMate Lite Opt-In/);
+    assert.match(data.title, /VibeLog Opt-In Fixture/);
   } finally {
     await rm(project, { recursive: true, force: true });
   }

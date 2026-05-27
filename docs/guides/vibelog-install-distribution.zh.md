@@ -55,7 +55,7 @@ npm run vibelog -- init --project "C:\path\to\project" --title "My Vibe Project"
 ## 预览 Hook 设置
 
 ```powershell
-npm run vibelog -- enable-hooks --project "C:\path\to\project" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs"
+npm run vibelog -- enable-hooks --project "C:\path\to\project" --adapter "C:\path\to\VibeLog\scripts\claude-code-hook-adapter.mjs"
 ```
 
 预期结果：
@@ -67,7 +67,7 @@ npm run vibelog -- enable-hooks --project "C:\path\to\project" --adapter "C:\Use
 ## 写入项目级 Hooks
 
 ```powershell
-npm run vibelog -- enable-hooks --project "C:\path\to\project" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs" --write
+npm run vibelog -- enable-hooks --project "C:\path\to\project" --adapter "C:\path\to\VibeLog\scripts\claude-code-hook-adapter.mjs" --write
 ```
 
 预期结果：

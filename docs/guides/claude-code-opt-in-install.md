@@ -37,7 +37,7 @@ https://docs.anthropic.com/en/docs/claude-code/hooks
 Preview the settings that would be generated:
 
 ```powershell
-node scripts/configure-claude-code-vibelog-hooks.mjs --project "C:\path\to\project" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs"
+node scripts/configure-claude-code-vibelog-hooks.mjs --project "C:\path\to\project" --adapter "C:\path\to\VibeLog\scripts\claude-code-hook-adapter.mjs"
 ```
 
 Expected result:
@@ -52,7 +52,7 @@ Expected result:
 After reviewing the dry-run output:
 
 ```powershell
-node scripts/configure-claude-code-vibelog-hooks.mjs --project "C:\path\to\project" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs" --write
+node scripts/configure-claude-code-vibelog-hooks.mjs --project "C:\path\to\project" --adapter "C:\path\to\VibeLog\scripts\claude-code-hook-adapter.mjs" --write
 ```
 
 Expected result:

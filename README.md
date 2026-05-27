@@ -2,294 +2,65 @@
 
 VibeLog is a Markdown-first agent skill and process record standard for vibe-built products.
 
-It helps agents and humans record the full lifecycle of a vibe product: the one-line idea, idea expansion, idea evolution, creation mode, human-in-the-loop decisions, implementation status, validation design, verification evidence, development logs, bug fixes, product artifacts, handoff state, and engineering execution prompts.
-
-## Current Version
-
-This repository is currently at **VibeLog v0.2 draft**.
-
-The first version proved the core idea: a local Markdown-first VibeLog can preserve idea evolution, human decisions, development progress, and execution prompts.
-
-The second version upgrades VibeLog into a **hook-friendly process record standard** designed for automatic updates during real vibe coding sessions, starting with a planned Claude Code hook adapter.
+It helps humans and agents preserve the parts of vibe coding that usually disappear: the one-line idea, idea changes, human-in-the-loop decisions, implementation status, validation design, verification evidence, development logs, bug fixes, handoff state, artifacts, and engineering execution prompts.
 
 ```txt
 Vibe Repo = VibeLog + Project Artifacts
 VibeLog = process memory
-Project Artifacts = product evidence
+Project Artifacts = code, demos, tests, docs, screenshots, releases, or other product evidence
 ```
 
-## Why This Exists
+## Current Version
 
-Vibe coding is often messy:
+This repository is at **VibeLog v0.2 draft**.
 
-- Ideas change in chat.
-- Human decisions are mixed with agent suggestions.
-- Important prompts disappear across sessions.
-- Bugs and fixes are scattered across commits, chats, and memory.
-- Tests and validation evidence are often missing or hard to trust.
-- A new agent often has no idea what has already happened.
+The current draft focuses on a reusable local skill, a stable Markdown-to-JSON contract, deterministic helper scripts, and opt-in automation hooks. It is designed to work before any VibeHub website exists.
 
-VibeLog turns that process into a durable project memory.
-
-## Design Principle
+## Core Principle
 
 ```txt
 User says naturally, agent records structurally.
 ```
 
-The user should keep creating in a natural conversation. The agent or hook adapter should classify the process and update the structured VibeLog.
+The human should be able to create in a normal conversation. The agent or hook adapter should keep the project memory structured, readable, and machine-exportable.
 
 ## What VibeLog Records
 
 - `One-Line Vibe`: one sentence describing what is being built.
 - `Current Idea`: the latest version of the product idea.
-- `Idea Expansion`: problem, users, value, features, and use cases.
 - `Idea Evolution`: how the idea changed over time.
-- `Creation Mode`: how humans and agents participated, without ranking or judging the mode.
-- `Human-in-the-Loop`: where the human made direction, taste, scope, tradeoff, approval, rejection, risk, naming, or prioritization decisions.
-- `Implementation Status`: current state, completed work, in-progress work, pending work, blockers, and next actions.
-- `Validation Design`: success criteria, core user paths, manual tests, automated tests, edge cases, and risks.
-- `Verification Evidence`: test results, command output summaries, screenshots, demos, manual QA, and residual risk.
+- `Human-in-the-Loop`: decisions made by the human, including direction, taste, risk, scope, approval, rejection, privacy, naming, and release choices.
+- `Implementation Status`: completed, in-progress, pending, blocked, and next actions.
+- `Validation Design`: success criteria, isolated checks, combined workflow checks, edge cases, and risks.
+- `Verification Evidence`: command results, test evidence, demos, screenshots, manual QA, and residual risk.
+- `Execution Prompts`: a strict ledger for engineering execution prompts.
+- `Development Log`: features, tests, docs, refactors, releases, chores, and bug fixes.
+- `Bugfix / Incident Log`: symptoms, root causes, fixes, verification, and follow-up.
 - `Project Context`: important files, commands, known issues, and areas not to change.
-- `Artifact Index`: references to code, demos, screenshots, design files, releases, test outputs, prompt libraries, and agent configs.
-- `Execution Prompts`: strict ledger for engineering execution prompts used during vibe coding.
-- `Development Log`: normal engineering work such as features, bug fixes, refactors, tests, docs, releases, and chores.
+- `Artifact Index`: links or references to code, demos, docs, releases, prompt libraries, and exported VibeLog files.
 - `Handoff State`: the concise state a future human or agent needs to continue safely.
-- `Vibe Progress`: chronological product progress.
-- `Public Summary`: a future website-ready summary.
+- `Public Summary`: a future upload or showcase summary.
 
 ## Key Rule
 
 Engineering execution prompts must be recorded in `Execution Prompts`.
 
-Chat-like idea exploration should not be copied as a transcript. It should be distilled into `Idea Evolution`, `Human-in-the-Loop`, `Decisions`, or `Open Questions`.
+Chat-like ideation should not be copied as a transcript. It should be distilled into `Idea Evolution`, `Human-in-the-Loop`, `Decisions`, or `Open Questions`.
 
-VibeLog is designed for automation hooks. A future Claude Code or Codex adapter can update it continuously during events such as prompt submission, tool use, turn stop, and context compaction.
+## Public Repository Boundary
 
-The first platform-neutral recording path is the recorder core:
+This repository is the reusable VibeLog skill and toolchain. It should not contain private project memory.
 
-```powershell
-node scripts/record-vibelog-event.mjs --event event.json --log vibe-log.md --json vibe-log.json
-```
+Do not commit:
 
-The first hook adapter target is Claude Code:
+- root-level project `vibe-log.md` or `vibe-log.json` from real work
+- `.vibelog-events/` hook event payloads
+- scratch workspace outputs
+- raw private prompts or chat transcripts
+- local absolute paths from a personal machine
+- experimental dogfood source projects
 
-```powershell
-node scripts/claude-code-hook-adapter.mjs --log vibe-log.md --json vibe-log.json --event-dir .vibelog-events
-```
-
-The scratch-local live hook verifier is:
-
-```powershell
-node scripts/verify-claude-code-live-hook.mjs --workspace "C:\Users\HXW\Documents\vibelog-scratch\claude-live-hook-test-live" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs" --live --prompt "Reply with OK. Do not use tools." --max-budget-usd 0.05
-```
-
-The project-local opt-in hook settings generator is:
-
-```powershell
-node scripts/configure-claude-code-vibelog-hooks.mjs --project "C:\path\to\project" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs"
-```
-
-The real-project-style opt-in acceptance verifier is:
-
-```powershell
-node scripts/verify-claude-code-opt-in-project.mjs --workspace "C:\Users\HXW\Documents\vibelog-scratch\slice-10-real-project-opt-in" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs"
-```
-
-The ordinary project adoption CLI is:
-
-```powershell
-node scripts/vibelog-project.mjs init --project "C:\path\to\project" --title "My Vibe Project" --idea "One sentence describing the product idea."
-node scripts/vibelog-project.mjs enable-hooks --project "C:\path\to\project" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs"
-node scripts/vibelog-project.mjs verify --project "C:\path\to\project"
-node scripts/vibelog-project.mjs disable-hooks --project "C:\path\to\project"
-```
-
-The clone-local package entry is:
-
-```powershell
-npm run vibelog -- --help
-npm run vibelog -- init --project "C:\path\to\project" --title "My Vibe Project" --idea "One sentence describing the product idea."
-```
-
-This repository is marked `private` in `package.json`. The current package path is for local reuse from a cloned repository, not npm publishing.
-
-The clean clone adoption verifier is:
-
-```powershell
-node scripts/verify-clean-clone-adoption.mjs --workspace "C:\Users\HXW\Documents\vibelog-scratch\slice-13-clean-clone-adoption"
-```
-
-The installer and package-manager distribution roadmap is:
-
-```txt
-docs/distribution/vibelog-distribution-plan.json
-docs/guides/vibelog-installer-package-manager-plan.md
-docs/guides/vibelog-installer-package-manager-plan.zh.md
-```
-
-The installer dry-run planner is:
-
-```powershell
-node scripts/vibelog-install.mjs --target "C:\path\to\install-root"
-npm run vibelog:install -- --target "C:\path\to\install-root"
-```
-
-The scratch-only installer rollback verifier is:
-
-```powershell
-node scripts/verify-installer-rollback.mjs --scratch-root "C:\path\to\scratch-root"
-npm run vibelog:verify-installer-rollback -- --scratch-root "C:\path\to\scratch-root"
-```
-
-The scratch-only installer backup/restore verifier is:
-
-```powershell
-node scripts/verify-installer-backup-restore.mjs --scratch-root "C:\path\to\scratch-root"
-npm run vibelog:verify-installer-backup-restore -- --scratch-root "C:\path\to\scratch-root"
-```
-
-The scratch-only release bundle verifier is:
-
-```powershell
-node scripts/verify-release-bundle.mjs --repo "C:\path\to\vibelog" --scratch-root "C:\path\to\scratch-root"
-npm run vibelog:verify-release-bundle -- --repo "C:\path\to\vibelog" --scratch-root "C:\path\to\scratch-root"
-```
-
-## Repository Identity
-
-This repository is skill-first. Its primary purpose is to make the `vibelog` skill, schema, and documentation easy for others to reuse.
-
-Example projects are kept under `examples/` as generated VibeLog records only. They are not included as application source code in this repository.
-
-## Automation Direction
-
-The first automation target is Claude Code because its hook system can call deterministic scripts during the coding lifecycle.
-
-Recommended event mapping:
-
-```txt
-SessionStart      -> load concise VibeLog context
-UserPromptSubmit  -> classify user prompt and record engineering prompts
-PostToolUse       -> record file edits, commands, tests, and artifacts
-Stop              -> update progress, implementation status, handoff, and JSON export
-PreCompact        -> preserve essential context before compaction
-PostCompact       -> refresh handoff state if useful
-```
-
-See [Claude Code adapter notes](skills/vibelog/references/claude-code-hooks-adapter.md).
-
-## Repository Structure
-
-```txt
-.
-|-- package.json
-|-- skills/
-|   `-- vibelog/
-|       |-- SKILL.md
-|       |-- agents/
-|       |   `-- openai.yaml
-|       |-- assets/
-|       |   |-- claude-code-hooks.settings.example.json
-|       |   |-- vibe-log-template.md
-|       |   `-- vibe-log.schema.json
-|       `-- references/
-|           |-- claude-code-hooks-adapter.md
-|           |-- vibe-event-format.md
-|           `-- vibelog-format.md
-|-- docs/
-|   |-- distribution/
-|   |   `-- vibelog-distribution-plan.json
-|   |-- guides/
-|   |   |-- agent-dogfood-protocol.md
-|   |   |-- agent-dogfood-protocol.zh.md
-|   |   |-- claude-code-adapter.md
-|   |   |-- claude-code-adapter.zh.md
-|   |   |-- vibelog-installer-package-manager-plan.md
-|   |   |-- vibelog-installer-package-manager-plan.zh.md
-|   |   |-- vibelog-installer-dry-run.md
-|   |   |-- vibelog-installer-dry-run.zh.md
-|   |   |-- vibelog-install-distribution.md
-|   |   |-- vibelog-install-distribution.zh.md
-|   |   |-- export-json.md
-|   |   |-- progress-reporting.md
-|   |   |-- progress-reporting.zh.md
-|   |   |-- recorder-core.md
-|   |   |-- recorder-core.zh.md
-|   |   |-- quickstart.md
-|   |   |-- manual-test-guide.md
-|   |   |-- example-scenario.md
-|   |   |-- vibe-verification-guide.md
-|   |   |-- vibe-verification-guide.zh.md
-|   |   `-- validation-checklist.md
-|   |-- product/
-|   |   |-- vibelog-studio-mvp-requirements.md
-|   |   `-- vibehub-long-term-product-document.md
-|   |-- reports/
-|   |   |-- slice-4-vibe-verification-report.md
-|   |   |-- slice-4-vibe-verification-report.zh.md
-|   |   |-- slice-5-recorder-core-report.md
-|   |   |-- slice-5-recorder-core-report.zh.md
-|   |   |-- slice-6-claude-code-adapter-report.md
-|   |   |-- slice-6-claude-code-adapter-report.zh.md
-|   |   |-- slice-12-packaging-report.md
-|   |   |-- slice-12-packaging-report.zh.md
-|   |   |-- slice-13-clean-clone-adoption-report.md
-|   |   |-- slice-13-clean-clone-adoption-report.zh.md
-|   |   |-- slice-15-installer-package-manager-report.md
-|   |   |-- slice-15-installer-package-manager-report.zh.md
-|   |   |-- slice-17-installer-dry-run-report.md
-|   |   |-- slice-17-installer-dry-run-report.zh.md
-|   |   |-- slice-18-installer-rollback-report.md
-|   |   `-- slice-18-installer-rollback-report.zh.md
-|   |-- releases/
-|   |   `-- v0.2-draft.md
-|   `-- superpowers/
-|       `-- specs/
-|           `-- 2026-05-25-vibelog-v0.1-design.md
-|-- examples/
-|   |-- vibelog-studio/
-|   |   |-- README.md
-|   |   |-- vibe-log.md
-|   |   `-- vibe-log.json
-|   |-- billmate-lite/
-|   |   |-- README.md
-|   |   |-- vibe-log.md
-|   |   `-- vibe-log.json
-|   `-- reading-card-lite/
-|       |-- README.md
-|       |-- vibe-log.md
-|       `-- vibe-log.json
-|-- scripts/
-|   |-- claude-code-hook-adapter.mjs
-|   |-- configure-claude-code-vibelog-hooks.mjs
-|   |-- export-vibelog.mjs
-|   |-- record-vibelog-event.mjs
-|   |-- vibelog-install.mjs
-|   |-- vibelog-project.mjs
-|   |-- verify-clean-clone-adoption.mjs
-|   |-- verify-claude-code-live-hook.mjs
-|   |-- verify-installer-backup-restore.mjs
-|   |-- verify-installer-rollback.mjs
-|   `-- validate-vibelog.mjs
-|-- test/
-|   |-- claude-code-hook-adapter.test.mjs
-|   |-- configure-claude-code-vibelog-hooks.test.mjs
-|   |-- export-vibelog.test.mjs
-|   |-- record-vibelog-event.test.mjs
-|   |-- vibelog-distribution-plan.test.mjs
-|   |-- vibelog-installer-dry-run.test.mjs
-|   |-- vibelog-installer-backup-restore.test.mjs
-|   |-- vibelog-installer-rollback.test.mjs
-|   |-- vibelog-package.test.mjs
-|   |-- vibelog-project.test.mjs
-|   |-- verify-clean-clone-adoption.test.mjs
-|   |-- verify-claude-code-live-hook.test.mjs
-|   |-- validate-vibelog.test.mjs
-|   `-- vibelog-examples.test.mjs
-|-- vibe-log.md
-`-- vibe-log.json
-```
+Only sanitized, synthetic, or explicitly public VibeLog examples belong under `examples/`.
 
 ## Quick Start
 
@@ -299,42 +70,46 @@ Copy the skill into your Codex skills directory:
 Copy-Item -Recurse .\skills\vibelog "$env:USERPROFILE\.codex\skills\vibelog" -Force
 ```
 
-Then ask Codex to use VibeLog:
+Then ask Codex to use it:
 
 ```txt
 Use the vibelog skill to create or update a VibeLog for this project.
 ```
 
-For a new project, the skill creates:
+For a new project, VibeLog creates these files in that project:
 
 ```txt
 vibe-log.md
 vibe-log.json
 ```
 
-For an existing project, it reads current files, docs, git history, and conversation context to reconstruct prior idea and implementation history before appending new progress.
+For an existing project, the agent should read current files, docs, git history, existing VibeLog data, and conversation context before updating the log.
+
+See [Quickstart](docs/guides/quickstart.md) and [Agent usage guide](skills/vibelog/references/agent-usage-guide.md).
+
+## Clone-Local CLI
+
+This repository is marked `private` in `package.json` because the current package path is for clone-local reuse, not npm publishing.
+
+From a cloned repository:
+
+```powershell
+npm run vibelog -- --help
+npm run vibelog -- init --project "C:\path\to\project" --title "My Vibe Project" --idea "One sentence describing the product idea."
+npm run vibelog -- verify --project "C:\path\to\project"
+```
 
 ## Export JSON
 
-`vibe-log.md` is the source of truth. Regenerate JSON when a website, tool, or future VibeHub upload flow needs structured data:
+`vibe-log.md` is the source of truth. Regenerate JSON when a tool, website, agent handoff, or future VibeHub upload flow needs structured data:
 
 ```powershell
 node scripts/export-vibelog.mjs vibe-log.md --out vibe-log.json
-```
-
-Validate the generated JSON:
-
-```powershell
 node scripts/validate-vibelog.mjs vibe-log.json
-```
-
-Check whether an existing JSON export is stale:
-
-```powershell
 node scripts/export-vibelog.mjs vibe-log.md --out vibe-log.json --check
 ```
 
-See [Export JSON](docs/guides/export-json.md) for the supported Markdown subset and current limitations.
+See [Export JSON](docs/guides/export-json.md).
 
 ## Record Events
 
@@ -348,186 +123,112 @@ See [Recorder Core](docs/guides/recorder-core.md) and [Vibe Event Format](skills
 
 ## Claude Code Adapter
 
-Use the Claude Code adapter when a Claude Code hook should record Vibe Events automatically:
+The first automation target is Claude Code because its hook system can call deterministic scripts during the coding lifecycle.
 
 ```powershell
 node scripts/claude-code-hook-adapter.mjs --log vibe-log.md --json vibe-log.json --event-dir .vibelog-events
+node scripts/configure-claude-code-vibelog-hooks.mjs --project "C:\path\to\project" --adapter "C:\path\to\VibeLog\scripts\claude-code-hook-adapter.mjs"
 ```
 
-For setup notes, see [Claude Code Adapter](docs/guides/claude-code-adapter.md) and the example settings file at [claude-code-hooks.settings.example.json](skills/vibelog/assets/claude-code-hooks.settings.example.json).
+The hook generator is dry-run by default. Use `--write` only after reviewing the generated project-local settings.
 
-For scratch-local live verification, see [Live Hook Verification](docs/guides/live-hook-verification.md).
+Recommended event mapping:
 
-For project-local opt-in setup, see [Claude Code Opt-In Install](docs/guides/claude-code-opt-in-install.md).
+```txt
+SessionStart      -> load concise VibeLog context
+UserPromptSubmit  -> classify user prompt and record engineering prompts
+PostToolUse       -> record file edits, commands, tests, and artifacts
+Stop              -> update progress, implementation status, handoff, and JSON export
+PreCompact        -> preserve essential context before compaction
+PostCompact       -> refresh handoff state if useful
+```
 
-## Files
+See [Claude Code Adapter](docs/guides/claude-code-adapter.md), [Claude Code Opt-In Install](docs/guides/claude-code-opt-in-install.md), and [Claude Code adapter notes](skills/vibelog/references/claude-code-hooks-adapter.md).
 
-### `vibe-log.md`
+## Repository Structure
 
-The human-readable source of truth. Agents should update this file first.
+```txt
+.
+|-- package.json
+|-- skills/
+|   `-- vibelog/
+|       |-- SKILL.md
+|       |-- agents/
+|       |-- assets/
+|       `-- references/
+|-- docs/
+|   |-- distribution/
+|   |-- guides/
+|   |-- product/
+|   `-- releases/
+|-- examples/
+|   `-- public-sample/
+|       |-- README.md
+|       |-- vibe-log.md
+|       `-- vibe-log.json
+|-- scripts/
+`-- test/
+```
 
-### `vibe-log.json`
+## Important Scripts
 
-The structured export format. Future websites or tools can use it for upload, search, timelines, or product showcase pages.
+- `scripts/export-vibelog.mjs`: export deterministic JSON from Markdown.
+- `scripts/validate-vibelog.mjs`: validate exported VibeLog JSON against the current schema subset.
+- `scripts/record-vibelog-event.mjs`: apply one structured Vibe Event payload to Markdown and optionally regenerate JSON.
+- `scripts/claude-code-hook-adapter.mjs`: map Claude Code hook JSON input to Vibe Event JSON and call the recorder core.
+- `scripts/configure-claude-code-vibelog-hooks.mjs`: preview or write project-local Claude Code VibeLog hook settings.
+- `scripts/vibelog-project.mjs`: project adoption CLI for init, hook preview/enable, verification, and hook disable.
+- `scripts/vibelog-install.mjs`: dry-run installer planner.
+- `scripts/verify-release-bundle.mjs`: scratch-only release bundle verifier.
 
-### `vibe-log.schema.json`
+## Examples
 
-The JSON schema for VibeLog v0.2 draft exports.
+`examples/public-sample/` is a synthetic public-safe VibeLog example. It demonstrates the format without publishing private prompts, local paths, scratch output, or real project data.
 
-### `scripts/`
+Example folders may contain only:
 
-Dependency-free Node.js tools for deterministic Markdown-to-JSON export and schema-driven validation.
+- `README.md`
+- `vibe-log.md`
+- `vibe-log.json`
 
-- `export-vibelog.mjs`: regenerate JSON from Markdown.
-- `record-vibelog-event.mjs`: apply one structured Vibe Event JSON file to Markdown and optionally regenerate JSON.
-- `claude-code-hook-adapter.mjs`: map Claude Code hook JSON input to Vibe Event JSON and call the recorder core.
-- `configure-claude-code-vibelog-hooks.mjs`: dry-run-first generator for project-local Claude Code VibeLog hook settings.
-- `verify-claude-code-live-hook.mjs`: create scratch Claude Code settings, run fixture hook payloads, and optionally verify a tiny live Claude Code hook session.
-- `verify-claude-code-opt-in-project.mjs`: verify project-local opt-in hooks in a realistic scratch project by executing generated settings commands.
-- `vibelog-install.mjs`: dry-run-only installer planner that prints planned install operations and rollback steps without writing files.
-- `verify-installer-backup-restore.mjs`: scratch-only verifier that backs up an existing target, simulates install overwrite behavior, and restores the original snapshot.
-- `verify-installer-rollback.mjs`: scratch-only verifier that copies the installer plan into a temporary target and removes it again.
-- `vibelog-project.mjs`: ordinary project adoption CLI for init, hook preview/enable, readiness verification, and hook disable.
-- `verify-clean-clone-adoption.mjs`: clone this repository into a scratch directory and verify `npm run vibelog` works from the clean clone.
-- `validate-vibelog.mjs`: dependency-free VibeLog schema subset validator plus practical VibeLog checks.
-
-### `package.json`
-
-Private clone-local package entry for local reuse. It exposes:
-
-- `npm run vibelog -- --help`
-- `npm run vibelog -- init --project "C:\path\to\project" --title "My Vibe Project" --idea "One sentence describing the product idea."`
-- `npm run vibelog:install -- --target "C:\path\to\install-root"`
-- `npm run vibelog:verify-installer-backup-restore -- --scratch-root "C:\path\to\scratch-root"`
-- `npm run vibelog:verify-installer-rollback -- --scratch-root "C:\path\to\scratch-root"`
-- `npm test`
-
-### `docs/product/`
-
-Product strategy and MVP requirements for the future VibeHub / VibeLog Studio direction.
-
-### `docs/distribution/`
-
-Machine-readable distribution planning:
-
-- `vibelog-distribution-plan.json`: current and future distribution channels, safety gates, and next recommended slices.
-
-### `docs/guides/`
-
-Practical guides for using and testing the skill:
+## Documentation
 
 - [Quickstart](docs/guides/quickstart.md)
-- [Claude Code Adapter](docs/guides/claude-code-adapter.md)
-- [Claude Code Adapter 指南](docs/guides/claude-code-adapter.zh.md)
-- [Claude Code Opt-In Install](docs/guides/claude-code-opt-in-install.md)
-- [Claude Code Opt-In 安装指南](docs/guides/claude-code-opt-in-install.zh.md)
-- [VibeLog Installer and Package Manager Plan](docs/guides/vibelog-installer-package-manager-plan.md)
-- [VibeLog Installer and Package Manager 计划](docs/guides/vibelog-installer-package-manager-plan.zh.md)
-- [VibeLog Installer Dry-Run](docs/guides/vibelog-installer-dry-run.md)
-- [VibeLog Installer Dry-Run 指南](docs/guides/vibelog-installer-dry-run.zh.md)
-- [VibeLog Install and Distribution](docs/guides/vibelog-install-distribution.md)
-- [VibeLog 安装与分发指南](docs/guides/vibelog-install-distribution.zh.md)
-- [VibeLog Project Adoption](docs/guides/vibelog-project-adoption.md)
-- [VibeLog 项目采用指南](docs/guides/vibelog-project-adoption.zh.md)
 - [Export JSON](docs/guides/export-json.md)
-- [Project progress reporting](docs/guides/progress-reporting.md)
-- [项目进度汇报机制](docs/guides/progress-reporting.zh.md)
 - [Recorder Core](docs/guides/recorder-core.md)
-- [Recorder Core 指南](docs/guides/recorder-core.zh.md)
-- [Live Hook Verification](docs/guides/live-hook-verification.md)
-- [Live Hook 验证指南](docs/guides/live-hook-verification.zh.md)
+- [Claude Code Adapter](docs/guides/claude-code-adapter.md)
+- [Claude Code Opt-In Install](docs/guides/claude-code-opt-in-install.md)
+- [VibeLog Project Adoption](docs/guides/vibelog-project-adoption.md)
+- [VibeLog Install and Distribution](docs/guides/vibelog-install-distribution.md)
 - [Vibe verification guide](docs/guides/vibe-verification-guide.md)
-- [Vibe 验证指南](docs/guides/vibe-verification-guide.zh.md)
 - [Agent dogfood protocol](docs/guides/agent-dogfood-protocol.md)
-- [Agent Dogfood 协议](docs/guides/agent-dogfood-protocol.zh.md)
-- [Manual test guide](docs/guides/manual-test-guide.md)
-- [Example scenario](docs/guides/example-scenario.md)
 - [Validation checklist](docs/guides/validation-checklist.md)
-- [Agent usage guide](skills/vibelog/references/agent-usage-guide.md)
+- [VibeHub long-term product document](docs/product/vibehub-long-term-product-document.md)
+- [VibeLog Studio MVP requirements](docs/product/vibelog-studio-mvp-requirements.md)
+- [v0.2 draft release notes](docs/releases/v0.2-draft.md)
 
-### `docs/releases/`
+## Test
 
-Human-readable version notes.
+Run the full repository test suite:
 
-### `docs/reports/`
+```powershell
+node --test
+```
 
-User-review reports for completed slices:
+Useful targeted checks:
 
-- [Slice 4 vibe verification report](docs/reports/slice-4-vibe-verification-report.md)
-- [Slice 4 Vibe 验证报告](docs/reports/slice-4-vibe-verification-report.zh.md)
-- [Slice 5 recorder core report](docs/reports/slice-5-recorder-core-report.md)
-- [Slice 5 Recorder Core 报告](docs/reports/slice-5-recorder-core-report.zh.md)
-- [Slice 6 Claude Code adapter report](docs/reports/slice-6-claude-code-adapter-report.md)
-- [Slice 6 Claude Code Adapter 报告](docs/reports/slice-6-claude-code-adapter-report.zh.md)
-- [Slice 7 live hook verification report](docs/reports/slice-7-live-hook-verification-report.md)
-- [Slice 7 Live Hook 验证报告](docs/reports/slice-7-live-hook-verification-report.zh.md)
-- [Slice 8 opt-in hook install report](docs/reports/slice-8-opt-in-hook-install-report.md)
-- [Slice 8 Opt-In Hook 安装报告](docs/reports/slice-8-opt-in-hook-install-report.zh.md)
-- [Slice 9 first audit fixes report](docs/reports/slice-9-first-audit-fixes-report.md)
-- [Slice 9 第一次全面检查修复报告](docs/reports/slice-9-first-audit-fixes-report.zh.md)
-- [Slice 10 real project opt-in report](docs/reports/slice-10-real-project-opt-in-report.md)
-- [Slice 10 真实项目 Opt-In 验收报告](docs/reports/slice-10-real-project-opt-in-report.zh.md)
-- [Slice 11 user adoption report](docs/reports/slice-11-user-adoption-report.md)
-- [Slice 11 普通用户采用路径报告](docs/reports/slice-11-user-adoption-report.zh.md)
-- [Slice 12 packaging report](docs/reports/slice-12-packaging-report.md)
-- [Slice 12 包装路径报告](docs/reports/slice-12-packaging-report.zh.md)
-- [Slice 13 clean clone adoption report](docs/reports/slice-13-clean-clone-adoption-report.md)
-- [Slice 13 Clean Clone Adoption 报告](docs/reports/slice-13-clean-clone-adoption-report.zh.md)
-- [Slice 15 installer and package manager report](docs/reports/slice-15-installer-package-manager-report.md)
-- [Slice 15 Installer and Package Manager 报告](docs/reports/slice-15-installer-package-manager-report.zh.md)
-- [Slice 16 strong schema validation report](docs/reports/slice-16-strong-schema-validation-report.md)
-- [Slice 16 强 Schema 校验报告](docs/reports/slice-16-strong-schema-validation-report.zh.md)
-- [Slice 17 installer dry-run report](docs/reports/slice-17-installer-dry-run-report.md)
-- [Slice 17 Installer Dry-Run 报告](docs/reports/slice-17-installer-dry-run-report.zh.md)
-- [Slice 18 installer rollback report](docs/reports/slice-18-installer-rollback-report.md)
-- [Slice 18 Installer Rollback 报告](docs/reports/slice-18-installer-rollback-report.zh.md)
-- [Slice 19 installer backup/restore report](docs/reports/slice-19-installer-backup-restore-report.md)
-- [Slice 19 Installer Backup/Restore 报告](docs/reports/slice-19-installer-backup-restore-report.zh.md)
-- [Slice 20 release bundle report](docs/reports/slice-20-release-bundle-report.md)
-- [Slice 20 Release Bundle 报告](docs/reports/slice-20-release-bundle-report.zh.md)
-
-### `examples/`
-
-Generated VibeLog examples from real or dogfood sessions. These examples show process records, not app source code.
-
-- `examples/vibelog-studio/`: generated log from the earlier VibeLog Studio dogfood session.
-- `examples/billmate-lite/`: generated log from an agent-simulated billing project dogfood test.
-- `examples/reading-card-lite/`: generated log from an agent-run scratch project dogfood test.
+```powershell
+node scripts/export-vibelog.mjs examples/public-sample/vibe-log.md --out examples/public-sample/vibe-log.json
+node scripts/validate-vibelog.mjs examples/public-sample/vibe-log.json
+node scripts/export-vibelog.mjs examples/public-sample/vibe-log.md --out examples/public-sample/vibe-log.json --check
+node scripts/verify-release-bundle.mjs --repo "C:\path\to\VibeLog" --scratch-root "C:\path\to\scratch-root"
+```
 
 ## Current Status
 
-This repository contains the VibeLog v0.2 draft prototype:
+VibeLog v0.2 draft is ready for local skill testing, JSON export, schema validation, project-local adoption, Claude Code hook preview, scratch-only verification, and sanitized public example review.
 
-- skill instructions
-- Markdown template
-- JSON schema
-- format reference
-- Claude Code hook adapter notes
-- scratch-local live Claude Code hook verifier
-- project-local opt-in Claude Code hook settings generator
-- ordinary project adoption CLI
-- private clone-local package entry and npm script
-- clean clone adoption verifier
-- tested installer/package-manager distribution roadmap
-- dry-run-only installer planner
-- scratch-only installer backup/restore verifier
-- scratch-only installer rollback verifier
-- scratch-only release bundle verifier
-- deterministic Markdown-to-JSON exporter
-- stronger schema-driven JSON validator
-- design spec
-- self-recorded project VibeLog
-
-It is ready for local testing, generated example review, scratch-local Claude Code hook verification, dry-run project-local hook settings generation, ordinary project adoption through the local CLI, clone-local npm script use, clean clone adoption verification, installer dry-run review, scratch-only installer rollback verification, scratch-only installer backup/restore verification, scratch-only release bundle verification, distribution roadmap review, and schema-validated JSON export. It is not yet a polished public package.
-
-## Next Steps
-
-- Review the Slice 20 push milestone and decide whether to push to GitHub.
-- Design a user-visible installer write mode only after explicit approval.
-- Install and test the skill in real agent sessions.
-- Add adapters for other agent environments, such as Codex hooks, Cursor rules, or AGENTS.md.
-- Add more generated VibeLog examples produced by real agent sessions.
-- Decide on a license before broad public reuse.
+It is not yet a polished public package manager release. The next major step is to test the skill across more real agent sessions while keeping private VibeLogs outside this repository.
 
 ## License
 

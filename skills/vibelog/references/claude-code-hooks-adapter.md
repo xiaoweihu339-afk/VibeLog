@@ -152,7 +152,7 @@ Do not copy the example settings into a real project without reviewing paths and
 Slice 7 adds a scratch-local verifier that creates local `.claude/settings.json`, runs fixture hook payloads through the real adapter command path, and optionally launches a tiny Claude Code session:
 
 ```powershell
-node scripts/verify-claude-code-live-hook.mjs --workspace "C:\Users\HXW\Documents\vibelog-scratch\claude-live-hook-test-live" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs" --live --prompt "Reply with OK. Do not use tools." --max-budget-usd 0.05
+node scripts/verify-claude-code-live-hook.mjs --workspace "C:\path\to\scratch-root\claude-live-hook-test-live" --adapter "C:\path\to\VibeLog\scripts\claude-code-hook-adapter.mjs" --live --prompt "Reply with OK. Do not use tools." --max-budget-usd 0.05
 ```
 
 The live verifier uses Claude Code `stream-json` output with `--include-hook-events` so it can confirm that hook responses happened. It still does not install hooks into a real project or modify global settings.
@@ -162,7 +162,7 @@ The live verifier uses Claude Code `stream-json` output with `--include-hook-eve
 Slice 8 adds a safer project-local settings generator:
 
 ```powershell
-node scripts/configure-claude-code-vibelog-hooks.mjs --project "C:\path\to\project" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs"
+node scripts/configure-claude-code-vibelog-hooks.mjs --project "C:\path\to\project" --adapter "C:\path\to\VibeLog\scripts\claude-code-hook-adapter.mjs"
 ```
 
 The generator is dry-run by default. It reports the generated settings without writing files. Add `--write` only after reviewing the output. It writes only `<project>/.claude/settings.json`, preserves unrelated settings, avoids duplicate VibeLog hook commands, and blocks write mode when `vibe-log.md` is missing unless `--allow-missing-log` is provided.

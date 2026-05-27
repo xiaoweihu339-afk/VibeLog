@@ -55,7 +55,7 @@ Expected result:
 ## Preview Hook Setup
 
 ```powershell
-npm run vibelog -- enable-hooks --project "C:\path\to\project" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs"
+npm run vibelog -- enable-hooks --project "C:\path\to\project" --adapter "C:\path\to\VibeLog\scripts\claude-code-hook-adapter.mjs"
 ```
 
 Expected result:
@@ -67,7 +67,7 @@ Expected result:
 ## Write Project-Local Hooks
 
 ```powershell
-npm run vibelog -- enable-hooks --project "C:\path\to\project" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs" --write
+npm run vibelog -- enable-hooks --project "C:\path\to\project" --adapter "C:\path\to\VibeLog\scripts\claude-code-hook-adapter.mjs" --write
 ```
 
 Expected result:

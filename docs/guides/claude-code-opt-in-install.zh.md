@@ -37,7 +37,7 @@ https://docs.anthropic.com/en/docs/claude-code/hooks
 先预览将要生成的 settings：
 
 ```powershell
-node scripts/configure-claude-code-vibelog-hooks.mjs --project "C:\path\to\project" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs"
+node scripts/configure-claude-code-vibelog-hooks.mjs --project "C:\path\to\project" --adapter "C:\path\to\VibeLog\scripts\claude-code-hook-adapter.mjs"
 ```
 
 预期结果：
@@ -52,7 +52,7 @@ node scripts/configure-claude-code-vibelog-hooks.mjs --project "C:\path\to\proje
 确认 dry-run 输出后：
 
 ```powershell
-node scripts/configure-claude-code-vibelog-hooks.mjs --project "C:\path\to\project" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs" --write
+node scripts/configure-claude-code-vibelog-hooks.mjs --project "C:\path\to\project" --adapter "C:\path\to\VibeLog\scripts\claude-code-hook-adapter.mjs" --write
 ```
 
 预期结果：

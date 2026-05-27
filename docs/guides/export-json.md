@@ -15,7 +15,7 @@ node scripts/export-vibelog.mjs vibe-log.md --out vibe-log.json
 Export an example:
 
 ```powershell
-node scripts/export-vibelog.mjs examples/billmate-lite/vibe-log.md --out tmp/billmate-lite.vibe-log.json
+node scripts/export-vibelog.mjs examples/public-sample/vibe-log.md --out tmp/public-sample.vibe-log.json
 ```
 
 ## Validate
@@ -52,7 +52,7 @@ The command exits with a non-zero status if the JSON is stale or different.
 node --test
 ```
 
-The tests cover the BillMate Lite dogfood example, JSON writing, drift detection, and validator failures.
+The tests cover the public sample example, JSON writing, drift detection, and validator failures.
 
 ## Current Limits
 
