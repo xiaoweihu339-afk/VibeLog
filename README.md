@@ -90,6 +90,12 @@ The project-local opt-in hook settings generator is:
 node scripts/configure-claude-code-vibelog-hooks.mjs --project "C:\path\to\project" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs"
 ```
 
+The real-project-style opt-in acceptance verifier is:
+
+```powershell
+node scripts/verify-claude-code-opt-in-project.mjs --workspace "C:\Users\HXW\Documents\vibelog-scratch\slice-10-real-project-opt-in" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs"
+```
+
 ## Repository Identity
 
 This repository is skill-first. Its primary purpose is to make the `vibelog` skill, schema, and documentation easy for others to reuse.
@@ -286,6 +292,7 @@ Dependency-free Node.js tools for deterministic Markdown-to-JSON export and ligh
 - `claude-code-hook-adapter.mjs`: map Claude Code hook JSON input to Vibe Event JSON and call the recorder core.
 - `configure-claude-code-vibelog-hooks.mjs`: dry-run-first generator for project-local Claude Code VibeLog hook settings.
 - `verify-claude-code-live-hook.mjs`: create scratch Claude Code settings, run fixture hook payloads, and optionally verify a tiny live Claude Code hook session.
+- `verify-claude-code-opt-in-project.mjs`: verify project-local opt-in hooks in a realistic scratch project by executing generated settings commands.
 - `validate-vibelog.mjs`: lightweight VibeLog JSON validator.
 
 ### `docs/product/`
@@ -335,6 +342,10 @@ User-review reports for completed slices:
 - [Slice 7 Live Hook 验证报告](docs/reports/slice-7-live-hook-verification-report.zh.md)
 - [Slice 8 opt-in hook install report](docs/reports/slice-8-opt-in-hook-install-report.md)
 - [Slice 8 Opt-In Hook 安装报告](docs/reports/slice-8-opt-in-hook-install-report.zh.md)
+- [Slice 9 first audit fixes report](docs/reports/slice-9-first-audit-fixes-report.md)
+- [Slice 9 第一次全面检查修复报告](docs/reports/slice-9-first-audit-fixes-report.zh.md)
+- [Slice 10 real project opt-in report](docs/reports/slice-10-real-project-opt-in-report.md)
+- [Slice 10 真实项目 Opt-In 验收报告](docs/reports/slice-10-real-project-opt-in-report.zh.md)
 
 ### `examples/`
 

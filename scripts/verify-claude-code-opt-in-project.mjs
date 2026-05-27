@@ -1,0 +1,387 @@
+import { spawn } from "node:child_process";
+import { mkdir, readFile, readdir, stat, writeFile } from "node:fs/promises";
+import { dirname, join, resolve } from "node:path";
+import { fileURLToPath, pathToFileURL } from "node:url";
+
+import { configureClaudeCodeVibeLogHooks } from "./configure-claude-code-vibelog-hooks.mjs";
+import { validateVibeLog } from "./validate-vibelog.mjs";
+
+const HOOK_EVENTS = ["UserPromptSubmit", "PostToolUse", "Stop"];
+
+export async function createRealProjectFixture({ workspace }) {
+  const resolvedWorkspace = resolve(workspace);
+  const files = {
+    "README.md": `# BillMate Lite Opt-In
+
+Scratch project used to verify project-local VibeLog Claude Code hooks.
+`,
+    "package.json": `${JSON.stringify({
+      name: "billmate-lite-opt-in",
+      version: "0.0.0",
+      private: true,
+      type: "module",
+      scripts: {
+        test: "node --test"
+      }
+    }, null, 2)}\n`,
+    "src/billmate.js": `export function formatBillTotal(items) {
+  const total = items.reduce((sum, item) => sum + item.amount, 0);
+  return total.toFixed(2);
+}
+`,
+    "test/billmate.test.js": `import test from "node:test";
+import assert from "node:assert/strict";
+
+import { formatBillTotal } from "../src/billmate.js";
+
+test("formats bill totals", () => {
+  assert.equal(formatBillTotal([{ amount: 12 }, { amount: 3.5 }]), "15.50");
+});
+`,
+    "vibe-log.md": `---
+schema: vibelog@0.2-draft
+title: "BillMate Lite Opt-In Project"
+one_line_vibe: "Verify a real project can opt in to VibeLog Claude Code hooks locally."
+stage: prototype
+visibility: private
+code_visibility: hidden
+prompt_visibility: summary
+collaboration_status: closed
+creation_mode: ai_assisted
+process_level: core
+tools: ["Claude Code", "VibeLog"]
+tags: ["vibelog", "claude-code", "opt-in", "acceptance-test"]
+created_at: "2026-05-27"
+updated_at: "2026-05-27"
+---
+
+# VibeLog
+
+## One-Line Vibe
+
+Verify a real project can opt in to VibeLog Claude Code hooks locally.
+
+## Current Idea
+
+BillMate Lite is a tiny scratch billing utility used to verify that project-local Claude Code hook settings can update a VibeLog without touching global settings.
+
+## Idea Evolution
+
+## Human-in-the-Loop
+
+## Execution Prompts
+
+## Development Log
+
+## Bugfix / Incident Log
+
+No bugfix or incident entry yet.
+
+## Validation Design
+
+### Success Criteria
+
+- Dry-run does not write settings.
+- Write mode creates only project-local settings.
+- Generated hook commands update Markdown and JSON.
+- Event files stay inside the project-local .vibelog-events directory.
+
+## Verification Evidence
+
+## Artifact Index
+
+## Handoff State
+
+### Current State
+
+Scratch project is ready for opt-in hook acceptance verification.
+
+### Completed
+
+- Tiny project fixture created.
+
+### Pending
+
+- Run project-local hook settings generator.
+- Execute generated hook commands.
+
+## Public Summary
+
+Scratch-only project for VibeLog opt-in hook acceptance.
+`
+  };
+
+  const filesCreated = [];
+  for (const [relativePath, content] of Object.entries(files)) {
+    const target = join(resolvedWorkspace, relativePath);
+    await mkdir(dirname(target), { recursive: true });
+    await writeFile(target, content, "utf8");
+    filesCreated.push(relativePath);
+  }
+
+  return {
+    workspace: resolvedWorkspace,
+    filesCreated
+  };
+}
+
+export async function runOptInProjectVerification({
+  workspace = defaultWorkspace(),
+  adapterPath = resolve("scripts/claude-code-hook-adapter.mjs")
+} = {}) {
+  const resolvedWorkspace = resolve(workspace);
+  const resolvedAdapter = resolve(adapterPath);
+  const project = await createRealProjectFixture({ workspace: resolvedWorkspace });
+  const settingsPath = join(resolvedWorkspace, ".claude", "settings.json");
+  const dryRunSettingsExistedBefore = await exists(settingsPath);
+
+  const dryRun = await configureClaudeCodeVibeLogHooks({
+    projectPath: resolvedWorkspace,
+    adapterPath: resolvedAdapter,
+    write: false
+  });
+  const dryRunSettingsExistedAfter = await exists(dryRun.settingsPath);
+  const dryRunCreatedSettings = !dryRunSettingsExistedBefore && dryRunSettingsExistedAfter;
+
+  const write = await configureClaudeCodeVibeLogHooks({
+    projectPath: resolvedWorkspace,
+    adapterPath: resolvedAdapter,
+    write: true
+  });
+  const settings = JSON.parse(await readFile(write.settingsPath, "utf8"));
+
+  const payloads = representativeHookPayloads(resolvedWorkspace);
+  const commandsRun = [];
+  for (const payload of payloads) {
+    const command = getVibeLogCommand(settings, payload.hook_event_name);
+    await runSettingsHookCommand({
+      command,
+      workspace: resolvedWorkspace,
+      payload
+    });
+    commandsRun.push(payload.hook_event_name);
+  }
+
+  const markdown = await readFile(join(resolvedWorkspace, "vibe-log.md"), "utf8");
+  const json = JSON.parse(await readFile(join(resolvedWorkspace, "vibe-log.json"), "utf8"));
+  const validation = validateVibeLog(json);
+  const eventFiles = await listFiles(join(resolvedWorkspace, ".vibelog-events"));
+  const stopCommand = getVibeLogCommand(settings, "Stop");
+  const markdownUpdated = markdown.includes("Build the BillMate Lite scratch feature and run node --test");
+  const jsonUpdated = validation.valid && json.title === "BillMate Lite Opt-In Project";
+  const eventFileCount = eventFiles.length;
+
+  return {
+    passed: dryRun.wrote === false
+      && dryRunCreatedSettings === false
+      && write.wrote === true
+      && markdownUpdated
+      && jsonUpdated
+      && eventFileCount >= payloads.length,
+    workspace: resolvedWorkspace,
+    project,
+    dryRun: {
+      wrote: dryRun.wrote,
+      ready: dryRun.ready,
+      settingsPath: dryRun.settingsPath,
+      settingsExistedBefore: dryRunSettingsExistedBefore,
+      settingsExistedAfter: dryRunSettingsExistedAfter,
+      createdSettings: dryRunCreatedSettings
+    },
+    write: {
+      wrote: write.wrote,
+      ready: write.ready,
+      settingsPath: write.settingsPath
+    },
+    settings: {
+      events: Object.keys(settings.hooks ?? {}).filter((eventName) => HOOK_EVENTS.includes(eventName)),
+      stopCommand
+    },
+    hooks: {
+      commandsRun,
+      markdownUpdated,
+      jsonUpdated,
+      eventDir: join(resolvedWorkspace, ".vibelog-events"),
+      eventFileCount,
+      eventFiles
+    },
+    validation: {
+      valid: validation.valid,
+      errors: validation.errors
+    }
+  };
+}
+
+export async function runSettingsHookCommand({ command, workspace, payload }) {
+  const env = {
+    ...process.env,
+    CLAUDE_PROJECT_DIR: workspace
+  };
+
+  if (process.platform === "win32") {
+    return execWithInput("powershell.exe", [
+      "-NoProfile",
+      "-NonInteractive",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-Command",
+      command
+    ], `${JSON.stringify(payload)}\n`, { cwd: workspace, env });
+  }
+
+  return execWithInput("/bin/sh", ["-c", command], `${JSON.stringify(payload)}\n`, { cwd: workspace, env });
+}
+
+function representativeHookPayloads(workspace) {
+  return [
+    {
+      hook_event_name: "UserPromptSubmit",
+      session_id: "slice-10-opt-in",
+      cwd: workspace,
+      prompt: "Build the BillMate Lite scratch feature and run node --test."
+    },
+    {
+      hook_event_name: "PostToolUse",
+      session_id: "slice-10-opt-in",
+      tool_name: "Write",
+      tool_input: { file_path: "src/billmate.js" },
+      tool_response: { success: true }
+    },
+    {
+      hook_event_name: "PostToolUse",
+      session_id: "slice-10-opt-in",
+      tool_name: "Bash",
+      tool_input: { command: "node --test" },
+      tool_response: { exit_code: 0, stdout: "tests 1\npass 1\nfail 0" }
+    },
+    {
+      hook_event_name: "Stop",
+      session_id: "slice-10-opt-in",
+      stop_hook_active: false,
+      last_assistant_message: "BillMate Lite opt-in hook acceptance completed."
+    }
+  ];
+}
+
+function getVibeLogCommand(settings, eventName) {
+  const groups = settings?.hooks?.[eventName];
+  if (!Array.isArray(groups)) {
+    throw new Error(`Missing hook event settings: ${eventName}`);
+  }
+
+  const hook = groups
+    .flatMap((group) => Array.isArray(group?.hooks) ? group.hooks : [])
+    .find((entry) => typeof entry?.command === "string" && entry.command.includes("claude-code-hook-adapter.mjs"));
+
+  if (!hook) throw new Error(`Missing VibeLog hook command for ${eventName}`);
+  return hook.command;
+}
+
+function execWithInput(file, args, input, options = {}) {
+  return new Promise((resolvePromise, reject) => {
+    const child = spawn(file, args, {
+      cwd: options.cwd,
+      env: options.env,
+      stdio: ["pipe", "pipe", "pipe"]
+    });
+    let stdout = "";
+    let stderr = "";
+    let settled = false;
+
+    const finish = (callback, value) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      callback(value);
+    };
+
+    const timer = setTimeout(() => {
+      child.kill();
+      finish(reject, new Error(`Command timed out: ${file} ${args.join(" ")}`));
+    }, 30000);
+
+    child.stdout.on("data", (chunk) => {
+      stdout += chunk.toString();
+    });
+    child.stderr.on("data", (chunk) => {
+      stderr += chunk.toString();
+    });
+    child.on("error", (error) => {
+      finish(reject, error);
+    });
+    child.on("close", (code) => {
+      if (code === 0) {
+        finish(resolvePromise, { stdout, stderr });
+        return;
+      }
+
+      const error = new Error(`Command failed (${code}): ${file} ${args.join(" ")}`);
+      error.code = code;
+      error.stdout = stdout;
+      error.stderr = stderr;
+      finish(reject, error);
+    });
+
+    child.stdin.end(input);
+  });
+}
+
+async function listFiles(dir) {
+  if (!(await exists(dir))) return [];
+  const entries = await readdir(dir, { withFileTypes: true });
+  return entries.filter((entry) => entry.isFile()).map((entry) => entry.name).sort();
+}
+
+async function exists(path) {
+  try {
+    await stat(path);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function defaultWorkspace() {
+  return join(resolve(".."), "vibelog-scratch", "slice-10-real-project-opt-in");
+}
+
+function parseArgs(argv) {
+  const options = {
+    workspace: defaultWorkspace(),
+    adapterPath: resolve("scripts/claude-code-hook-adapter.mjs")
+  };
+
+  const args = [...argv];
+  while (args.length > 0) {
+    const arg = args.shift();
+    if (arg === "--workspace") {
+      options.workspace = args.shift() ?? "";
+    } else if (arg === "--adapter") {
+      options.adapterPath = args.shift() ?? "";
+    } else {
+      throw new Error(`Unknown argument: ${arg}`);
+    }
+  }
+
+  if (!options.workspace) throw new Error("--workspace requires a path");
+  if (!options.adapterPath) throw new Error("--adapter requires a path");
+  return options;
+}
+
+async function main() {
+  const options = parseArgs(process.argv.slice(2));
+  const result = await runOptInProjectVerification(options);
+  console.log(JSON.stringify(result, null, 2));
+  if (!result.passed) process.exitCode = 1;
+}
+
+if (import.meta.url === pathToFileURL(fileURLToPath(import.meta.url)).href) {
+  const invokedPath = process.argv[1] ? pathToFileURL(resolve(process.argv[1])).href : "";
+  if (import.meta.url === invokedPath) {
+    main().catch((error) => {
+      console.error(error.message);
+      if (error.stderr) console.error(error.stderr);
+      process.exitCode = 1;
+    });
+  }
+}

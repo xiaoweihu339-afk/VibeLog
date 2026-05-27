@@ -403,7 +403,7 @@ The long-term product may become VibeHub, a GitHub-like platform around Vibe Rep
 
 ### Current State
 
-The VibeLog skill now has a deterministic Markdown-to-JSON exporter, lightweight validator, recorder core, Claude Code hook adapter, scratch-local live hook verifier, and dry-run-first project-local hook settings generator. Slice 9 fixed the first comprehensive audit findings and added regression coverage for all generated examples.
+The VibeLog skill now has a deterministic Markdown-to-JSON exporter, lightweight validator, recorder core, Claude Code hook adapter, scratch-local live hook verifier, dry-run-first project-local hook settings generator, and real-project-style opt-in acceptance verifier. Slice 10 proved that generated project-local settings commands can update VibeLog files inside a realistic scratch project.
 
 ### Completed
 
@@ -444,26 +444,27 @@ The VibeLog skill now has a deterministic Markdown-to-JSON exporter, lightweight
 - Added a dry-run-first Claude Code VibeLog hook settings generator.
 - Added bilingual Slice 8 opt-in install guide and report.
 - Fixed first comprehensive audit issues: example JSON drift, incomplete example coverage, broken Slice 4 links, stale Stop handoff progress, and stale hook example settings.
+- Verified the real-project-style opt-in hook path in a scratch project outside this repository.
 
 ### In Progress
 
-- Local commit for Slice 9.
+- Final repository verification and local commit for Slice 10.
 
 ### Pending
 
 - Review the updated VibeLog v0.2 draft skill standard.
-- Test the opt-in hook generator across real user projects.
+- Design the package/install path for normal users.
 - Add full JSON Schema validation.
 - Add richer example Vibe Repos after the adapter exists.
 - Make Claude Code Stop handoff progress configurable instead of static.
 
 ### Blocked
 
-- No current Slice 9 blocker. Historical note: `skill-creator` quick validation could not run because the current Python environment is missing the `yaml` package.
+- No current Slice 10 blocker. Historical note: `skill-creator` quick validation could not run because the current Python environment is missing the `yaml` package.
 
 ### Next Actions
 
-- Run a future real-project opt-in install verification only after explicit user approval.
+- Package or install the VibeLog skill for normal user adoption.
 - Add full JSON Schema validation.
 - Decide whether to install the skill locally or keep iterating inside the repository first.
 
@@ -476,6 +477,7 @@ The VibeLog skill now has a deterministic Markdown-to-JSON exporter, lightweight
 - Public visibility changes require explicit user confirmation.
 - VibeLog is now being shaped as a bottom-layer, hook-friendly process recorder for Vibe Repos.
 - Claude Code is the preferred first execution environment because its hooks can update VibeLog automatically during the vibe process.
+- Real-project-style opt-in verification uses scratch project source outside this repository.
 - Do not push to GitHub without separate explicit user approval.
 - `scripts/export-vibelog.mjs` supports the current strict Markdown subset and should stay conservative until more examples justify expansion.
 - Prefer agent dogfood verification over human manual verification when a repeatable vibe scenario can produce evidence.
@@ -837,6 +839,42 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 
 **Confidence:** high
 
+### 2026-05-27
+
+**Type:** test_result
+
+**Summary:** Verified Slice 10 real-project-style opt-in hook acceptance.
+
+**Evidence Ref:** `node --test test\verify-claude-code-opt-in-project.test.mjs`; `node scripts\verify-claude-code-opt-in-project.mjs --workspace "C:\Users\HXW\Documents\vibelog-scratch\slice-10-real-project-opt-in" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs"`.
+
+**Result:** passed
+
+**Details:** Targeted tests passed with repeat-run coverage. The scratch acceptance command returned `passed: true`, confirmed dry-run did not create settings, wrote only project-local `.claude/settings.json`, executed 4 generated hook events through the settings command per run, observed project-local event files, and produced valid VibeLog JSON.
+
+**Residual Risk:** This validates generated hook commands with representative payloads, not a full paid Claude Code live session by default.
+
+**Source:** current work session
+
+**Confidence:** high
+
+### 2026-05-27
+
+**Type:** test_result
+
+**Summary:** Ran final Slice 10 repository verification.
+
+**Evidence Ref:** `node --test`; `node scripts\validate-vibelog.mjs vibe-log.json`; `node scripts\export-vibelog.mjs vibe-log.md --out vibe-log.json --check`; `node scripts\verify-claude-code-opt-in-project.mjs --workspace "C:\Users\HXW\Documents\vibelog-scratch\slice-10-real-project-opt-in" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs"`; Markdown relative link checker; Slice 10 placeholder scan; JSON parse checks; `git diff --check`.
+
+**Result:** passed
+
+**Details:** Full `node --test` passed with 42 tests. Root VibeLog validated and matched Markdown. The fixed scratch acceptance command returned `passed: true` and confirmed repeatable dry-run behavior with existing project-local settings. Markdown link checker scanned 75 files and found no broken relative links. Slice 10 placeholder scan produced no matches. JSON parse checks passed. `git diff --check` produced no output.
+
+**Residual Risk:** This still does not default to a paid live Claude Code session in a real user project. Packaging and user install flow remain future work.
+
+**Source:** current work session
+
+**Confidence:** high
+
 ## Project Context
 
 ### Repo / Workspace
@@ -881,6 +919,8 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 - `docs/reports/slice-8-opt-in-hook-install-report.zh.md`: Chinese Slice 8 opt-in hook install report.
 - `docs/reports/slice-9-first-audit-fixes-report.md`: English Slice 9 first audit fixes report.
 - `docs/reports/slice-9-first-audit-fixes-report.zh.md`: Chinese Slice 9 first audit fixes report.
+- `docs/reports/slice-10-real-project-opt-in-report.md`: English Slice 10 real-project opt-in acceptance report.
+- `docs/reports/slice-10-real-project-opt-in-report.zh.md`: Chinese Slice 10 real-project opt-in acceptance report.
 - `examples/reading-card-lite/`: generated VibeLog dogfood example only.
 - `scripts/export-vibelog.mjs`: deterministic Markdown-to-JSON exporter.
 - `scripts/validate-vibelog.mjs`: lightweight VibeLog JSON validator.
@@ -888,12 +928,14 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 - `scripts/claude-code-hook-adapter.mjs`: Claude Code hook adapter.
 - `scripts/verify-claude-code-live-hook.mjs`: scratch-local Claude Code hook verifier.
 - `scripts/configure-claude-code-vibelog-hooks.mjs`: dry-run-first project-local Claude Code hook settings generator.
+- `scripts/verify-claude-code-opt-in-project.mjs`: real-project-style opt-in acceptance verifier.
 - `test/export-vibelog.test.mjs`: exporter regression tests.
 - `test/validate-vibelog.test.mjs`: validator regression tests.
 - `test/record-vibelog-event.test.mjs`: recorder core tests.
 - `test/claude-code-hook-adapter.test.mjs`: Claude Code adapter tests.
 - `test/verify-claude-code-live-hook.test.mjs`: live hook verifier tests.
 - `test/configure-claude-code-vibelog-hooks.test.mjs`: opt-in hook settings generator tests.
+- `test/verify-claude-code-opt-in-project.test.mjs`: real-project-style opt-in acceptance tests.
 - `test/vibelog-examples.test.mjs`: generated example integrity and repository-boundary tests.
 
 ### Run / Test Commands
@@ -908,6 +950,7 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 - `node --test test/verify-claude-code-live-hook.test.mjs`
 - `node scripts/verify-claude-code-live-hook.mjs --workspace "C:\Users\HXW\Documents\vibelog-scratch\claude-live-hook-test" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs"`
 - `node scripts/verify-claude-code-live-hook.mjs --workspace "C:\Users\HXW\Documents\vibelog-scratch\claude-live-hook-test-live" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs" --live --prompt "Reply with OK. Do not use tools." --max-budget-usd 0.05`
+- `node scripts/verify-claude-code-opt-in-project.mjs --workspace "C:\Users\HXW\Documents\vibelog-scratch\slice-10-real-project-opt-in" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs"`
 - `node --test test/configure-claude-code-vibelog-hooks.test.mjs`
 - `node scripts/configure-claude-code-vibelog-hooks.mjs --project "C:\Users\HXW\Documents\vibelog-scratch\slice-8-install-test" --adapter "C:\Users\HXW\Documents\vibecoding\scripts\claude-code-hook-adapter.mjs"`
 - `node --test test/vibelog-examples.test.mjs`
@@ -1344,6 +1387,16 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 
 **Notes:** Bilingual report for the first comprehensive audit fixes and regression coverage.
 
+### Slice 10 real-project opt-in acceptance reports
+
+**Type:** report
+
+**Ref:** `docs/reports/slice-10-real-project-opt-in-report.md`, `docs/reports/slice-10-real-project-opt-in-report.zh.md`
+
+**Visibility:** private
+
+**Notes:** Bilingual report for the real-project-style opt-in hook acceptance verifier and scratch evidence.
+
 ## Execution Prompts
 
 ### 2026-05-25
@@ -1741,6 +1794,24 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 **Result:** Fixed first audit issues, expanded regression tests, synchronized examples, updated Stop handoff progress, fixed broken links, and updated example hook settings.
 
 **Reuse Notes:** Treat this as authorization for audit fixes only. It does not authorize GitHub push.
+
+### 2026-05-27
+
+**Agent / Tool:** Codex
+
+**Prompt Type:** build
+
+**Prompt Visibility:** summary
+
+**Recording Mode:** exact
+
+**Prompt Summary:** User authorized executing Slice 10 real-project opt-in hook acceptance.
+
+**Prompt Text:** 执行s10
+
+**Result:** Added a real-project-style opt-in verifier, ran scratch acceptance evidence, and documented the result in bilingual reports.
+
+**Reuse Notes:** Treat this as authorization for local S10 verification only. It does not authorize GitHub push or global Claude Code settings changes.
 
 ## Development Log
 
@@ -2257,20 +2328,39 @@ Use Node's built-in test runner for the deterministic exporter and lightweight v
 
 **Follow-up:** Keep any future live verifier changes covered by both command-path fixture tests and live hook lifecycle evidence.
 
+### 2026-05-27
+**Type:** test
+
+**Summary:** Added real-project-style opt-in hook acceptance verification.
+
+**Files Changed:** `scripts/verify-claude-code-opt-in-project.mjs`, `test/verify-claude-code-opt-in-project.test.mjs`, `docs/superpowers/specs/2026-05-27-claude-code-real-project-opt-in-slice-10-design.md`, `docs/superpowers/specs/2026-05-27-claude-code-real-project-opt-in-slice-10-design.zh.md`, `docs/superpowers/plans/2026-05-27-claude-code-real-project-opt-in-slice-10.md`, `docs/superpowers/plans/2026-05-27-claude-code-real-project-opt-in-slice-10.zh.md`, `docs/reports/slice-10-real-project-opt-in-report.md`, `docs/reports/slice-10-real-project-opt-in-report.zh.md`, `README.md`, `vibe-log.md`, `vibe-log.json`
+
+**Details:** Added a verifier that creates a realistic scratch project outside the repository, runs the opt-in generator in dry-run and write modes, reads generated project-local Claude settings, executes representative hook events through the generated settings command, and validates the updated VibeLog.
+
+**Bug Symptom:** not applicable
+
+**Root Cause:** not applicable
+
+**Fix:** not applicable
+
+**Verification:** `node --test test\verify-claude-code-opt-in-project.test.mjs` passed, including repeat-run coverage. The fixed scratch acceptance command returned `passed: true` with project-local event files and valid JSON.
+
+**Follow-up:** Design the normal-user package/install path and make Stop handoff progress configurable.
+
 ## Handoff State
 
 ### Current State
 
-Slice 9 fixed the first comprehensive audit findings. All examples are now covered by drift tests, broken Slice 4 links are repaired, the Claude Code Stop handoff no longer writes the old Slice 6 progress snapshot, and example hook settings are aligned with the opt-in setup direction.
+Slice 10 verified the real-project-style opt-in hook path. A scratch project outside the repository can generate project-local Claude settings, run generated hook commands with `CLAUDE_PROJECT_DIR`, and update `vibe-log.md`, `vibe-log.json`, and `.vibelog-events/` without touching global settings.
 
 ### Project Progress Snapshot
 
-- Project Progress: 23 / 100
-- Change This Task: +1
-- Current Phase: first audit fixes
-- Completed This Task: Fixed first comprehensive audit issues and added regression coverage
-- Next Unlock: real-project opt-in install acceptance test
-- Main Risk: progress snapshot logic is still static inside the Claude Code adapter
+- Project Progress: 25 / 100
+- Change This Task: +2
+- Current Phase: real-project opt-in acceptance
+- Completed This Task: Verified project-local opt-in hooks in a realistic scratch project
+- Next Unlock: package/install path for normal users
+- Main Risk: this validates generated hook commands with fixture payloads, not a full live Claude Code paid session by default
 - Confidence: medium
 
 ### Completed
@@ -2282,17 +2372,18 @@ Slice 9 fixed the first comprehensive audit findings. All examples are now cover
 - Bilingual Slice 8 guide and report added
 - First comprehensive audit fixes completed
 - All examples covered by JSON drift tests
+- Real-project-style opt-in hook acceptance verified
 
 ### In Progress
 
-- Local commit for Slice 9
+- Local commit for Slice 10
 
 ### Pending
 
-- Test opt-in hook setup on a real project after explicit approval
+- Design package/install path for normal users
 - Add stronger schema validation
-- Decide packaging/install path for normal users
 - Make Stop handoff progress configurable instead of static
+- Optional full live Claude Code verification in an opted-in project
 
 ### Blockers
 
@@ -2300,12 +2391,12 @@ Slice 9 fixed the first comprehensive audit findings. All examples are now cover
 
 ### Next Actions
 
-- Commit Slice 9 locally
-- Plan a real-project opt-in install acceptance test before touching any non-scratch Claude Code settings
+- Commit Slice 10 locally
+- Plan package/install path for normal users
 
 ### Context For Next Agent
 
-- Session: slice-9-codex
+- Session: slice-10-codex
 - Stop hook active: false
 ## Public / Private Projection
 
@@ -2636,6 +2727,21 @@ Slice 9 fixed the first comprehensive audit findings. All examples are now cover
 **Problems:** The first audit found stale example JSON exports, incomplete example test coverage, broken Slice 4 links, stale Stop handoff progress, and outdated example hook settings.
 
 **Next:** Run full verification, commit locally, then plan a real-project opt-in install acceptance test.
+
+**Source:** current work session
+
+**Confidence:** high
+
+### 2026-05-27
+**Stage:** prototype
+
+**What Happened:** Verified the real-project-style opt-in hook path in a scratch project outside the repository.
+
+**Tools Used:** Codex, Node.js, VibeLog, Claude Code hook settings
+
+**Problems:** Needed to prove the safe adoption path works after settings generation, not only that settings can be written.
+
+**Next:** Finish full repository verification, commit locally, then design the package/install path for normal users.
 
 **Source:** current work session
 
