@@ -15,21 +15,21 @@ Because the total goal is broad, progress must be conservative. Do not score loc
 Every completed meaningful task report should include:
 
 ```txt
-Project Progress: 23 / 100
+Project Progress: 24 / 100
 Change This Task: +1
 Current Phase: Hook/adapters and automatic process recording
-Completed This Task: S27 stream-first live runtime hook probe
+Completed This Task: S28 Claude runtime readiness preflight
 Next Unlock: Authenticated Stop/session-end live hook verification
-Main Risk: The real Claude Code runtime starts the stream-first hook and appends a UserPromptSubmit event, but authentication failure blocks full Stop/session completion
+Main Risk: Preflight can distinguish installation/auth status and runtime auth failures, but full Stop/session completion still requires a healthy authenticated Claude runtime
 Confidence: medium-high
 ```
 
 ## Current Baseline
 
-Current baseline after S27 stream-first live runtime hook probe:
+Current baseline after S28 Claude runtime readiness preflight:
 
 ```txt
-Project Progress: 23 / 100
+Project Progress: 24 / 100
 ```
 
 Reason:
@@ -43,6 +43,7 @@ Reason:
 - S25 proved the Claude Code adapter can append multiple hook events to one JSONL stream before the recorder consumes it.
 - S26 proved project-local opt-in hook settings can use stream-first commands, accumulate hook events, and then update VibeLog through the recorder.
 - S27 proved the installed Claude Code runtime can load the stream-first scratch settings, fire `UserPromptSubmit`, and append a real runtime event to `.vibelog-events/session.jsonl`.
+- S28 added a preflight/status layer that distinguishes Claude installation, reported auth status, external runtime auth failures, partial hook evidence, and the core-business pass/fail state.
 - VibeHub's product layer, repository storage model, collaboration/remix model, and public community still do not exist.
 - Full live hook-driven continuous recording through `Stop` or `SessionEnd` is still not proven because the local Claude runtime returned `authentication_failed` before the model turn completed.
 
@@ -84,5 +85,5 @@ Never increase progress just because many files changed. Increase it only when t
 Until authenticated live hook adapters prove that VibeLog can update through a completed Claude Code session, keep the project near:
 
 ```txt
-Project Progress: 23 / 100
+Project Progress: 24 / 100
 ```

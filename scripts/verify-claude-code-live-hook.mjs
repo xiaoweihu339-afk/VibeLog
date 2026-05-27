@@ -294,8 +294,14 @@ export async function runLiveVerification({
     return {
       attempted: false,
       passed: false,
+      status: "skipped",
       eventMode: normalizedEventMode,
-      reason: "Live Claude Code verification requires --live."
+      reason: "Live Claude Code verification requires --live.",
+      coreBusiness: coreBusinessStatus({
+        passed: false,
+        status: "skipped",
+        summary: "Live Claude Code hook recording was not attempted."
+      })
     };
   }
 
@@ -348,23 +354,19 @@ export async function runLiveVerification({
 
     const markdown = await readFile(join(resolvedWorkspace, "vibe-log.md"), "utf8");
     const stream = parseStreamJsonLines(stdout);
-    const hookResponses = stream
-      .filter((event) => event.type === "system" && event.subtype === "hook_response")
-      .map((event) => ({
-        hook_event: event.hook_event,
-        exit_code: event.exit_code,
-        outcome: event.outcome,
-        output: summarizeText(event.output, "No hook output.")
-      }));
+    const hookResponses = extractHookResponses(stream);
     const result = stream.find((event) => event.type === "result");
     const stopHookSucceeded = hookResponses.some((event) => event.hook_event === "Stop" && event.exit_code === 0);
     const markdownUpdated = markdown.includes("Claude Code hook event captured");
+    const passed = stopHookSucceeded
+      && markdownUpdated
+      && (normalizedEventMode !== "stream" || (eventStreamExists && streamEventCount > 0 && markdownUpdatedBeforeConsume === false));
+    const status = passed ? "passed" : "incomplete_session";
 
     return {
       attempted: true,
-      passed: stopHookSucceeded
-        && markdownUpdated
-        && (normalizedEventMode !== "stream" || (eventStreamExists && streamEventCount > 0 && markdownUpdatedBeforeConsume === false)),
+      passed,
+      status,
       eventMode: normalizedEventMode,
       maxBudgetUsd,
       settingsPath,
@@ -376,21 +378,152 @@ export async function runLiveVerification({
       eventStreamExists,
       streamEventCount,
       markdownUpdatedBeforeConsume,
+      coreBusiness: coreBusinessStatus({
+        passed,
+        status,
+        summary: passed
+          ? "Claude Code completed a live session and VibeLog recorded the hook flow."
+          : "Claude Code returned without proving a completed Stop/session-end VibeLog flow."
+      }),
       stderr: stderr.trim()
     };
   } catch (error) {
+    const issue = classifyClaudeRuntimeIssue({
+      stdout: error.stdout?.toString() ?? "",
+      stderr: error.stderr?.toString() ?? "",
+      errorMessage: error.message
+    });
+    const eventStreamStats = await readEventStreamStats(eventStreamPath);
+
     return {
       attempted: true,
       passed: false,
+      status: issue.status,
+      failureCategory: issue.failureCategory,
       eventMode: normalizedEventMode,
       maxBudgetUsd,
       settingsPath,
       timeoutMs,
+      hookResponses: issue.hookResponses,
+      eventStreamPath,
+      eventStreamExists: eventStreamStats.exists,
+      streamEventCount: eventStreamStats.count,
+      coreBusiness: issue.coreBusiness,
       error: error.message,
       stdout: error.stdout?.toString().trim() ?? "",
       stderr: error.stderr?.toString().trim() ?? ""
     };
   }
+}
+
+export async function runClaudeRuntimePreflight({ timeoutMs = 30000, cwd = process.cwd() } = {}) {
+  const installation = await inspectClaudeInstallation({ timeoutMs, cwd });
+  if (!installation.installed) {
+    return {
+      checked: true,
+      status: "claude_not_installed",
+      installation,
+      auth: {
+        checked: false,
+        status: "not_checked",
+        provesModelAccess: false
+      },
+      modelProbeAttempted: false,
+      provesCompletedSession: false,
+      readyForLiveAttempt: false
+    };
+  }
+
+  const auth = await inspectClaudeAuthStatus({ timeoutMs, cwd });
+  const readyForLiveAttempt = auth.loggedIn === true;
+
+  return {
+    checked: true,
+    status: readyForLiveAttempt ? "cli_ready_auth_reported" : "auth_not_ready",
+    installation,
+    auth,
+    modelProbeAttempted: false,
+    provesCompletedSession: false,
+    readyForLiveAttempt,
+    note: "Auth status is a readiness signal only; it does not prove model API access or a completed live hook session."
+  };
+}
+
+export function parseClaudeAuthStatusText(text) {
+  try {
+    const parsed = JSON.parse(String(text ?? ""));
+    const loggedIn = parsed.loggedIn === true;
+    return {
+      checked: true,
+      status: loggedIn ? "logged_in" : "not_logged_in",
+      loggedIn,
+      authMethod: parsed.authMethod ?? null,
+      apiProvider: parsed.apiProvider ?? null,
+      provesModelAccess: false
+    };
+  } catch (error) {
+    return {
+      checked: true,
+      status: "unparseable",
+      loggedIn: null,
+      authMethod: null,
+      apiProvider: null,
+      provesModelAccess: false,
+      error: error.message,
+      raw: summarizeText(text, "No auth status output.")
+    };
+  }
+}
+
+export function classifyClaudeRuntimeIssue({ stdout = "", stderr = "", errorMessage = "" } = {}) {
+  const stream = parseStreamJsonLines(stdout);
+  const hookResponses = extractHookResponses(stream);
+  const combined = [stdout, stderr, errorMessage].filter(Boolean).join("\n");
+  const apiRetries = stream
+    .filter((event) => event.type === "system" && event.subtype === "api_retry")
+    .map((event) => ({
+      attempt: event.attempt ?? null,
+      error_status: event.error_status ?? null,
+      error: event.error ?? ""
+    }));
+
+  if (/authentication_failed|error_status"?\s*:\s*401|401/u.test(combined)) {
+    return runtimeIssue({
+      status: "auth_failed",
+      failureCategory: "external_environment",
+      summary: "Claude Code reported authentication_failed before the live session could complete.",
+      hookResponses,
+      apiRetries
+    });
+  }
+
+  if (/timed out|timeout/iu.test(combined)) {
+    return runtimeIssue({
+      status: "timeout",
+      failureCategory: "external_environment",
+      summary: "Claude Code did not complete within the configured timeout.",
+      hookResponses,
+      apiRetries
+    });
+  }
+
+  if (/budget|Exceeded USD budget/iu.test(combined)) {
+    return runtimeIssue({
+      status: "budget_exceeded",
+      failureCategory: "external_environment",
+      summary: "Claude Code stopped before completion because the configured budget was too low.",
+      hookResponses,
+      apiRetries
+    });
+  }
+
+  return runtimeIssue({
+    status: "runtime_failed",
+    failureCategory: hookResponses.length > 0 ? "runtime_incomplete" : "unknown",
+    summary: summarizeText(errorMessage || stderr || stdout, "Claude Code live verification failed before proving the core flow."),
+    hookResponses,
+    apiRetries
+  });
 }
 
 function parseStreamJsonLines(text) {
@@ -407,10 +540,45 @@ function parseStreamJsonLines(text) {
     });
 }
 
+function extractHookResponses(stream) {
+  return stream
+    .filter((event) => event.type === "system" && event.subtype === "hook_response")
+    .map((event) => ({
+      hook_event: event.hook_event,
+      exit_code: event.exit_code,
+      outcome: event.outcome,
+      output: summarizeText(event.output, "No hook output.")
+    }));
+}
+
 function summarizeText(text, fallback) {
   const clean = String(text ?? "").replace(/\s+/gu, " ").trim();
   if (!clean) return fallback;
   return clean.length <= 240 ? clean : `${clean.slice(0, 237)}...`;
+}
+
+function coreBusinessStatus({ passed, status, summary }) {
+  return {
+    target: "completed Claude Code live hook recording into VibeLog",
+    passed,
+    status,
+    summary
+  };
+}
+
+function runtimeIssue({ status, failureCategory, summary, hookResponses, apiRetries }) {
+  return {
+    status,
+    failureCategory,
+    summary,
+    hookResponses,
+    apiRetries,
+    coreBusiness: coreBusinessStatus({
+      passed: false,
+      status,
+      summary
+    })
+  };
 }
 
 async function runClaudeCommand(args, options) {
@@ -418,6 +586,70 @@ async function runClaudeCommand(args, options) {
     return execFileAsync(await resolveWindowsClaudeExecutable(), args, options);
   }
   return execFileAsync("claude", args, options);
+}
+
+async function inspectClaudeInstallation({ timeoutMs, cwd }) {
+  const executionCwd = await existingCwdOrFallback(cwd);
+  try {
+    const executable = process.platform === "win32" ? await resolveWindowsClaudeExecutable() : "claude";
+    const { stdout, stderr } = await execFileAsync(executable, ["--version"], {
+      cwd: executionCwd.cwd,
+      timeout: timeoutMs,
+      maxBuffer: 1024 * 128
+    });
+
+    return {
+      checked: true,
+      installed: true,
+      executable,
+      version: stdout.trim() || stderr.trim(),
+      cwd: executionCwd.cwd,
+      cwdFallbackUsed: executionCwd.fallbackUsed
+    };
+  } catch (error) {
+    return {
+      checked: true,
+      installed: false,
+      executable: process.platform === "win32" ? "claude.exe" : "claude",
+      cwd: executionCwd.cwd,
+      cwdFallbackUsed: executionCwd.fallbackUsed,
+      error: error.message,
+      stdout: error.stdout?.toString().trim() ?? "",
+      stderr: error.stderr?.toString().trim() ?? ""
+    };
+  }
+}
+
+async function inspectClaudeAuthStatus({ timeoutMs, cwd }) {
+  const executionCwd = await existingCwdOrFallback(cwd);
+  try {
+    const executable = process.platform === "win32" ? await resolveWindowsClaudeExecutable() : "claude";
+    const { stdout } = await execFileAsync(executable, ["auth", "status", "--json"], {
+      cwd: executionCwd.cwd,
+      timeout: timeoutMs,
+      maxBuffer: 1024 * 128
+    });
+
+    return {
+      ...parseClaudeAuthStatusText(stdout),
+      cwd: executionCwd.cwd,
+      cwdFallbackUsed: executionCwd.fallbackUsed
+    };
+  } catch (error) {
+    return {
+      checked: true,
+      status: "auth_status_failed",
+      loggedIn: null,
+      authMethod: null,
+      apiProvider: null,
+      provesModelAccess: false,
+      cwd: executionCwd.cwd,
+      cwdFallbackUsed: executionCwd.fallbackUsed,
+      error: error.message,
+      stdout: error.stdout?.toString().trim() ?? "",
+      stderr: error.stderr?.toString().trim() ?? ""
+    };
+  }
 }
 
 async function resolveWindowsClaudeExecutable() {
@@ -481,6 +713,35 @@ async function exists(path) {
   }
 }
 
+async function existingCwdOrFallback(cwd) {
+  if (cwd && await exists(cwd)) {
+    return {
+      cwd,
+      fallbackUsed: false
+    };
+  }
+
+  return {
+    cwd: process.cwd(),
+    fallbackUsed: true
+  };
+}
+
+async function readEventStreamStats(path) {
+  if (!await exists(path)) {
+    return {
+      exists: false,
+      count: 0
+    };
+  }
+
+  const eventStream = await readFile(path, "utf8");
+  return {
+    exists: true,
+    count: eventStream.split(/\r?\n/u).filter((line) => line.trim().length > 0).length
+  };
+}
+
 function parseArgs(argv) {
   const options = {
     workspace: join(process.cwd(), "vibelog-scratch", "claude-live-hook-test"),
@@ -525,6 +786,10 @@ function parseArgs(argv) {
 
 async function main() {
   const options = parseArgs(process.argv.slice(2));
+  const preflight = await runClaudeRuntimePreflight({
+    timeoutMs: options.timeoutMs,
+    cwd: options.workspace
+  });
   const fixture = await runFixtureVerification({
     workspace: options.workspace,
     adapterPath: options.adapterPath,
@@ -540,7 +805,7 @@ async function main() {
     timeoutMs: options.timeoutMs
   });
 
-  console.log(JSON.stringify({ fixture, live }, null, 2));
+  console.log(JSON.stringify({ preflight, fixture, live }, null, 2));
 }
 
 if (import.meta.url === pathToFileURL(fileURLToPath(import.meta.url)).href) {

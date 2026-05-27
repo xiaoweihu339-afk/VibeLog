@@ -6,9 +6,12 @@ import { join, resolve } from "node:path";
 
 import { parseVibeLogMarkdown } from "../scripts/export-vibelog.mjs";
 import {
+  classifyClaudeRuntimeIssue,
   createScratchVibeLog,
+  parseClaudeAuthStatusText,
   runFixtureVerification,
   runLiveVerification,
+  runClaudeRuntimePreflight,
   writeClaudeLocalSettings
 } from "../scripts/verify-claude-code-live-hook.mjs";
 
@@ -129,8 +132,63 @@ test("live verification is skipped unless explicitly enabled", async () => {
     });
 
     assert.equal(result.attempted, false);
+    assert.equal(result.status, "skipped");
+    assert.equal(result.coreBusiness.passed, false);
     assert.match(result.reason, /--live/);
   } finally {
     await rm(dir, { recursive: true, force: true });
   }
+});
+
+test("parses Claude auth status without treating login as full live readiness", () => {
+  const status = parseClaudeAuthStatusText(JSON.stringify({
+    loggedIn: true,
+    authMethod: "oauth_token",
+    apiProvider: "firstParty"
+  }));
+
+  assert.equal(status.checked, true);
+  assert.equal(status.loggedIn, true);
+  assert.equal(status.status, "logged_in");
+  assert.equal(status.provesModelAccess, false);
+});
+
+test("classifies runtime authentication failures as external environment blockers", () => {
+  const issue = classifyClaudeRuntimeIssue({
+    stdout: [
+      JSON.stringify({ type: "system", subtype: "hook_response", hook_event: "UserPromptSubmit", exit_code: 0 }),
+      JSON.stringify({ type: "system", subtype: "api_retry", error_status: 401, error: "authentication_failed" })
+    ].join("\n"),
+    stderr: "Warning: no stdin data received in 3s",
+    errorMessage: "Command failed"
+  });
+
+  assert.equal(issue.status, "auth_failed");
+  assert.equal(issue.failureCategory, "external_environment");
+  assert.equal(issue.coreBusiness.passed, false);
+  assert.equal(issue.hookResponses.length, 1);
+  assert.match(issue.summary, /authentication_failed/);
+});
+
+test("preflight reports installed Claude and auth status without running a model turn", async () => {
+  const result = await runClaudeRuntimePreflight({ timeoutMs: 30000 });
+
+  assert.equal(result.checked, true);
+  assert.equal(result.installation.checked, true);
+  assert.match(result.installation.version ?? "", /Claude Code/);
+  assert.equal(result.auth.checked, true);
+  assert.equal(result.modelProbeAttempted, false);
+  assert.equal(result.provesCompletedSession, false);
+});
+
+test("preflight does not report Claude missing just because scratch cwd is not created yet", async () => {
+  const missingScratch = join(tmpdir(), `vibelog-missing-preflight-${Date.now()}`);
+  const result = await runClaudeRuntimePreflight({
+    cwd: missingScratch,
+    timeoutMs: 30000
+  });
+
+  assert.equal(result.installation.checked, true);
+  assert.equal(result.installation.installed, true);
+  assert.equal(result.installation.cwdFallbackUsed, true);
 });

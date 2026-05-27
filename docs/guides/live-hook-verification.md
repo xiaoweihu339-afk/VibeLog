@@ -45,6 +45,18 @@ Expected result:
 - Scratch `vibe-log.md` and `vibe-log.json` are updated.
 - In stream mode, `fixture.eventStreamExists` is `true`, `fixture.streamEventCount` is `4`, and `fixture.markdownUpdatedBeforeConsume` is `false`.
 
+## Runtime Preflight
+
+Every verifier run reports `preflight` before fixture/live results:
+
+- `preflight.installation.installed`: whether the Claude Code CLI is available.
+- `preflight.installation.version`: the detected Claude Code version.
+- `preflight.auth.loggedIn`: whether `claude auth status --json` reports a logged-in state.
+- `preflight.auth.provesModelAccess`: always `false`; auth status is not the same as a completed model call.
+- `preflight.provesCompletedSession`: always `false`; only a successful live run through `Stop` or `SessionEnd` proves the core business flow.
+
+Do not treat preflight as a pass for live recording. It only explains whether the environment is ready to attempt the core business path.
+
 ## Live Verification
 
 Run a tiny Claude Code session only when live verification is explicitly desired:
@@ -57,6 +69,7 @@ Expected result:
 
 - `live.attempted` is `true`.
 - `live.passed` is `true`.
+- `live.coreBusiness.passed` is `true`.
 - `hookResponses` includes a successful `Stop` hook.
 - Scratch `vibe-log.md` contains `Claude Code hook event captured`.
 - In stream mode, `live.eventStreamExists` is `true`, `live.streamEventCount` is greater than `0`, and `live.markdownUpdatedBeforeConsume` is `false`.
@@ -67,7 +80,7 @@ The verifier uses Claude Code `stream-json` output with `--include-hook-events`,
 
 - `spawn claude ENOENT`: Claude Code is not available on the process path.
 - `Exceeded USD budget`: the budget cap is too low for the current model/session.
-- `authentication_failed`: Claude Code loaded settings and may have run early hooks, but the model turn could not complete; treat this as a partial runtime probe, not a completed live verification.
+- `authentication_failed`: Claude Code loaded settings and may have run early hooks, but the model turn could not complete; `live.status` is `auth_failed`, `failureCategory` is `external_environment`, and `live.coreBusiness.passed` must remain `false`.
 - No hook responses: settings were not loaded, failed validation, or hooks are disabled.
 - Hook response records `0 event(s)` for `UserPromptSubmit`: this can be valid when the prompt is ordinary chat rather than an engineering execution prompt.
 

@@ -421,10 +421,10 @@ Use the long-term VibeHub vision as `100%`, not the local repository task list. 
 Current baseline for this project:
 
 ```txt
-Project Progress: 23 / 100
+Project Progress: 24 / 100
 ```
 
-This baseline reflects S27 stream-first live runtime hook probing. Read local `vibe-log.md` first when it exists, because private dogfood state may be newer than public docs.
+This baseline reflects S28 Claude runtime readiness preflight and runtime failure classification. Read local `vibe-log.md` first when it exists, because private dogfood state may be newer than public docs.
 
 Include:
 

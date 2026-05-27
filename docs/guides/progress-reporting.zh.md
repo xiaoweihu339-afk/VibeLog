@@ -15,21 +15,21 @@ VibeHub = VibeLog 标准 + agent 工作流 + hook 自动化 + Vibe Repo 存储 +
 每个有意义任务完成后的报告都应该包含：
 
 ```txt
-项目总进度：23 / 100
+项目总进度：24 / 100
 本次变化：+1
 当前阶段：Hook / adapter 与自动过程记录
-本次完成：S27 stream-first live runtime hook probe
+本次完成：S28 Claude runtime readiness preflight
 下一步解锁：已认证环境下的 Stop / session-end live hook 验证
-主要风险：真实 Claude Code runtime 已能启动 stream-first hook 并追加 UserPromptSubmit event，但 authentication_failed 阻止了完整 Stop / session 完成
+主要风险：preflight 可以区分安装、认证状态和 runtime auth failure，但完整 Stop / session 完成仍需要健康的已认证 Claude runtime
 信心：medium-high
 ```
 
 ## 当前基线
 
-S27 stream-first live runtime hook probe 后，当前基线是：
+S28 Claude runtime readiness preflight 后，当前基线是：
 
 ```txt
-项目总进度：23 / 100
+项目总进度：24 / 100
 ```
 
 原因：
@@ -43,6 +43,7 @@ S27 stream-first live runtime hook probe 后，当前基线是：
 - S25 已经验证 Claude Code adapter 可以把多次 hook event 追加到同一个 JSONL stream，再由 recorder 消费。
 - S26 已经验证项目级 opt-in hook settings 可以使用 stream-first 命令，累积 hook events，再通过 recorder 更新 VibeLog。
 - S27 已经验证本机安装的 Claude Code runtime 可以加载 stream-first scratch settings，触发 `UserPromptSubmit`，并向 `.vibelog-events/session.jsonl` 追加真实 runtime event。
+- S28 增加了 preflight / status 层，可以区分 Claude 安装状态、报告的 auth 状态、外部 runtime auth failure、partial hook evidence，以及核心业务是否真正通过。
 - VibeHub 的产品层、repository storage model、协作 / remix model、公开社区仍然不存在。
 - 由于本地 Claude runtime 在模型回合完成前返回 `authentication_failed`，通过 `Stop` 或 `SessionEnd` 完整连续记录仍未被证明。
 
@@ -84,5 +85,5 @@ S27 stream-first live runtime hook probe 后，当前基线是：
 在已认证 live hook adapter 证明 VibeLog 能穿过一个完整 Claude Code session 更新之前，项目保持在：
 
 ```txt
-项目总进度：23 / 100
+项目总进度：24 / 100
 ```

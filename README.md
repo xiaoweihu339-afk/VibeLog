@@ -267,7 +267,7 @@ node scripts/verify-release-bundle.mjs --repo "C:\path\to\VibeLog" --scratch-roo
 
 ## Current Status
 
-VibeLog v0.2 draft is ready for local skill testing, JSON export, schema validation, project-local adoption, copyable agent-template smoke testing, clean-clone agent-template adoption verification, Claude Code hook preview, stream-first scratch/live runtime probing, and sanitized public example review.
+VibeLog v0.2 draft is ready for local skill testing, JSON export, schema validation, project-local adoption, copyable agent-template smoke testing, clean-clone agent-template adoption verification, Claude Code hook preview, stream-first scratch/live runtime probing with readiness preflight, and sanitized public example review.
 
 It is not yet a polished public package manager release. The next major step is to test the skill across more real agent sessions while keeping private VibeLogs outside this repository.
 
