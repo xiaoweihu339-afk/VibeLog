@@ -2,7 +2,7 @@
 
 VibeLog is not published to npm and does not have a global installer yet.
 
-This plan defines the safe distribution roadmap after S13 clean clone adoption verification. It does not publish, push, or install anything globally.
+This plan defines the safe distribution roadmap after S20 release-bundle verification. It does not publish, push, or install anything globally.
 
 ## Current Channel: Clone-local
 
@@ -21,9 +21,22 @@ This channel is verified by:
 - `test/verify-clean-clone-adoption.test.mjs`
 - `scripts/verify-clean-clone-adoption.mjs`
 
-## Future Channel: Release Bundle
+## Prototype-verified Channel: Release Bundle
 
-A release bundle would be a GitHub release archive or downloadable zip/tarball.
+A release bundle would be a GitHub release archive or downloadable zip/tarball. S20 adds a scratch-only verifier that runs `npm pack`, extracts the generated `.tgz`, and proves the extracted package can run the project adoption CLI plus installer rollback and backup/restore verifiers.
+
+```powershell
+node scripts/verify-release-bundle.mjs --repo "C:\path\to\vibelog" --scratch-root "C:\path\to\scratch-root"
+npm run vibelog:verify-release-bundle -- --repo "C:\path\to\vibelog" --scratch-root "C:\path\to\scratch-root"
+```
+
+Verified gates:
+
+- required skill, script, docs, and example paths are present in the bundle;
+- `.git`, `node_modules`, and test sources are not bundled;
+- `npm run vibelog -- --help` works from the extracted package;
+- a consumer project can initialize VibeLog, preview hooks, enable project-local hooks, verify readiness, and disable hooks;
+- rollback and backup/restore verifier scripts pass from the extracted package.
 
 Required gates:
 
@@ -108,4 +121,4 @@ Required gates:
 
 ## Next Recommended Slice
 
-The strongest next step is release-bundle verification or an explicit user-visible installer write-mode design. User-visible installer write mode still needs explicit approval.
+Slice 20 reaches the planned GitHub push discussion milestone. A push still needs separate explicit human approval. The strongest engineering next step is either a user-visible installer write-mode design or a release-readiness audit around license, public examples, and publishing boundaries.

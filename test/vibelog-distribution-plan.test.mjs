@@ -25,6 +25,17 @@ test("distribution plan keeps clone-local active and public package channels gat
   assert.ok(npmChannel.required_gates.includes("publish_dry_run_verified"));
   assert.ok(npmChannel.required_gates.includes("explicit_publish_approval"));
 
+  const releaseBundleChannel = plan.channels.find((channel) => channel.id === "release_bundle");
+  assert.equal(releaseBundleChannel.state, "prototype_verified");
+  assert.equal(releaseBundleChannel.human_approval_required, true);
+  assert.ok(releaseBundleChannel.required_gates.includes("release_bundle_verified"));
+  assert.ok(releaseBundleChannel.verified_by.includes("test/verify-release-bundle.test.mjs"));
+  assert.ok(releaseBundleChannel.verified_by.includes("scripts/verify-release-bundle.mjs"));
+  assert.ok(releaseBundleChannel.allowed_commands.includes("npm run vibelog:verify-release-bundle -- --repo <repo-root> --scratch-root <scratch-root>"));
+  assert.ok(releaseBundleChannel.verified_gates.includes("release_bundle_verified"));
+  assert.ok(releaseBundleChannel.forbidden_actions.includes("git push"));
+  assert.ok(releaseBundleChannel.forbidden_actions.includes("npm publish"));
+
   const installerChannel = plan.channels.find((channel) => channel.id === "local_installer_scripts");
   assert.equal(installerChannel.state, "prototype_scratch_backup_restore_verified");
   assert.ok(installerChannel.required_gates.includes("backup_restore_verified"));
@@ -48,6 +59,7 @@ test("distribution plan keeps clone-local active and public package channels gat
     "no_public_package_without_schema_validation",
     "project_local_hooks_only",
     "backup_restore_verified",
+    "release_bundle_verified",
     "dry_run_only",
     "uninstall_or_rollback_verified"
   ]) {

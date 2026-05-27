@@ -149,6 +149,13 @@ node scripts/verify-installer-backup-restore.mjs --scratch-root "C:\path\to\scra
 npm run vibelog:verify-installer-backup-restore -- --scratch-root "C:\path\to\scratch-root"
 ```
 
+The scratch-only release bundle verifier is:
+
+```powershell
+node scripts/verify-release-bundle.mjs --repo "C:\path\to\vibelog" --scratch-root "C:\path\to\scratch-root"
+npm run vibelog:verify-release-bundle -- --repo "C:\path\to\vibelog" --scratch-root "C:\path\to\scratch-root"
+```
+
 ## Repository Identity
 
 This repository is skill-first. Its primary purpose is to make the `vibelog` skill, schema, and documentation easy for others to reuse.
@@ -476,6 +483,8 @@ User-review reports for completed slices:
 - [Slice 18 Installer Rollback 报告](docs/reports/slice-18-installer-rollback-report.zh.md)
 - [Slice 19 installer backup/restore report](docs/reports/slice-19-installer-backup-restore-report.md)
 - [Slice 19 Installer Backup/Restore 报告](docs/reports/slice-19-installer-backup-restore-report.zh.md)
+- [Slice 20 release bundle report](docs/reports/slice-20-release-bundle-report.md)
+- [Slice 20 Release Bundle 报告](docs/reports/slice-20-release-bundle-report.zh.md)
 
 ### `examples/`
 
@@ -503,16 +512,17 @@ This repository contains the VibeLog v0.2 draft prototype:
 - dry-run-only installer planner
 - scratch-only installer backup/restore verifier
 - scratch-only installer rollback verifier
+- scratch-only release bundle verifier
 - deterministic Markdown-to-JSON exporter
 - stronger schema-driven JSON validator
 - design spec
 - self-recorded project VibeLog
 
-It is ready for local testing, generated example review, scratch-local Claude Code hook verification, dry-run project-local hook settings generation, ordinary project adoption through the local CLI, clone-local npm script use, clean clone adoption verification, installer dry-run review, scratch-only installer rollback verification, scratch-only installer backup/restore verification, distribution roadmap review, and schema-validated JSON export. It is not yet a polished public package.
+It is ready for local testing, generated example review, scratch-local Claude Code hook verification, dry-run project-local hook settings generation, ordinary project adoption through the local CLI, clone-local npm script use, clean clone adoption verification, installer dry-run review, scratch-only installer rollback verification, scratch-only installer backup/restore verification, scratch-only release bundle verification, distribution roadmap review, and schema-validated JSON export. It is not yet a polished public package.
 
 ## Next Steps
 
-- Verify remote clone or release-bundle usage before public distribution.
+- Review the Slice 20 push milestone and decide whether to push to GitHub.
 - Design a user-visible installer write mode only after explicit approval.
 - Install and test the skill in real agent sessions.
 - Add adapters for other agent environments, such as Codex hooks, Cursor rules, or AGENTS.md.

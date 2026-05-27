@@ -17,6 +17,9 @@ const npmRunVibeLogRollbackHelp = process.platform === "win32"
 const npmRunVibeLogBackupRestoreHelp = process.platform === "win32"
   ? { file: "cmd.exe", args: ["/d", "/s", "/c", "npm", "run", "vibelog:verify-installer-backup-restore", "--", "--help"] }
   : { file: "npm", args: ["run", "vibelog:verify-installer-backup-restore", "--", "--help"] };
+const npmRunVibeLogReleaseBundleHelp = process.platform === "win32"
+  ? { file: "cmd.exe", args: ["/d", "/s", "/c", "npm", "run", "vibelog:verify-release-bundle", "--", "--help"] }
+  : { file: "npm", args: ["run", "vibelog:verify-release-bundle", "--", "--help"] };
 
 async function exists(path) {
   try {
@@ -34,24 +37,29 @@ test("package metadata exposes the VibeLog project CLI as a private local bin", 
   assert.equal(pkg.type, "module");
   assert.equal(pkg.bin["vibelog-install"], "./scripts/vibelog-install.mjs");
   assert.equal(pkg.bin["vibelog-project"], "./scripts/vibelog-project.mjs");
+  assert.equal(pkg.bin["vibelog-verify-release-bundle"], "./scripts/verify-release-bundle.mjs");
   assert.equal(pkg.bin["vibelog-verify-installer-backup-restore"], "./scripts/verify-installer-backup-restore.mjs");
   assert.equal(pkg.bin["vibelog-verify-installer-rollback"], "./scripts/verify-installer-rollback.mjs");
   assert.equal(pkg.scripts.test, "node --test");
   assert.equal(pkg.scripts.vibelog, "node scripts/vibelog-project.mjs");
   assert.equal(pkg.scripts["vibelog:install"], "node scripts/vibelog-install.mjs");
+  assert.equal(pkg.scripts["vibelog:verify-release-bundle"], "node scripts/verify-release-bundle.mjs");
   assert.equal(pkg.scripts["vibelog:verify-installer-backup-restore"], "node scripts/verify-installer-backup-restore.mjs");
   assert.equal(pkg.scripts["vibelog:verify-installer-rollback"], "node scripts/verify-installer-rollback.mjs");
   assert.equal(await exists("scripts/vibelog-install.mjs"), true);
   assert.equal(await exists("scripts/vibelog-project.mjs"), true);
+  assert.equal(await exists("scripts/verify-release-bundle.mjs"), true);
   assert.equal(await exists("scripts/verify-installer-backup-restore.mjs"), true);
   assert.equal(await exists("scripts/verify-installer-rollback.mjs"), true);
 
   const installer = await readFile("scripts/vibelog-install.mjs", "utf8");
   const cli = await readFile("scripts/vibelog-project.mjs", "utf8");
+  const releaseBundleVerifier = await readFile("scripts/verify-release-bundle.mjs", "utf8");
   const backupRestoreVerifier = await readFile("scripts/verify-installer-backup-restore.mjs", "utf8");
   const rollbackVerifier = await readFile("scripts/verify-installer-rollback.mjs", "utf8");
   assert.match(installer.split(/\r?\n/u)[0], /^#!.*node/);
   assert.match(cli.split(/\r?\n/u)[0], /^#!.*node/);
+  assert.match(releaseBundleVerifier.split(/\r?\n/u)[0], /^#!.*node/);
   assert.match(backupRestoreVerifier.split(/\r?\n/u)[0], /^#!.*node/);
   assert.match(rollbackVerifier.split(/\r?\n/u)[0], /^#!.*node/);
 });
@@ -122,4 +130,20 @@ test("vibelog-project help works through direct node and npm script entrypoints"
   });
   assert.match(npmBackupRestore.stdout, /verify-installer-backup-restore/);
   assert.match(npmBackupRestore.stdout, /--scratch-root/);
+
+  const releaseBundle = await execFileAsync(process.execPath, ["scripts/verify-release-bundle.mjs", "--help"], {
+    cwd: process.cwd(),
+    timeout: 30000,
+    maxBuffer: 1024 * 1024
+  });
+  assert.match(releaseBundle.stdout, /verify-release-bundle/);
+  assert.match(releaseBundle.stdout, /release bundle/i);
+
+  const npmReleaseBundle = await execFileAsync(npmRunVibeLogReleaseBundleHelp.file, npmRunVibeLogReleaseBundleHelp.args, {
+    cwd: process.cwd(),
+    timeout: 30000,
+    maxBuffer: 1024 * 1024
+  });
+  assert.match(npmReleaseBundle.stdout, /verify-release-bundle/);
+  assert.match(npmReleaseBundle.stdout, /--scratch-root/);
 });

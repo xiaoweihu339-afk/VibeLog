@@ -47,6 +47,11 @@
       "description": "Any installer that updates existing targets must have verified backup and restore behavior before user-visible write mode exists."
     },
     {
+      "id": "release_bundle_verified",
+      "required": true,
+      "description": "Any downloadable release bundle must be verified from a clean extracted package before public distribution."
+    },
+    {
       "id": "dry_run_only",
       "required": true,
       "description": "The public installer command remains preview-only; scratch-only verification may write and roll back inside temporary targets."
@@ -83,15 +88,36 @@
     {
       "id": "release_bundle",
       "label": "GitHub release bundle",
-      "state": "planned",
+      "state": "prototype_verified",
       "human_approval_required": true,
-      "description": "Package a tagged repository archive for download after remote clone and archive verification.",
+      "description": "Package a downloadable archive after clean extracted-bundle verification. GitHub release creation still requires explicit human approval.",
+      "verified_by": [
+        "test/verify-release-bundle.test.mjs",
+        "scripts/verify-release-bundle.mjs",
+        "test/vibelog-package.test.mjs"
+      ],
+      "allowed_commands": [
+        "node scripts/verify-release-bundle.mjs --repo <repo-root> --scratch-root <scratch-root>",
+        "npm run vibelog:verify-release-bundle -- --repo <repo-root> --scratch-root <scratch-root>"
+      ],
+      "forbidden_actions": [
+        "git push",
+        "npm publish",
+        "creating a GitHub release without explicit approval",
+        "editing global Claude Code settings",
+        "editing global Codex skill directories"
+      ],
       "required_gates": [
         "no_push_without_explicit_approval",
         "no_public_package_without_license",
         "strong_schema_validation",
         "remote_clone_verified",
-        "archive_verification_passed"
+        "archive_verification_passed",
+        "release_bundle_verified"
+      ],
+      "verified_gates": [
+        "release_bundle_verified",
+        "clean_clone_verified"
       ]
     },
     {
@@ -169,8 +195,12 @@
       "reason": "Scratch backup/restore is now verified; future work can turn this into a user-visible installer design only after explicit approval."
     },
     {
-      "id": "remote_clone_or_release_bundle_verification",
-      "reason": "Remote clone or release-bundle verification is needed before public distribution."
+      "id": "post_slice_20_push_decision",
+      "reason": "Slice 20 reaches the planned GitHub push discussion milestone, but any push still requires a separate explicit approval."
+    },
+    {
+      "id": "user_visible_installer_write_mode_design",
+      "reason": "A real installer write mode still needs a narrower approval UX, backup location design, and recovery messaging before it can exist."
     }
   ]
 }
