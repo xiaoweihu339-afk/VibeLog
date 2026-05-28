@@ -13,11 +13,22 @@ Core principle:
 
 ```txt
 User says naturally, agent records structurally.
+Stay skeptical, verify strictly.
 ```
 
 The skill should preserve the full vibe process without forcing the user into manual forms. It is useful even without a website: `vibe-log.md` is the human source of truth, and `vibe-log.json` is the structured export shape for agents, tools, and future VibeHub upload.
 
+Do not trust claims, agent reports, or plausible-looking output without actual evidence. Record uncertainty, run the strongest practical checks, and only mark work as passed when evidence supports it.
+
 Do not require a website, account, server, or upload flow to use this skill. The local log is the product for the first version.
+
+## Core Doctrine
+
+VibeLog is a vibe coding process memory standard, not a publishing or push workflow.
+
+The skill exists so a user can create naturally while the agent records structurally. The first layer is always the one-line idea. The ongoing record preserves idea evolution, human-in-the-loop decisions, engineering execution prompts, implementation status, validation design, verification evidence, bug fixes, and handoff state.
+
+Markdown remains the human-readable source of truth. JSON is an export for agents, tools, future upload, search, remix, and collaboration. Repository push-readiness is only a distribution safety gate for the reusable skill repository; it does not define the VibeLog core.
 
 ## When To Use
 
@@ -90,7 +101,14 @@ Use these bundled resources when needed:
 - `references/agent-usage-guide.md`: operational guide for agents using VibeLog during sessions.
 - `references/claude-code-hooks-adapter.md`: notes for implementing Claude Code hook automation.
 - `references/vibe-event-format.md`: structured event contract for recorder and adapter integrations.
+- `../../docs/guides/stable-live-hook-workflow.md`: safe user workflow for project-local live hook setup, stream consumption, verification, disable, and rollback.
+- `../../docs/guides/handoff-continuity.md`: local verifier for agent handoff continuity.
+- `../../docs/guides/second-agent-continuation.md`: deterministic simulation before real second-agent dogfood.
+- `../../docs/guides/real-second-agent-dogfood.md`: verifying a fresh second-agent report against a brief-only handoff package.
 - `../../docs/guides/progress-reporting.md`: project progress reporting rule for human-facing task summaries.
+- `../../docs/guides/public-skill-readiness.md`: push-preflight gate for public skill readiness, privacy boundaries, package entrypoints, docs, and tracked text.
+
+Use `scripts/verify-handoff-continuity.mjs` after JSON export and schema validation when checking whether another agent can continue from VibeLog without reading the full conversation. Use `--brief-only` to print a compact second-agent handoff package. Use `scripts/simulate-second-agent-continuation.mjs --brief <path>` to test that package before involving a real second agent. Use `scripts/verify-second-agent-continuation-report.mjs --brief <path> --report <path>` before trusting a real second-agent JSON report as dogfood evidence. Use `scripts/verify-public-skill-readiness.mjs` before treating the reusable skill repository as push-ready.
 
 ## Standard Process Record
 
@@ -139,7 +157,7 @@ When an adapter can emit structured events, prefer the recorder core boundary. U
 Vibe Event JSON or JSONL stream -> scripts/record-vibelog-event.mjs -> vibe-log.md -> vibe-log.json
 ```
 
-For Claude Code, use `references/claude-code-hooks-adapter.md` before implementing hooks.
+For Claude Code, use `references/claude-code-hooks-adapter.md` and `../../docs/guides/stable-live-hook-workflow.md` before implementing or enabling hooks.
 
 ## Workflow
 
@@ -357,7 +375,7 @@ Record:
 - residual risk
 - release confidence
 
-Do not claim verification without evidence.
+Stay skeptical, verify strictly. Do not claim verification without evidence. Do not record passed because work looks plausible; record the actual evidence, known gaps, and residual risk.
 
 ### 12. Maintain Artifact Index
 
@@ -421,10 +439,10 @@ Use the long-term VibeHub vision as `100%`, not the local repository task list. 
 Current baseline for this project:
 
 ```txt
-Project Progress: 24 / 100
+Project Progress: 36 / 100
 ```
 
-This baseline reflects S28 Claude runtime readiness preflight and runtime failure classification. Read local `vibe-log.md` first when it exists, because private dogfood state may be newer than public docs.
+This baseline reflects S41 core doctrine alignment after S40 public skill readiness: VibeLog's core is explicitly guarded as vibe coding process memory, not a GitHub push tool, while public readiness remains a distribution safety gate. Read local `vibe-log.md` first when it exists, because private dogfood state may be newer than public docs.
 
 Include:
 
@@ -448,6 +466,8 @@ Default to private:
 - `collaboration_status: closed`
 
 Ask before changing visibility from private to any public value.
+
+Never publish or upload without explicit user approval.
 
 Do not expose full prompts by default. Prefer summaries unless the user explicitly wants full prompt logging.
 

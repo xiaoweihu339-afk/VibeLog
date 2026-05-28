@@ -1,5 +1,5 @@
 import { execFile } from "node:child_process";
-import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
+import { mkdir, readFile, rm, stat, writeFile } from "node:fs/promises";
 import { delimiter, join, resolve } from "node:path";
 import { promisify } from "node:util";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -287,7 +287,17 @@ export async function runLiveVerification({
   prompt = "Reply with OK. Do not use tools.",
   maxBudgetUsd = "0.05",
   eventMode = "direct",
-  timeoutMs = 120000
+  timeoutMs = 120000,
+  requireToolUse = false,
+  requireTestRun = false,
+  requireFailedTestRun = false,
+  requireLessScriptedDogfood = false,
+  requireHumanDecision = false,
+  minToolUseHookCount = 0,
+  minTestRunEventCount = 0,
+  minToolUsedEventCount = 3,
+  minChangedFileEventCount = 2,
+  permissionMode = null
 }) {
   const normalizedEventMode = normalizeEventMode(eventMode);
   if (!live) {
@@ -314,9 +324,13 @@ export async function runLiveVerification({
     eventMode: normalizedEventMode
   });
   const eventStreamPath = join(resolvedWorkspace, ".vibelog-events", "session.jsonl");
+  await resetLiveEventStream({
+    eventMode: normalizedEventMode,
+    eventStreamPath
+  });
 
   try {
-    const { stdout, stderr } = await runClaudeCommand([
+    const claudeArgs = [
       "-p",
       prompt,
       "--settings",
@@ -327,7 +341,12 @@ export async function runLiveVerification({
       "stream-json",
       "--include-hook-events",
       "--verbose"
-    ], {
+    ];
+    if (permissionMode) {
+      claudeArgs.push("--permission-mode", permissionMode);
+    }
+
+    const { stdout, stderr } = await runClaudeCommand(claudeArgs, {
       cwd: resolvedWorkspace,
       timeout: timeoutMs,
       maxBuffer: 1024 * 1024
@@ -337,6 +356,7 @@ export async function runLiveVerification({
     const markdownUpdatedBeforeConsume = markdownBeforeConsume.includes("Claude Code hook event captured");
     const eventStreamExists = await exists(eventStreamPath);
     let streamEventCount = 0;
+    let streamEventSummary = emptyStreamEventSummary();
 
     if (normalizedEventMode === "stream") {
       if (!eventStreamExists) {
@@ -345,6 +365,7 @@ export async function runLiveVerification({
 
       const eventStream = await readFile(eventStreamPath, "utf8");
       streamEventCount = eventStream.split(/\r?\n/u).filter((line) => line.trim().length > 0).length;
+      streamEventSummary = summarizeVibeEventStream(eventStream);
       await recordVibeLogEventsFile({
         eventsPath: eventStreamPath,
         logPath: join(resolvedWorkspace, "vibe-log.md"),
@@ -356,12 +377,40 @@ export async function runLiveVerification({
     const stream = parseStreamJsonLines(stdout);
     const hookResponses = extractHookResponses(stream);
     const result = stream.find((event) => event.type === "result");
-    const stopHookSucceeded = hookResponses.some((event) => event.hook_event === "Stop" && event.exit_code === 0);
     const markdownUpdated = markdown.includes("Claude Code hook event captured");
-    const passed = stopHookSucceeded
-      && markdownUpdated
-      && (normalizedEventMode !== "stream" || (eventStreamExists && streamEventCount > 0 && markdownUpdatedBeforeConsume === false));
-    const status = passed ? "passed" : "incomplete_session";
+    const evidence = evaluateLiveHookEvidence({
+      eventMode: normalizedEventMode,
+      hookResponses,
+      markdownUpdated,
+      eventStreamExists,
+      streamEventCount,
+      markdownUpdatedBeforeConsume,
+      requireToolUse,
+      requireTestRun,
+      requireFailedTestRun,
+      minToolUseHookCount,
+      minTestRunEventCount,
+      testRunEventCount: streamEventSummary.testRunEventCount,
+      failedTestRunEventCount: streamEventSummary.failedTestRunEventCount
+    });
+    const dogfoodEvidence = requireLessScriptedDogfood
+      ? evaluateLessScriptedDogfoodEvidence({
+        streamEventSummary,
+        minToolUsedEventCount,
+        minChangedFileEventCount,
+        minTestRunEventCount,
+        requireHumanDecision
+      })
+      : {
+        passed: true,
+        status: "not_required",
+        summary: "Less-scripted dogfood evidence was not required."
+      };
+    const passed = evidence.passed && dogfoodEvidence.passed;
+    const status = evidence.passed ? dogfoodEvidence.status : evidence.status;
+    const summary = passed
+      ? "Claude Code completed a live less-scripted dogfood session and VibeLog recorded the hook flow."
+      : (evidence.passed ? dogfoodEvidence.summary : evidence.summary);
 
     return {
       attempted: true,
@@ -369,11 +418,31 @@ export async function runLiveVerification({
       status,
       eventMode: normalizedEventMode,
       maxBudgetUsd,
+      requireToolUse,
+      requireTestRun,
+      requireFailedTestRun,
+      requireLessScriptedDogfood,
+      requireHumanDecision,
+      minToolUseHookCount,
+      minTestRunEventCount,
+      minToolUsedEventCount,
+      minChangedFileEventCount,
+      permissionMode,
       settingsPath,
       timeoutMs,
       result: result?.result ?? "",
       totalCostUsd: result?.total_cost_usd ?? null,
       hookResponses,
+      toolUseHookCount: evidence.toolUseHookCount,
+      testRunEventCount: streamEventSummary.testRunEventCount,
+      passedTestRunEventCount: streamEventSummary.passedTestRunEventCount,
+      failedTestRunEventCount: streamEventSummary.failedTestRunEventCount,
+      toolUsedEventCount: streamEventSummary.toolUsedEventCount,
+      changedFileEventCount: streamEventSummary.changedFileEventCount,
+      uniqueChangedFiles: streamEventSummary.uniqueChangedFiles,
+      decisionMadeEventCount: streamEventSummary.decisionMadeEventCount,
+      streamEventTypes: streamEventSummary.eventTypes,
+      lessScriptedDogfood: dogfoodEvidence,
       eventStreamPath,
       eventStreamExists,
       streamEventCount,
@@ -381,9 +450,7 @@ export async function runLiveVerification({
       coreBusiness: coreBusinessStatus({
         passed,
         status,
-        summary: passed
-          ? "Claude Code completed a live session and VibeLog recorded the hook flow."
-          : "Claude Code returned without proving a completed Stop/session-end VibeLog flow."
+        summary
       }),
       stderr: stderr.trim()
     };
@@ -402,9 +469,20 @@ export async function runLiveVerification({
       failureCategory: issue.failureCategory,
       eventMode: normalizedEventMode,
       maxBudgetUsd,
+      requireToolUse,
+      requireTestRun,
+      requireFailedTestRun,
+      requireLessScriptedDogfood,
+      requireHumanDecision,
+      minToolUseHookCount,
+      minTestRunEventCount,
+      minToolUsedEventCount,
+      minChangedFileEventCount,
+      permissionMode,
       settingsPath,
       timeoutMs,
       hookResponses: issue.hookResponses,
+      toolUseHookCount: issue.hookResponses.filter((event) => event.hook_event === "PostToolUse" && event.exit_code === 0).length,
       eventStreamPath,
       eventStreamExists: eventStreamStats.exists,
       streamEventCount: eventStreamStats.count,
@@ -414,6 +492,263 @@ export async function runLiveVerification({
       stderr: error.stderr?.toString().trim() ?? ""
     };
   }
+}
+
+export function evaluateLiveHookEvidence({
+  eventMode = "direct",
+  hookResponses = [],
+  markdownUpdated = false,
+  eventStreamExists = false,
+  streamEventCount = 0,
+  markdownUpdatedBeforeConsume = false,
+  requireToolUse = false,
+  requireTestRun = false,
+  requireFailedTestRun = false,
+  minToolUseHookCount = 0,
+  minTestRunEventCount = 0,
+  testRunEventCount = 0,
+  failedTestRunEventCount = 0
+} = {}) {
+  const stopHookSucceeded = hookResponses.some((event) => event.hook_event === "Stop" && event.exit_code === 0);
+  const toolUseHookCount = hookResponses.filter((event) => event.hook_event === "PostToolUse" && event.exit_code === 0).length;
+  const streamEvidencePassed = eventMode !== "stream"
+    || (eventStreamExists && streamEventCount > 0 && markdownUpdatedBeforeConsume === false);
+
+  if (!stopHookSucceeded) {
+    return {
+      passed: false,
+      status: "missing_stop",
+      stopHookSucceeded,
+      toolUseHookCount,
+      summary: "Claude Code returned without proving a completed Stop/session-end VibeLog flow."
+    };
+  }
+
+  if (requireToolUse && toolUseHookCount === 0) {
+    return {
+      passed: false,
+      status: "missing_tool_use",
+      stopHookSucceeded,
+      toolUseHookCount,
+      summary: "Claude Code completed Stop, but no successful PostToolUse hook was captured."
+    };
+  }
+
+  if (minToolUseHookCount > 0 && toolUseHookCount < minToolUseHookCount) {
+    return {
+      passed: false,
+      status: "insufficient_tool_use",
+      stopHookSucceeded,
+      toolUseHookCount,
+      summary: `Claude Code completed Stop, but captured ${toolUseHookCount} successful PostToolUse hook(s), fewer than the required ${minToolUseHookCount}.`
+    };
+  }
+
+  if (requireTestRun && testRunEventCount === 0) {
+    return {
+      passed: false,
+      status: "missing_test_run",
+      stopHookSucceeded,
+      toolUseHookCount,
+      summary: "Claude Code completed Stop, but no test_ran Vibe Event was captured."
+    };
+  }
+
+  if (minTestRunEventCount > 0 && testRunEventCount < minTestRunEventCount) {
+    return {
+      passed: false,
+      status: "insufficient_test_runs",
+      stopHookSucceeded,
+      toolUseHookCount,
+      summary: `Claude Code completed Stop, but captured ${testRunEventCount} test_ran event(s), fewer than the required ${minTestRunEventCount}.`
+    };
+  }
+
+  if (requireFailedTestRun && failedTestRunEventCount === 0) {
+    return {
+      passed: false,
+      status: "missing_failed_test_run",
+      stopHookSucceeded,
+      toolUseHookCount,
+      summary: "Claude Code completed Stop, but no failed test_ran Vibe Event was captured before recovery."
+    };
+  }
+
+  if (!markdownUpdated) {
+    return {
+      passed: false,
+      status: "log_not_updated",
+      stopHookSucceeded,
+      toolUseHookCount,
+      summary: "Claude Code completed Stop, but VibeLog was not updated."
+    };
+  }
+
+  if (!streamEvidencePassed) {
+    return {
+      passed: false,
+      status: "stream_not_recorded",
+      stopHookSucceeded,
+      toolUseHookCount,
+      summary: "Claude Code completed Stop, but stream-first hook evidence was not recorded cleanly."
+    };
+  }
+
+  return {
+    passed: true,
+    status: "passed",
+    stopHookSucceeded,
+    toolUseHookCount,
+    summary: "Claude Code completed a live session and VibeLog recorded the hook flow."
+  };
+}
+
+export async function resetLiveEventStream({ eventMode = "direct", eventStreamPath } = {}) {
+  if (eventMode !== "stream" || !eventStreamPath) return false;
+  await rm(eventStreamPath, { force: true });
+  return true;
+}
+
+export function evaluateLessScriptedDogfoodEvidence({
+  streamEventSummary = emptyStreamEventSummary(),
+  minToolUsedEventCount = 3,
+  minChangedFileEventCount = 2,
+  minTestRunEventCount = 1,
+  requireHumanDecision = false
+} = {}) {
+  const promptSubmittedEventCount = streamEventSummary.promptSubmittedEventCount ?? 0;
+  const toolUsedEventCount = streamEventSummary.toolUsedEventCount ?? 0;
+  const changedFileEventCount = streamEventSummary.changedFileEventCount ?? 0;
+  const testRunEventCount = streamEventSummary.testRunEventCount ?? 0;
+  const passedTestRunEventCount = streamEventSummary.passedTestRunEventCount ?? 0;
+  const handoffUpdatedEventCount = streamEventSummary.handoffUpdatedEventCount ?? 0;
+  const decisionMadeEventCount = streamEventSummary.decisionMadeEventCount ?? 0;
+
+  const base = {
+    promptSubmittedEventCount,
+    toolUsedEventCount,
+    changedFileEventCount,
+    testRunEventCount,
+    passedTestRunEventCount,
+    handoffUpdatedEventCount,
+    decisionMadeEventCount
+  };
+
+  if (promptSubmittedEventCount === 0) {
+    return {
+      ...base,
+      passed: false,
+      status: "missing_prompt",
+      summary: "Less-scripted dogfood did not record a user prompt."
+    };
+  }
+
+  if (toolUsedEventCount < minToolUsedEventCount) {
+    return {
+      ...base,
+      passed: false,
+      status: "insufficient_tool_work",
+      summary: `Less-scripted dogfood recorded ${toolUsedEventCount} tool_used event(s), fewer than the required ${minToolUsedEventCount}.`
+    };
+  }
+
+  if (changedFileEventCount < minChangedFileEventCount) {
+    return {
+      ...base,
+      passed: false,
+      status: "insufficient_file_changes",
+      summary: `Less-scripted dogfood recorded ${changedFileEventCount} file-changing tool event(s), fewer than the required ${minChangedFileEventCount}.`
+    };
+  }
+
+  if (testRunEventCount < minTestRunEventCount) {
+    return {
+      ...base,
+      passed: false,
+      status: "insufficient_test_runs",
+      summary: `Less-scripted dogfood recorded ${testRunEventCount} test_ran event(s), fewer than the required ${minTestRunEventCount}.`
+    };
+  }
+
+  if (passedTestRunEventCount === 0) {
+    return {
+      ...base,
+      passed: false,
+      status: "missing_passed_test_run",
+      summary: "Less-scripted dogfood recorded tests, but no passing test run."
+    };
+  }
+
+  if (requireHumanDecision && decisionMadeEventCount === 0) {
+    return {
+      ...base,
+      passed: false,
+      status: "missing_human_decision",
+      summary: "Less-scripted dogfood did not record a decision_made event."
+    };
+  }
+
+  if (handoffUpdatedEventCount === 0) {
+    return {
+      ...base,
+      passed: false,
+      status: "missing_handoff",
+      summary: "Less-scripted dogfood did not record a handoff_updated event."
+    };
+  }
+
+  return {
+    ...base,
+    passed: true,
+    status: "passed",
+    summary: requireHumanDecision
+      ? "Less-scripted dogfood recorded prompt, human decision, tool work, file changes, tests, and handoff."
+      : "Less-scripted dogfood recorded prompt, tool work, file changes, tests, and handoff."
+  };
+}
+
+export function summarizeVibeEventStream(text) {
+  const events = parseStreamJsonLines(text);
+  const eventTypes = events
+    .map((event) => event.type)
+    .filter((type) => typeof type === "string");
+  const testRunEvents = events.filter((event) => event.type === "test_ran");
+  const changedFileEvents = events.filter((event) => (
+    event.type === "tool_used"
+    && Array.isArray(event.files_changed)
+    && event.files_changed.length > 0
+  ));
+  const uniqueChangedFiles = [
+    ...new Set(changedFileEvents.flatMap((event) => event.files_changed))
+  ].sort();
+
+  return {
+    eventTypes,
+    promptSubmittedEventCount: eventTypes.filter((type) => type === "prompt_submitted").length,
+    decisionMadeEventCount: eventTypes.filter((type) => type === "decision_made").length,
+    toolUsedEventCount: eventTypes.filter((type) => type === "tool_used").length,
+    changedFileEventCount: changedFileEvents.length,
+    uniqueChangedFiles,
+    testRunEventCount: testRunEvents.length,
+    passedTestRunEventCount: testRunEvents.filter((event) => event.result === "passed").length,
+    failedTestRunEventCount: testRunEvents.filter((event) => event.result === "failed").length,
+    handoffUpdatedEventCount: eventTypes.filter((type) => type === "handoff_updated").length
+  };
+}
+
+function emptyStreamEventSummary() {
+  return {
+    eventTypes: [],
+    promptSubmittedEventCount: 0,
+    decisionMadeEventCount: 0,
+    toolUsedEventCount: 0,
+    changedFileEventCount: 0,
+    uniqueChangedFiles: [],
+    testRunEventCount: 0,
+    passedTestRunEventCount: 0,
+    failedTestRunEventCount: 0,
+    handoffUpdatedEventCount: 0
+  };
 }
 
 export async function runClaudeRuntimePreflight({ timeoutMs = 30000, cwd = process.cwd() } = {}) {
@@ -487,7 +822,11 @@ export function classifyClaudeRuntimeIssue({ stdout = "", stderr = "", errorMess
       error: event.error ?? ""
     }));
 
-  if (/authentication_failed|error_status"?\s*:\s*401|401/u.test(combined)) {
+  const hasAuthFailure = apiRetries.some((event) => (
+    event.error_status === 401 || /authentication_failed/iu.test(event.error)
+  )) || /authentication_failed|error_status"?\s*:\s*401|(?:http\s*)?status(?:\s*code)?\s*:?\s*401/iu.test(combined);
+
+  if (hasAuthFailure) {
     return runtimeIssue({
       status: "auth_failed",
       failureCategory: "external_environment",
@@ -750,7 +1089,17 @@ function parseArgs(argv) {
     prompt: "Reply with OK. Do not use tools.",
     maxBudgetUsd: "0.05",
     eventMode: "direct",
-    timeoutMs: 120000
+    timeoutMs: 120000,
+    requireToolUse: false,
+    requireTestRun: false,
+    requireFailedTestRun: false,
+    requireLessScriptedDogfood: false,
+    requireHumanDecision: false,
+    minToolUseHookCount: 0,
+    minTestRunEventCount: 0,
+    minToolUsedEventCount: 3,
+    minChangedFileEventCount: 2,
+    permissionMode: null
   };
 
   const args = [...argv];
@@ -770,6 +1119,26 @@ function parseArgs(argv) {
       options.eventMode = args.shift() ?? "";
     } else if (arg === "--timeout-ms") {
       options.timeoutMs = Number.parseInt(args.shift() ?? "", 10);
+    } else if (arg === "--require-tool-use") {
+      options.requireToolUse = true;
+    } else if (arg === "--require-test-run") {
+      options.requireTestRun = true;
+    } else if (arg === "--require-failed-test-run") {
+      options.requireFailedTestRun = true;
+    } else if (arg === "--require-less-scripted-dogfood") {
+      options.requireLessScriptedDogfood = true;
+    } else if (arg === "--require-human-decision") {
+      options.requireHumanDecision = true;
+    } else if (arg === "--min-tool-use-count") {
+      options.minToolUseHookCount = Number.parseInt(args.shift() ?? "", 10);
+    } else if (arg === "--min-test-run-count") {
+      options.minTestRunEventCount = Number.parseInt(args.shift() ?? "", 10);
+    } else if (arg === "--min-tool-used-event-count") {
+      options.minToolUsedEventCount = Number.parseInt(args.shift() ?? "", 10);
+    } else if (arg === "--min-changed-file-count") {
+      options.minChangedFileEventCount = Number.parseInt(args.shift() ?? "", 10);
+    } else if (arg === "--permission-mode") {
+      options.permissionMode = args.shift() ?? "";
     } else {
       throw new Error(`Unknown argument: ${arg}`);
     }
@@ -779,8 +1148,13 @@ function parseArgs(argv) {
   if (!options.adapterPath) throw new Error("--adapter requires a path");
   if (!options.prompt) throw new Error("--prompt requires text");
   if (!options.maxBudgetUsd) throw new Error("--max-budget-usd requires a value");
+  if (options.permissionMode === "") throw new Error("--permission-mode requires a value");
   normalizeEventMode(options.eventMode);
   if (!Number.isInteger(options.timeoutMs) || options.timeoutMs <= 0) throw new Error("--timeout-ms requires a positive integer");
+  if (!Number.isInteger(options.minToolUseHookCount) || options.minToolUseHookCount < 0) throw new Error("--min-tool-use-count requires a non-negative integer");
+  if (!Number.isInteger(options.minTestRunEventCount) || options.minTestRunEventCount < 0) throw new Error("--min-test-run-count requires a non-negative integer");
+  if (!Number.isInteger(options.minToolUsedEventCount) || options.minToolUsedEventCount < 0) throw new Error("--min-tool-used-event-count requires a non-negative integer");
+  if (!Number.isInteger(options.minChangedFileEventCount) || options.minChangedFileEventCount < 0) throw new Error("--min-changed-file-count requires a non-negative integer");
   return options;
 }
 
@@ -802,7 +1176,17 @@ async function main() {
     prompt: options.prompt,
     maxBudgetUsd: options.maxBudgetUsd,
     eventMode: options.eventMode,
-    timeoutMs: options.timeoutMs
+    timeoutMs: options.timeoutMs,
+    requireToolUse: options.requireToolUse,
+    requireTestRun: options.requireTestRun,
+    requireFailedTestRun: options.requireFailedTestRun,
+    requireLessScriptedDogfood: options.requireLessScriptedDogfood,
+    requireHumanDecision: options.requireHumanDecision,
+    minToolUseHookCount: options.minToolUseHookCount,
+    minTestRunEventCount: options.minTestRunEventCount,
+    minToolUsedEventCount: options.minToolUsedEventCount,
+    minChangedFileEventCount: options.minChangedFileEventCount,
+    permissionMode: options.permissionMode
   });
 
   console.log(JSON.stringify({ preflight, fixture, live }, null, 2));

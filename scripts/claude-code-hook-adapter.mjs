@@ -8,8 +8,35 @@ import { recordVibeLogEventFile } from "./record-vibelog-event.mjs";
 const ENGINEERING_PROMPT_PATTERN =
   /\b(build|implement|edit|fix|debug|test|refactor|deploy|inspect|read|write|run|execute|docs|document|plan|adapter|hook|record|verify)\b|实现|执行|运行|测试|修复|调试|重构|部署|检查|读取|写|文档|计划|适配器|记录|验证/iu;
 
-const TEST_COMMAND_PATTERN = /\b(node --test|npm test|pnpm test|yarn test|pytest|vitest|jest|cargo test|go test|ruff|eslint|tsc)\b/iu;
+const TEST_COMMAND_PATTERN = /\b(node\s+--test|node\s+\S*(?:\.test|\.spec)\.[cm]?[jt]s|npm test|pnpm test|yarn test|pytest|vitest|jest|cargo test|go test|ruff|eslint|tsc)\b/iu;
 const WRITE_TOOL_PATTERN = /^(Write|Edit|MultiEdit|NotebookEdit)$/u;
+const ALLOWED_DECISION_TYPES = new Set([
+  "direction",
+  "scope",
+  "taste",
+  "tradeoff",
+  "approval",
+  "rejection",
+  "risk",
+  "naming",
+  "prioritization",
+  "architecture",
+  "privacy",
+  "release"
+]);
+const DECISION_TYPE_ALIASES = new Map([
+  ["data", "architecture"],
+  ["database", "architecture"],
+  ["model", "architecture"],
+  ["persistence", "architecture"],
+  ["repository", "architecture"],
+  ["schema", "architecture"],
+  ["storage", "architecture"],
+  ["priority", "prioritization"],
+  ["security", "privacy"],
+  ["secret", "privacy"],
+  ["secrets", "privacy"]
+]);
 
 export function mapClaudeHookToVibeEvents(input, options = {}) {
   const eventName = input?.hook_event_name ?? input?.event ?? input?.hookEventName;
@@ -24,7 +51,7 @@ export function mapClaudeHookToVibeEvents(input, options = {}) {
   }
 
   if (eventName === "Stop") {
-    return [mapStop(input, timestamp)];
+    return mapStop(input, timestamp);
   }
 
   return [];
@@ -124,10 +151,11 @@ function parseJsonText(text) {
 
 function mapUserPromptSubmit(input, timestamp) {
   const prompt = String(input.prompt ?? "");
-  if (!ENGINEERING_PROMPT_PATTERN.test(prompt)) return [];
-
   const redacted = redactSecrets(prompt);
-  return [{
+  const events = [];
+
+  if (ENGINEERING_PROMPT_PATTERN.test(prompt)) {
+    events.push({
     type: "prompt_submitted",
     timestamp,
     agent_or_tool: "Claude Code",
@@ -138,7 +166,57 @@ function mapUserPromptSubmit(input, timestamp) {
     prompt_text: redacted.text,
     result: "Captured from Claude Code UserPromptSubmit hook.",
     reuse_notes: `Session: ${input.session_id ?? "unknown"}`
-  }];
+    });
+  }
+
+  events.push(...extractDecisionEvents(redacted.text, timestamp));
+  return events;
+}
+
+function extractDecisionEvents(prompt, timestamp) {
+  const blocks = [...String(prompt).matchAll(/VIBELOG_DECISION\s*([\s\S]*?)\s*END_VIBELOG_DECISION/giu)];
+  return blocks
+    .map((match) => parseDecisionBlock(match[1], timestamp))
+    .filter(Boolean);
+}
+
+function parseDecisionBlock(block, timestamp) {
+  const fields = {};
+  for (const rawLine of String(block).split(/\r?\n/u)) {
+    const match = rawLine.match(/^\s*([^:]+):\s*(.*?)\s*$/u);
+    if (!match) continue;
+    fields[normalizeDecisionLabel(match[1])] = match[2];
+  }
+
+  const required = ["decision_type", "human_input", "final_decision", "why_it_mattered", "impact"];
+  if (!required.every((field) => fields[field])) return null;
+
+  return {
+    type: "decision_made",
+    timestamp,
+    decision_type: normalizeDecisionType(fields.decision_type),
+    human_input: fields.human_input,
+    agent_proposal: fields.agent_proposal,
+    final_decision: fields.final_decision,
+    why_it_mattered: fields.why_it_mattered,
+    impact: fields.impact
+  };
+}
+
+function normalizeDecisionLabel(label) {
+  return String(label)
+    .trim()
+    .replace(/\s*\/\s*/gu, " ")
+    .replace(/-/gu, " ")
+    .replace(/[^\p{L}\p{N}]+/gu, "_")
+    .replace(/^_+|_+$/gu, "")
+    .toLowerCase();
+}
+
+function normalizeDecisionType(type) {
+  const normalized = normalizeDecisionLabel(type);
+  if (ALLOWED_DECISION_TYPES.has(normalized)) return normalized;
+  return DECISION_TYPE_ALIASES.get(normalized) ?? "direction";
 }
 
 function mapPostToolUse(input, timestamp) {
@@ -178,7 +256,9 @@ function mapPostToolUse(input, timestamp) {
 function mapStop(input, timestamp) {
   const message = redactSecrets(input.last_assistant_message ?? input.response ?? "Claude Code session stopped.").text;
 
-  return {
+  return [
+    ...inferStopTestEvents(message, timestamp),
+    {
     type: "handoff_updated",
     timestamp,
     current_state: summarizeText(message, "Claude Code turn ended; review latest logs and repository state."),
@@ -200,7 +280,30 @@ function mapStop(input, timestamp) {
       `Session: ${input.session_id ?? "unknown"}`,
       `Stop hook active: ${input.stop_hook_active === true ? "true" : "false"}`
     ]
-  };
+    }
+  ];
+}
+
+function inferStopTestEvents(message, timestamp) {
+  if (!mentionsFailedTestRun(message)) return [];
+
+  return [{
+    type: "test_ran",
+    timestamp,
+    summary: "Claude Code reported a failed test run before session stop.",
+    evidence_ref: "Claude Code Stop hook summary",
+    result: "failed",
+    details: summarizeText(message, "Claude Code reported a failed test run before session stop."),
+    residual_risk: "Inferred from Stop hook text because this failed command did not provide a PostToolUse payload.",
+    source: "Claude Code Stop hook",
+    confidence: "low"
+  }];
+}
+
+function mentionsFailedTestRun(message) {
+  if (!/\btests?\b|\bnode --test\b|\bnpm test\b|\bpnpm test\b|\bpytest\b|\bvitest\b|\bjest\b/iu.test(message)) return false;
+  if (/\bfail(?:ed|ures?)?\s*[:=]?\s*0\b|\b0\s+fail(?:ed|ures?)\b/iu.test(message)) return false;
+  return /\btest(?:s| run)?\s+fail(?:ed|ing|ure)?\b|\bfail(?:s|ed|ing|ure|ures)?\b/iu.test(message);
 }
 
 function classifyPromptType(prompt) {
@@ -218,7 +321,18 @@ function inferResult(response) {
   if (response?.exit_code === 0 || response?.success === true) return "passed";
   if (typeof response?.exit_code === "number" && response.exit_code !== 0) return "failed";
   if (response?.error || response?.success === false) return "failed";
-  return "unknown";
+
+  const output = [
+    response?.stdout,
+    response?.stderr,
+    response?.message
+  ].filter(Boolean).join("\n");
+  if (/\b(?:test failed|tests failed|failing tests?)\b/iu.test(output)) return "failed";
+  if (/\ball tests passed\b/iu.test(output)) return "passed";
+  if (/\bfail(?:ed|ures?)?\s*[:=]?\s*[1-9]\d*\b|\b[1-9]\d*\s+fail(?:ed|ures?)\b/iu.test(output)) return "failed";
+  if (/\bpass(?:ed)?\s*[:=]?\s*[1-9]\d*\b|\btests?\s*[:=]?\s*[1-9]\d*\b[\s\S]*\bfail(?:ed)?\s*[:=]?\s*0\b/iu.test(output)) return "passed";
+
+  return "partial";
 }
 
 function summarizeToolResponse(response) {

@@ -39,7 +39,9 @@
       "affected_area": "documentation and examples",
       "confidence": "high",
       "fix": "Remove internal dogfood artifacts from the public boundary and replace them with a synthetic public sample.",
-      "follow_up": "Keep future real examples outside this repository unless intentionally sanitized.",
+      "follow_up": [
+        "Keep future real examples outside this repository unless intentionally sanitized."
+      ],
       "root_cause": "Early validation data lived beside reusable skill assets during development.",
       "source": "repository maintenance",
       "summary": "Prevented private dogfood artifacts from being treated as public examples.",

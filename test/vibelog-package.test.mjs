@@ -23,6 +23,9 @@ const npmRunVibeLogReleaseBundleHelp = process.platform === "win32"
 const npmRunVibeLogGithubAgentTemplateHelp = process.platform === "win32"
   ? { file: "cmd.exe", args: ["/d", "/s", "/c", "npm", "run", "vibelog:verify-github-agent-template-adoption", "--", "--help"] }
   : { file: "npm", args: ["run", "vibelog:verify-github-agent-template-adoption", "--", "--help"] };
+const npmRunVibeLogPublicSkillReadinessHelp = process.platform === "win32"
+  ? { file: "cmd.exe", args: ["/d", "/s", "/c", "npm", "run", "vibelog:verify-public-skill-readiness", "--", "--help"] }
+  : { file: "npm", args: ["run", "vibelog:verify-public-skill-readiness", "--", "--help"] };
 
 async function exists(path) {
   try {
@@ -44,6 +47,7 @@ test("package metadata exposes the VibeLog project CLI as a private local bin", 
   assert.equal(pkg.bin["vibelog-verify-installer-backup-restore"], "./scripts/verify-installer-backup-restore.mjs");
   assert.equal(pkg.bin["vibelog-verify-installer-rollback"], "./scripts/verify-installer-rollback.mjs");
   assert.equal(pkg.bin["vibelog-verify-github-agent-template-adoption"], "./scripts/verify-github-agent-template-adoption.mjs");
+  assert.equal(pkg.bin["vibelog-verify-public-skill-readiness"], "./scripts/verify-public-skill-readiness.mjs");
   assert.equal(pkg.scripts.test, "node --test");
   assert.equal(pkg.scripts.vibelog, "node scripts/vibelog-project.mjs");
   assert.equal(pkg.scripts["vibelog:install"], "node scripts/vibelog-install.mjs");
@@ -51,12 +55,14 @@ test("package metadata exposes the VibeLog project CLI as a private local bin", 
   assert.equal(pkg.scripts["vibelog:verify-installer-backup-restore"], "node scripts/verify-installer-backup-restore.mjs");
   assert.equal(pkg.scripts["vibelog:verify-installer-rollback"], "node scripts/verify-installer-rollback.mjs");
   assert.equal(pkg.scripts["vibelog:verify-github-agent-template-adoption"], "node scripts/verify-github-agent-template-adoption.mjs");
+  assert.equal(pkg.scripts["vibelog:verify-public-skill-readiness"], "node scripts/verify-public-skill-readiness.mjs");
   assert.equal(await exists("scripts/vibelog-install.mjs"), true);
   assert.equal(await exists("scripts/vibelog-project.mjs"), true);
   assert.equal(await exists("scripts/verify-release-bundle.mjs"), true);
   assert.equal(await exists("scripts/verify-installer-backup-restore.mjs"), true);
   assert.equal(await exists("scripts/verify-installer-rollback.mjs"), true);
   assert.equal(await exists("scripts/verify-github-agent-template-adoption.mjs"), true);
+  assert.equal(await exists("scripts/verify-public-skill-readiness.mjs"), true);
 
   const installer = await readFile("scripts/vibelog-install.mjs", "utf8");
   const cli = await readFile("scripts/vibelog-project.mjs", "utf8");
@@ -64,12 +70,14 @@ test("package metadata exposes the VibeLog project CLI as a private local bin", 
   const backupRestoreVerifier = await readFile("scripts/verify-installer-backup-restore.mjs", "utf8");
   const rollbackVerifier = await readFile("scripts/verify-installer-rollback.mjs", "utf8");
   const githubAgentTemplateVerifier = await readFile("scripts/verify-github-agent-template-adoption.mjs", "utf8");
+  const publicSkillReadinessVerifier = await readFile("scripts/verify-public-skill-readiness.mjs", "utf8");
   assert.match(installer.split(/\r?\n/u)[0], /^#!.*node/);
   assert.match(cli.split(/\r?\n/u)[0], /^#!.*node/);
   assert.match(releaseBundleVerifier.split(/\r?\n/u)[0], /^#!.*node/);
   assert.match(backupRestoreVerifier.split(/\r?\n/u)[0], /^#!.*node/);
   assert.match(rollbackVerifier.split(/\r?\n/u)[0], /^#!.*node/);
   assert.match(githubAgentTemplateVerifier.split(/\r?\n/u)[0], /^#!.*node/);
+  assert.match(publicSkillReadinessVerifier.split(/\r?\n/u)[0], /^#!.*node/);
 });
 
 test("vibelog-project help works through direct node and npm script entrypoints", async () => {
@@ -170,4 +178,20 @@ test("vibelog-project help works through direct node and npm script entrypoints"
   });
   assert.match(npmGithubAgentTemplate.stdout, /verify-github-agent-template-adoption/);
   assert.match(npmGithubAgentTemplate.stdout, /--workspace/);
+
+  const publicSkillReadiness = await execFileAsync(process.execPath, ["scripts/verify-public-skill-readiness.mjs", "--help"], {
+    cwd: process.cwd(),
+    timeout: 30000,
+    maxBuffer: 1024 * 1024
+  });
+  assert.match(publicSkillReadiness.stdout, /verify-public-skill-readiness/);
+  assert.match(publicSkillReadiness.stdout, /reusable skill/i);
+
+  const npmPublicSkillReadiness = await execFileAsync(npmRunVibeLogPublicSkillReadinessHelp.file, npmRunVibeLogPublicSkillReadinessHelp.args, {
+    cwd: process.cwd(),
+    timeout: 30000,
+    maxBuffer: 1024 * 1024
+  });
+  assert.match(npmPublicSkillReadiness.stdout, /verify-public-skill-readiness/);
+  assert.match(npmPublicSkillReadiness.stdout, /--repo/);
 });

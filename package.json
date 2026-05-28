@@ -8,6 +8,7 @@
     "vibelog-install": "./scripts/vibelog-install.mjs",
     "vibelog-project": "./scripts/vibelog-project.mjs",
     "vibelog-verify-github-agent-template-adoption": "./scripts/verify-github-agent-template-adoption.mjs",
+    "vibelog-verify-public-skill-readiness": "./scripts/verify-public-skill-readiness.mjs",
     "vibelog-verify-release-bundle": "./scripts/verify-release-bundle.mjs",
     "vibelog-verify-installer-backup-restore": "./scripts/verify-installer-backup-restore.mjs",
     "vibelog-verify-installer-rollback": "./scripts/verify-installer-rollback.mjs"
@@ -17,6 +18,7 @@
     "vibelog": "node scripts/vibelog-project.mjs",
     "vibelog:install": "node scripts/vibelog-install.mjs",
     "vibelog:verify-github-agent-template-adoption": "node scripts/verify-github-agent-template-adoption.mjs",
+    "vibelog:verify-public-skill-readiness": "node scripts/verify-public-skill-readiness.mjs",
     "vibelog:verify-release-bundle": "node scripts/verify-release-bundle.mjs",
     "vibelog:verify-installer-backup-restore": "node scripts/verify-installer-backup-restore.mjs",
     "vibelog:verify-installer-rollback": "node scripts/verify-installer-rollback.mjs"

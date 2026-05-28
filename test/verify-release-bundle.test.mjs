@@ -39,6 +39,7 @@ test("release bundle verifier proves an extracted package can run the adoption a
     assert.equal(result.contents.included["skills/vibelog/assets/vibe-log.schema.json"], true);
     assert.equal(result.contents.included["scripts/vibelog-project.mjs"], true);
     assert.equal(result.contents.included["scripts/vibelog-install.mjs"], true);
+    assert.equal(result.contents.included["scripts/verify-public-skill-readiness.mjs"], true);
     assert.equal(result.contents.included["scripts/verify-installer-rollback.mjs"], true);
     assert.equal(result.contents.included["scripts/verify-installer-backup-restore.mjs"], true);
     assert.equal(result.contents.excluded[".git"], true);

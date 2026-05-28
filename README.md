@@ -20,9 +20,26 @@ The current draft focuses on a reusable local skill, a stable Markdown-to-JSON c
 
 ```txt
 User says naturally, agent records structurally.
+Stay skeptical, verify strictly.
 ```
 
 The human should be able to create in a normal conversation. The agent or hook adapter should keep the project memory structured, readable, and machine-exportable.
+
+Do not trust claims, agent reports, or plausible-looking output without evidence. Record uncertainty, run the strongest practical checks, and only mark work as passed when evidence supports it.
+
+## Core Doctrine
+
+VibeLog is a vibe coding process memory standard, not a GitHub push tool.
+
+The core loop is:
+
+```txt
+human vibes naturally -> agent records structurally -> Markdown stays readable -> JSON stays machine-usable
+```
+
+VibeLog starts from a one-line idea and preserves how a vibe product changes while it is being made: idea evolution, human-in-the-loop decisions, engineering execution prompts, implementation status, validation design, verification evidence, bug fixes, and handoff state.
+
+`vibe-log.md` is the human-readable source of truth. `vibe-log.json` is the structured export for agents, tools, future VibeHub upload, search, remix, and collaboration. Public skill readiness is a distribution safety gate for this repository; it is not the VibeLog core.
 
 ## What VibeLog Records
 
@@ -61,6 +78,15 @@ Do not commit:
 - experimental dogfood source projects
 
 Only sanitized, synthetic, or explicitly public VibeLog examples belong under `examples/`.
+
+Before any human-approved push, run the public skill readiness gate:
+
+```powershell
+node scripts/verify-public-skill-readiness.mjs
+npm run vibelog:verify-public-skill-readiness
+```
+
+This gate checks private root logs, package entrypoints, public docs, and tracked text for local personal paths or token-like secrets. Passing the gate does not authorize a push; push still requires explicit human approval and a reviewed commit.
 
 ## Quick Start
 
@@ -129,6 +155,9 @@ npm run vibelog -- verify --project "C:\path\to\project"
 ```powershell
 node scripts/export-vibelog.mjs vibe-log.md --out vibe-log.json
 node scripts/validate-vibelog.mjs vibe-log.json
+node scripts/verify-handoff-continuity.mjs vibe-log.json
+node scripts/verify-handoff-continuity.mjs vibe-log.json --min-score 90 --brief-only
+node scripts/verify-second-agent-continuation-report.mjs --brief handoff-brief.txt --report second-agent-report.json
 node scripts/export-vibelog.mjs vibe-log.md --out vibe-log.json --check
 ```
 
@@ -178,7 +207,7 @@ PreCompact        -> preserve essential context before compaction
 PostCompact       -> refresh handoff state if useful
 ```
 
-See [Claude Code Adapter](docs/guides/claude-code-adapter.md), [Claude Code Opt-In Install](docs/guides/claude-code-opt-in-install.md), and [Claude Code adapter notes](skills/vibelog/references/claude-code-hooks-adapter.md).
+See [Stable Live Hook Workflow](docs/guides/stable-live-hook-workflow.md), [稳定 live hook 工作流](docs/guides/stable-live-hook-workflow.zh.md), [Claude Code Adapter](docs/guides/claude-code-adapter.md), [Claude Code Opt-In Install](docs/guides/claude-code-opt-in-install.md), and [Claude Code adapter notes](skills/vibelog/references/claude-code-hooks-adapter.md).
 
 ## Repository Structure
 
@@ -211,11 +240,15 @@ See [Claude Code Adapter](docs/guides/claude-code-adapter.md), [Claude Code Opt-
 
 - `scripts/export-vibelog.mjs`: export deterministic JSON from Markdown.
 - `scripts/validate-vibelog.mjs`: validate exported VibeLog JSON against the current schema subset.
+- `scripts/verify-handoff-continuity.mjs`: check whether `handoff_state`, progress, evidence, and boundaries are strong enough for another agent to continue; use `--brief-only` to print a compact second-agent handoff package.
+- `scripts/simulate-second-agent-continuation.mjs`: simulate a second agent using only the brief-only package before running a real second-agent dogfood.
+- `scripts/verify-second-agent-continuation-report.mjs`: verify a real second-agent JSON report against the brief-only package before trusting it as dogfood evidence.
 - `scripts/record-vibelog-event.mjs`: apply one structured Vibe Event payload or an ordered event stream to Markdown and optionally regenerate JSON.
 - `scripts/claude-code-hook-adapter.mjs`: map Claude Code hook JSON input to Vibe Event JSON, either recording directly or appending an event stream.
 - `scripts/configure-claude-code-vibelog-hooks.mjs`: preview or write project-local Claude Code VibeLog hook settings.
 - `scripts/vibelog-project.mjs`: project adoption CLI for init, hook preview/enable, verification, and hook disable.
 - `scripts/vibelog-install.mjs`: dry-run installer planner.
+- `scripts/verify-public-skill-readiness.mjs`: public skill push-preflight verifier for privacy boundaries, package entrypoints, docs, and tracked text.
 - `scripts/verify-release-bundle.mjs`: scratch-only release bundle verifier.
 - `scripts/verify-github-agent-template-adoption.mjs`: clean-clone agent template adoption verifier.
 
@@ -233,9 +266,19 @@ Example folders may contain only:
 
 - [Quickstart](docs/guides/quickstart.md)
 - [Export JSON](docs/guides/export-json.md)
+- [Handoff Continuity](docs/guides/handoff-continuity.md)
+- [交接连续性](docs/guides/handoff-continuity.zh.md)
+- [Second-Agent Continuation](docs/guides/second-agent-continuation.md)
+- [第二 agent 接手验证](docs/guides/second-agent-continuation.zh.md)
+- [Real Second-Agent Dogfood](docs/guides/real-second-agent-dogfood.md)
+- [真实第二 agent 接力](docs/guides/real-second-agent-dogfood.zh.md)
 - [Recorder Core](docs/guides/recorder-core.md)
 - [Claude Code Adapter](docs/guides/claude-code-adapter.md)
 - [Claude Code Opt-In Install](docs/guides/claude-code-opt-in-install.md)
+- [Stable Live Hook Workflow](docs/guides/stable-live-hook-workflow.md)
+- [稳定 live hook 工作流](docs/guides/stable-live-hook-workflow.zh.md)
+- [Public Skill Readiness](docs/guides/public-skill-readiness.md)
+- [公开 Skill Readiness](docs/guides/public-skill-readiness.zh.md)
 - [VibeLog Project Adoption](docs/guides/vibelog-project-adoption.md)
 - [VibeLog Install and Distribution](docs/guides/vibelog-install-distribution.md)
 - [Agent compatibility](docs/guides/agent-compatibility.md)
@@ -261,13 +304,14 @@ Useful targeted checks:
 node scripts/export-vibelog.mjs examples/public-sample/vibe-log.md --out examples/public-sample/vibe-log.json
 node scripts/validate-vibelog.mjs examples/public-sample/vibe-log.json
 node scripts/export-vibelog.mjs examples/public-sample/vibe-log.md --out examples/public-sample/vibe-log.json --check
+node scripts/verify-public-skill-readiness.mjs
 node scripts/verify-github-agent-template-adoption.mjs --remote-url https://github.com/xiaoweihu339-afk/VibeLog.git --workspace "C:\path\to\scratch-root"
 node scripts/verify-release-bundle.mjs --repo "C:\path\to\VibeLog" --scratch-root "C:\path\to\scratch-root"
 ```
 
 ## Current Status
 
-VibeLog v0.2 draft is ready for local skill testing, JSON export, schema validation, project-local adoption, copyable agent-template smoke testing, clean-clone agent-template adoption verification, Claude Code hook preview, stream-first scratch/live runtime probing with readiness preflight, and sanitized public example review.
+VibeLog v0.2 draft is ready for local skill testing, JSON export, schema validation, handoff continuity verification with brief-only handoff packages, simulated second-agent continuation checks, project-local adoption, copyable agent-template smoke testing, clean-clone agent-template adoption verification, Claude Code hook preview, stream-first scratch/live runtime probing with readiness preflight, stable live hook workflow guidance, longer multi-turn, less-scripted, and human-in-the-loop live dogfood verification, sanitized public example review, and repeatable public skill readiness checks.
 
 It is not yet a polished public package manager release. The next major step is to test the skill across more real agent sessions while keeping private VibeLogs outside this repository.
 

@@ -227,7 +227,10 @@ async function verifyPublicBoundary(clonePath) {
   }
 
   const forbiddenMarkers = [
-    ["C:", "Users"].join("\\\\"),
+    {
+      label: "C:\\Users\\<name>",
+      pattern: /C:\\+Users\\+(?!Public\b)[A-Za-z0-9._-]+/iu
+    },
     "H" + "XW",
     "App" + "Data"
   ];
@@ -247,15 +250,25 @@ async function scanTextFilesForMarkers(root, markers) {
     if (!isScannableTextFile(path)) continue;
     const content = await readFile(path, "utf8");
     for (const marker of markers) {
-      if (content.includes(marker)) {
+      const match = matchForbiddenMarker(content, marker);
+      if (match) {
         matches.push({
           path,
-          marker
+          marker: match
         });
       }
     }
   }
   return matches;
+}
+
+function matchForbiddenMarker(content, marker) {
+  if (typeof marker === "string") {
+    return content.includes(marker) ? marker : null;
+  }
+
+  const match = marker.pattern.exec(content);
+  return match ? marker.label : null;
 }
 
 async function listFiles(dir) {

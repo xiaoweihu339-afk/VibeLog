@@ -15,6 +15,8 @@ This repository contains the reusable VibeLog skill, schema, scripts, docs, and 
 - Keep agent-facing instructions concise and reusable.
 - Add tests when changing templates, scripts, schema, examples, or distribution behavior.
 - Run `node --test` before claiming the repository passes.
+- Run `node scripts/verify-public-skill-readiness.mjs` before treating the repository as push-ready for the reusable public skill.
+- Passing readiness checks does not authorize a push; pushing still requires explicit human approval.
 - For generated VibeLog examples, run:
 
 ```powershell

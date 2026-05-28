@@ -4,6 +4,14 @@ This guide is for agents using the VibeLog skill during real project sessions.
 
 Use `skills/vibelog/SKILL.md` as the canonical rule set. Use this file as the operational checklist.
 
+## Core Doctrine
+
+VibeLog is a vibe coding process memory standard, not a publishing or push workflow.
+
+The agent's job is to let the human vibe naturally while the agent records structurally. Start from the one-line idea, then maintain idea evolution, human-in-the-loop decisions, engineering execution prompts, implementation status, validation design, verification evidence, bug fixes, and handoff state.
+
+Markdown is the human-readable source of truth. JSON is an export for agents, tools, future upload, search, remix, and collaboration. Push readiness belongs only to distribution safety for the reusable skill repository; it is not the VibeLog core.
+
 ## When To Call VibeLog
 
 Call VibeLog when the user asks to:
@@ -141,13 +149,13 @@ If the handoff state is vague, update it before stopping.
 
 Every completed meaningful task should report conservative project progress to the human.
 
-Use the long-term VibeHub vision as `100%`, not the local repo's immediate tasks. The current baseline after S28 is:
+Use the long-term VibeHub vision as `100%`, not the local repo's immediate tasks. The current baseline after S41 is:
 
 ```txt
-Project Progress: 24 / 100
+Project Progress: 36 / 100
 ```
 
-Read local `vibe-log.md` first when it exists, because private dogfood state may be newer than public docs.
+This baseline reflects S41 core doctrine alignment after S40 public skill readiness: VibeLog's core is explicitly guarded as vibe coding process memory, not a GitHub push tool, while public readiness remains a distribution safety gate. Read local `vibe-log.md` first when it exists, because private dogfood state may be newer than public docs.
 
 Final reports should include:
 
@@ -163,6 +171,8 @@ Use `docs/guides/progress-reporting.md` and `docs/guides/progress-reporting.zh.m
 
 ## Verification Rules
 
+Stay skeptical, verify strictly.
+
 Only record verification evidence for checks that actually happened.
 
 Good evidence:
@@ -173,7 +183,33 @@ Good evidence:
 - screenshot or demo reference
 - known failure with residual risk
 
-Do not write `passed` because the implementation looks plausible. Run or describe the actual check.
+Do not trust claims, agent reports, or plausible-looking output without actual evidence. Do not record passed because the implementation looks plausible. Run or describe the actual check, then record known gaps and residual risk.
+
+When testing whether another agent can continue from VibeLog, run:
+
+```powershell
+node scripts/export-vibelog.mjs vibe-log.md --out vibe-log.json
+node scripts/validate-vibelog.mjs vibe-log.json
+node scripts/verify-handoff-continuity.mjs vibe-log.json
+node scripts/verify-handoff-continuity.mjs vibe-log.json --min-score 90 --brief-only
+node scripts/simulate-second-agent-continuation.mjs --brief handoff-brief.txt
+node scripts/verify-second-agent-continuation-report.mjs --brief handoff-brief.txt --report second-agent-report.json
+```
+
+Use `docs/guides/handoff-continuity.md` for the full handoff continuity rule.
+Use `docs/guides/second-agent-continuation.md` before running a real second-agent dogfood.
+Use `docs/guides/real-second-agent-dogfood.md` when verifying a fresh agent that receives only the brief-only package.
+
+For reusable skill push-preflight, use isolated checks and workflow checks:
+
+```powershell
+node scripts/verify-public-skill-readiness.mjs
+node --test test\verify-public-skill-readiness.test.mjs test\vibelog-package.test.mjs
+node --test test\verify-clean-clone-adoption.test.mjs test\verify-release-bundle.test.mjs
+node --test
+```
+
+Use `docs/guides/public-skill-readiness.md` before treating the VibeLog skill repository as push-ready.
 
 ## Privacy Rules
 

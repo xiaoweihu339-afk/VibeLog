@@ -390,6 +390,8 @@ function coerceFieldValue(key, value) {
     if (backtickValues.length > 0) return backtickValues;
 
     if (cleaned.includes(",")) return cleaned.split(",").map((item) => item.trim()).filter(Boolean);
+    if (!cleaned) return [];
+    return [cleaned];
   }
 
   return cleaned;

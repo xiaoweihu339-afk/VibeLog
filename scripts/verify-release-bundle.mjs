@@ -14,6 +14,7 @@ const REQUIRED_PACKAGE_PATHS = [
   "skills/vibelog/assets/vibe-log.schema.json",
   "scripts/vibelog-project.mjs",
   "scripts/vibelog-install.mjs",
+  "scripts/verify-public-skill-readiness.mjs",
   "scripts/verify-installer-rollback.mjs",
   "scripts/verify-installer-backup-restore.mjs"
 ];

@@ -266,6 +266,26 @@ test("progress_updated appends a chronological Vibe Progress entry", () => {
   assert.deepEqual(latest.tools_used, ["`Codex`", "`node --test`"]);
 });
 
+test("tool_used preserves empty files_changed as an array", () => {
+  const markdown = applyVibeLogEvent(baseMarkdown, {
+    type: "tool_used",
+    timestamp: "2026-05-27T16:45:00+08:00",
+    work_type: "chore",
+    summary: "Claude Code used Glob.",
+    files_changed: [],
+    details: "Glob completed with result partial.",
+    verification: "partial",
+    follow_up: ["Review whether this tool use changed VibeLog-relevant project state."],
+    source: "Claude Code PostToolUse hook",
+    confidence: "medium"
+  });
+  const data = parseVibeLogMarkdown(markdown);
+  const result = validateVibeLog(data);
+
+  assert.deepEqual(data.development_log[0].files_changed, []);
+  assert.equal(result.valid, true, result.errors.join("\n"));
+});
+
 test("recordVibeLogEventFile writes Markdown and optional JSON", async () => {
   const dir = await mkdtemp(join(tmpdir(), "vibelog-recorder-"));
   const logPath = join(dir, "vibe-log.md");

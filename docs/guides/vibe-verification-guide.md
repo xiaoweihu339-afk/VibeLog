@@ -6,6 +6,10 @@ VibeLog verification should be agent-run first. The human reviews direction, rea
 
 If an agent can vibe-verify it, do not make the human manually verify it.
 
+Stay skeptical, verify strictly.
+
+Do not trust claims, agent reports, or plausible-looking output without evidence. Treat every result as unproven until the check has run, the output has been read, and the residual risk has been stated.
+
 Manual review should focus on judgment, not chores. The agent should create the scenario, run the commands, export the structured data, validate the output, and report evidence.
 
 ## Human Role

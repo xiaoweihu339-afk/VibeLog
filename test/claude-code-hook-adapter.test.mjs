@@ -181,6 +181,33 @@ test("redacts secret-like prompt text", () => {
   assert.match(events[0].prompt_text, /API_KEY=\[REDACTED\]/);
 });
 
+test("maps explicit VibeLog decision block to decision_made", () => {
+  const events = mapClaudeHookToVibeEvents({
+    hook_event_name: "UserPromptSubmit",
+    session_id: "session-decision",
+    prompt: [
+      "Build a small idea board CLI and run tests.",
+      "VIBELOG_DECISION",
+      "Decision Type: storage",
+      "Human Input: Use one JSON file for the MVP.",
+      "Agent Proposal: Use a directory per idea for easier future branching.",
+      "Final Decision: Keep one ideas.json file in the first version.",
+      "Why It Mattered: This keeps the dogfood task small while preserving a migration path.",
+      "Impact: Implement simple read/write around ideas.json and document the limitation.",
+      "END_VIBELOG_DECISION"
+    ].join("\n")
+  });
+
+  assert.equal(events.length, 2);
+  assert.equal(events[0].type, "prompt_submitted");
+  assert.equal(events[1].type, "decision_made");
+  assert.equal(events[1].decision_type, "architecture");
+  assert.match(events[1].human_input, /one JSON file/);
+  assert.match(events[1].agent_proposal, /directory per idea/);
+  assert.match(events[1].final_decision, /ideas\.json/);
+  assert.match(events[1].impact, /read\/write/);
+});
+
 test("maps PostToolUse Bash test command to test_ran", () => {
   const events = mapClaudeHookToVibeEvents({
     hook_event_name: "PostToolUse",
@@ -198,6 +225,41 @@ test("maps PostToolUse Bash test command to test_ran", () => {
   assert.equal(events[0].type, "test_ran");
   assert.equal(events[0].result, "passed");
   assert.match(events[0].evidence_ref, /node --test/);
+});
+
+test("infers passed test result from node test output without an exit code", () => {
+  const events = mapClaudeHookToVibeEvents({
+    hook_event_name: "PostToolUse",
+    tool_name: "Bash",
+    tool_input: {
+      command: "node --test s30-tool-use.test.mjs"
+    },
+    tool_response: {
+      stdout: "tests 1\npass 1\nfail 0"
+    }
+  });
+
+  assert.equal(events.length, 1);
+  assert.equal(events[0].type, "test_ran");
+  assert.equal(events[0].result, "passed");
+});
+
+test("maps direct node test file command to test_ran", () => {
+  const events = mapClaudeHookToVibeEvents({
+    hook_event_name: "PostToolUse",
+    tool_name: "Bash",
+    tool_input: {
+      command: "node bill-summary.test.mjs"
+    },
+    tool_response: {
+      stdout: "All tests passed."
+    }
+  });
+
+  assert.equal(events.length, 1);
+  assert.equal(events[0].type, "test_ran");
+  assert.equal(events[0].result, "passed");
+  assert.match(events[0].evidence_ref, /bill-summary\.test\.mjs/);
 });
 
 test("maps PostToolUse edit/write tool to tool_used", () => {
@@ -234,6 +296,23 @@ test("maps Stop to handoff_updated", () => {
   assert.equal(events[0].progress_snapshot.project_progress, "22 / 100");
   assert.match(events[0].progress_snapshot.next_unlock, /real project opt-in/i);
   assert.ok(events[0].pending.includes("Review generated VibeLog updates"));
+});
+
+test("maps Stop failed test summary to inferred test_ran plus handoff", () => {
+  const events = mapClaudeHookToVibeEvents({
+    hook_event_name: "Stop",
+    stop_hook_active: false,
+    last_assistant_message: "Result: 1 fail. The test file imports missing receipt-total.mjs.",
+    session_id: "session-failed-test"
+  });
+
+  assert.equal(events.length, 2);
+  assert.equal(events[0].type, "test_ran");
+  assert.equal(events[0].result, "failed");
+  assert.equal(events[0].source, "Claude Code Stop hook");
+  assert.equal(events[0].confidence, "low");
+  assert.match(events[0].residual_risk, /Inferred from Stop hook text/);
+  assert.equal(events[1].type, "handoff_updated");
 });
 
 test("CLI print mode prints mapped events without writing files", async () => {
