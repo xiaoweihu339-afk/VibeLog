@@ -288,6 +288,8 @@ Example folders may contain only:
 - [Validation checklist](docs/guides/validation-checklist.md)
 - [VibeHub long-term product document](docs/product/vibehub-long-term-product-document.md)
 - [VibeLog Studio MVP requirements](docs/product/vibelog-studio-mvp-requirements.md)
+- [VibeHub product layer boundary](docs/product/vibehub-product-layer-boundary.md)
+- [VibeHub engineering startup boundary](docs/product/vibehub-engineering-startup.md)
 - [v0.2 draft release notes](docs/releases/v0.2-draft.md)
 
 ## Test
