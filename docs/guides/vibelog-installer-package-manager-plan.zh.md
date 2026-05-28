@@ -99,10 +99,13 @@ Package-manager distribution 未来可以使用 npm 或其他 registry。
 
 Agent-specific templates 未来可以把 VibeLog 打包给 Codex、Claude Code、Cursor、AGENTS.md 和其他 agent environments。
 
+标准保持稳定，适配持续进化。这个渠道应该持续跟进主流 AI 编程 agent 的能力变化，并在 hooks、rules、memory、CLI、插件、扩展机制或生命周期事件变得更可靠时更新模板或说明。
+
 必要 gates：
 
 - adapter docs 已验证；
 - template smoke tests 已通过；
+- current compatibility level 已记录；
 - 有清晰 uninstall 或 disable path；
 - release 前有人类明确确认。
 

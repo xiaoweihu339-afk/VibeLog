@@ -4,7 +4,7 @@ This guide explains how VibeLog can be used by agents that do not load Codex ski
 
 Status: prototype template pack, smoke-tested in this repository. Live adherence still depends on each agent version and project setup.
 
-Last checked: 2026-05-27.
+Last checked: 2026-05-28.
 
 ## Why This Exists
 
@@ -16,6 +16,14 @@ VibeLog should not depend on one agent vendor. The durable core is:
 - structured idea evolution, human-in-the-loop decisions, validation design, verification evidence, bug fixes, artifacts, and handoff state
 
 The templates in `agent-templates/` make that core available to common agent instruction systems.
+
+## Living Compatibility Principle
+
+**The standard stays stable. The integrations keep evolving.**
+
+VibeLog will track the capabilities of mainstream AI coding agents and update integration guidance as their hooks, rules, memories, CLIs, plugins, extensions, and lifecycle events change. Compatibility levels are living documentation: the VibeLog format stays stable, while each agent's automation depth may improve over time.
+
+This means VibeLog should not promise that every agent can record automatically today. It should tell users what is currently verified, what is template-only, what needs explicit calls, and what is planned for future adapters.
 
 ## Automation Limits
 
@@ -40,6 +48,7 @@ Human / Agent    -> explicit updates when the environment has no reliable automa
 | Windsurf | Medium to weak; depends on workspace rule behavior | Use `.windsurf/rules/vibelog.md`; verify with a small synthetic project before real work. |
 | Cline | Medium to weak; depends on `.clinerules` loading and task flow | Use `.clinerules/vibelog.md`; verify that the agent updates `vibe-log.md` before relying on it. |
 | Roo-compatible environments | Medium to weak; rule directory behavior varies by mode/version | Use `.roo/rules/` only after checking the local environment loads those rules. |
+| Continue and similar rule-based agents | Medium to weak; depends on local rule loading and mode behavior | Use the agent's local rules mechanism to embed the VibeLog contract, then verify Markdown/JSON updates before relying on it. |
 | GitHub Copilot | Weak for continuous process recording; better for repository guidance | Use `.github/copilot-instructions.md` for expectations, then update VibeLog explicitly. |
 | Plain web chat / generic chatbots | Weak; no reliable project-local hook or file-write lifecycle | Manually summarize ideas and decisions into VibeLog, then run export/validation. |
 | Future VibeHub native recorder | Target: strong | Future optimization should provide first-class project memory capture, upload, permissions, and reviewable event streams. |
@@ -121,8 +130,11 @@ Run a real coding task with the selected agent and verify that idea changes, hum
 
 Future work should improve adapter coverage without weakening the standard:
 
+- maintain compatibility levels as living documentation as agent platforms update
+- periodically re-check mainstream AI coding agents before claiming stronger automation
 - better Codex wrapper or app integration when lifecycle hooks become available
 - stronger template verification for Cursor, Windsurf, Cline, Roo, Gemini CLI, and GitHub Copilot
+- add templates for rule-based agents such as Continue when their local rules path is verified in VibeLog tests
 - clearer native VibeHub recorder flows for non-programmers
 - reviewable event streams before writing permanent Markdown
 - agent-specific capability detection so users know whether they have automatic, semi-automatic, or manual recording
@@ -130,10 +142,11 @@ Future work should improve adapter coverage without weakening the standard:
 ## Source References
 
 - OpenAI Codex documents `AGENTS.md` project instructions: https://developers.openai.com/codex/guides/agents-md
-- Claude Code documents `CLAUDE.md` memory and hooks: https://code.claude.com/docs/en/memory and https://code.claude.com/docs/en/hooks
+- Claude Code documents `CLAUDE.md` memory and hooks: https://code.claude.com/docs/en/memory and https://code.claude.com/docs/en/hooks-guide
 - Cursor documents project rules under `.cursor/rules`: https://docs.cursor.com/context/rules
 - Gemini CLI documents project context through `GEMINI.md`: https://github.com/google-gemini/gemini-cli/blob/main/docs/index.md
 - Windsurf documents workspace rules for Cascade: https://windsurf.com/university/general-education/creating-modifying-rules
 - Cline documents `.clinerules/` and AGENTS compatibility: https://docs.cline.bot/customization/cline-rules
 - Roo Code documents `.roo/rules-*` instruction directories for custom modes: https://roocodeinc.github.io/Roo-Code/features/custom-modes/
 - GitHub Copilot documents repository custom instructions: https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/add-custom-instructions/add-repository-instructions
+- Continue documents local `.continue/rules`: https://docs.continue.dev/customize/rules

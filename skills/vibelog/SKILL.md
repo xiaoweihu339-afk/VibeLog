@@ -50,7 +50,9 @@ Use this skill when the user wants to:
 
 Use this skill from automation hooks when an agent environment supports lifecycle events such as `SessionStart`, `UserPromptSubmit`, `PostToolUse`, `Stop`, `PreCompact`, or `PostCompact`.
 
-Installing this skill does not guarantee automatic recording. VibeLog defines the process-memory standard and helper commands; automation depends on the host agent. Claude Code CLI can use project-local hooks. Codex usually needs `AGENTS.md`, explicit calls, or end-of-slice recording unless a wrapper or future lifecycle hook is available. Cursor, Windsurf, Cline, Roo-compatible environments, Gemini CLI, GitHub Copilot, and generic chatbots must be verified through their own rules, plugins, or instruction systems. Future optimization should improve adapters and native VibeHub recording without changing the VibeLog core.
+Installing this skill does not guarantee automatic recording. VibeLog defines the process-memory standard and helper commands; automation depends on the host agent. Claude Code CLI can use project-local hooks. Codex usually needs `AGENTS.md`, explicit calls, or end-of-slice recording unless a wrapper or future lifecycle hook is available. Cursor, Windsurf, Cline, Roo-compatible environments, Gemini CLI, GitHub Copilot, and generic chatbots must be verified through their own rules, plugins, or instruction systems.
+
+The standard stays stable. The integrations keep evolving. VibeLog should track the capabilities of mainstream AI coding agents and update integration guidance as their hooks, rules, memories, CLIs, plugins, extensions, and lifecycle events change. Compatibility levels are living documentation, but adapter updates must not weaken the VibeLog core.
 
 ## Core Model
 

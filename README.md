@@ -139,7 +139,9 @@ Installing VibeLog does not guarantee automatic recording. The skill and templat
 - Cursor, Windsurf, Cline, Roo, Gemini CLI, and GitHub Copilot depend on their own rule-loading or instruction mechanisms and must be verified per project.
 - Plain chat environments usually need manual summaries and explicit recorder/export commands.
 
-Future optimization will add stronger adapters, wrappers, capability checks, and VibeHub-native recording flows as agent platforms expose better lifecycle events.
+**The standard stays stable. The integrations keep evolving.**
+
+VibeLog will track the capabilities of mainstream AI coding agents and update its integration guidance as their hooks, rules, memories, CLIs, plugins, extensions, and lifecycle events change. Compatibility levels are living documentation: the VibeLog format stays stable, while each agent's automation path may improve over time.
 
 To verify the template pack from a clean clone into a synthetic consumer project:
 

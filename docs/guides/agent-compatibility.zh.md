@@ -4,7 +4,7 @@
 
 状态：模板包原型，已在本仓库做静态 smoke test。真实 agent 是否稳定遵守，仍取决于对应 agent 版本和项目设置。
 
-最后检查日期：2026-05-27。
+最后检查日期：2026-05-28。
 
 ## 为什么需要它
 
@@ -16,6 +16,14 @@ VibeLog 不应该绑定某一个 agent 厂商。稳定核心是：
 - 结构化记录想法演化、human-in-the-loop 决策、测试设计、验证证据、bug 修复、成果索引和交接状态
 
 `agent-templates/` 里的模板，就是把这个核心流程接到不同 agent 的指令系统里。
+
+## 动态适配原则
+
+**标准保持稳定，适配持续进化。**
+
+VibeLog 会持续跟进主流 AI 编程 agent 的能力变化，并随着它们的 hooks、rules、memory、CLI、插件、扩展机制和生命周期事件变化来更新集成说明。适配等级是持续更新的 living documentation：VibeLog 格式本身保持稳定，但不同 agent 的自动化深度可能随着工具更新而提升。
+
+这意味着 VibeLog 不应该承诺所有 agent 今天都能自动记录。它应该清楚告诉用户：哪些能力已经验证，哪些只是模板级支持，哪些需要显式调用，哪些属于未来 adapter 计划。
 
 ## 自动记录能力边界
 
@@ -40,6 +48,7 @@ Human / Agent    -> 没有可靠自动化时，通过显式调用和阶段结束
 | Windsurf | 中到弱，取决于 workspace rules 行为 | 使用 `.windsurf/rules/vibelog.md`，建议先用合成小项目验证。 |
 | Cline | 中到弱，取决于 `.clinerules` 加载和任务流程 | 使用 `.clinerules/vibelog.md`，先验证 agent 会更新 `vibe-log.md`。 |
 | Roo-compatible 环境 | 中到弱，不同 mode/version 的 rules 目录行为可能不同 | 使用 `.roo/rules/` 前先确认本地环境会加载这些规则。 |
+| Continue 和类似 rule-based agents | 中到弱，取决于本地 rules 加载和 mode 行为 | 使用对应 agent 的本地 rules 机制嵌入 VibeLog contract，再验证 Markdown/JSON 是否更新。 |
 | GitHub Copilot | 弱，更适合仓库指导，不适合连续过程记录 | 使用 `.github/copilot-instructions.md` 表达期望，VibeLog 仍需要显式更新。 |
 | 普通 Web chat / generic chatbots | 弱，没有可靠项目 hook 或文件写入生命周期 | 手动把想法和决策总结进 VibeLog，再导出和验证 JSON。 |
 | 未来 VibeHub native recorder | 目标是强 | 后续优化应提供一等项目记忆捕获、上传、权限控制和可检查 event stream。 |
@@ -121,8 +130,11 @@ Level 4 - 真实流程测试：
 
 后续优化会继续扩大 adapter 覆盖，但不改变 VibeLog 标准本身：
 
+- 把 agent 适配等级作为持续更新的文档维护
+- 在声称更强自动化前，定期复查主流 AI 编程 agent 的最新能力
 - 当 Codex wrapper 或 app lifecycle hook 可用时，增强 Codex 自动化
 - 为 Cursor、Windsurf、Cline、Roo、Gemini CLI、GitHub Copilot 增加更强模板验证
+- 当 Continue 等 rule-based agent 的本地 rules 路径通过 VibeLog 测试后，补充对应模板
 - 为非程序员提供更清晰的 VibeHub native recorder 流程
 - 在写入正式 Markdown 前，先产生可检查的 event stream
 - 增加 agent-specific capability detection，让用户知道当前是自动、半自动还是手动记录
@@ -137,3 +149,4 @@ Level 4 - 真实流程测试：
 - Cline 的 `.clinerules/` 与 AGENTS 兼容文档：https://docs.cline.bot/customization/cline-rules
 - Roo Code 的 `.roo/rules-*` 自定义模式指令目录文档：https://roocodeinc.github.io/Roo-Code/features/custom-modes/
 - GitHub Copilot 的 repository custom instructions 文档：https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/add-custom-instructions/add-repository-instructions
+- Continue 的本地 `.continue/rules` 文档：https://docs.continue.dev/customize/rules

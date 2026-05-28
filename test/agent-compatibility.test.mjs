@@ -118,3 +118,19 @@ test("agent compatibility docs explain automation limits and future adapter work
   assert.match(combinedDocs, /Cursor/iu);
   assert.match(combinedDocs, /future optimization|future work|后续优化|未来/iu);
 });
+
+test("agent compatibility docs frame integrations as continuously evolving", async () => {
+  const englishGuide = await read("docs/guides/agent-compatibility.md");
+  const chineseGuide = await read("docs/guides/agent-compatibility.zh.md");
+  const readme = await read("README.md");
+  const skill = await read("skills/vibelog/SKILL.md");
+  const agentGuide = await read("skills/vibelog/references/agent-usage-guide.md");
+  const combinedDocs = `${englishGuide}\n${chineseGuide}\n${readme}\n${skill}\n${agentGuide}`;
+
+  assert.match(combinedDocs, /The standard stays stable\. The integrations keep evolving\./u);
+  assert.match(combinedDocs, /标准保持稳定，适配持续进化/u);
+  assert.match(combinedDocs, /track the capabilities of mainstream AI coding agents/iu);
+  assert.match(combinedDocs, /跟进主流 AI 编程 agent 的能力变化/u);
+  assert.match(combinedDocs, /compatibility levels are living documentation/iu);
+  assert.match(combinedDocs, /适配等级.*持续更新/u);
+});

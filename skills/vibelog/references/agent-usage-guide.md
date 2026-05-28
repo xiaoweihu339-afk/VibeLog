@@ -40,7 +40,7 @@ Installing VibeLog does not guarantee automatic recording. The standard is porta
 - GitHub Copilot: use repository custom instructions for guidance, then update VibeLog explicitly.
 - Plain web chat: summarize manually and run recorder/export commands.
 
-Future optimization should add stronger adapters, wrappers, capability checks, and VibeHub-native recording flows. Until then, report the real automation level instead of implying all agents behave like Claude Code hooks.
+The standard stays stable. The integrations keep evolving. VibeLog should track the capabilities of mainstream AI coding agents and update guidance as their hooks, rules, memories, CLIs, plugins, extensions, and lifecycle events change. Compatibility levels are living documentation. Until a path is verified, report the real automation level instead of implying all agents behave like Claude Code hooks.
 
 ## Event Classification
 

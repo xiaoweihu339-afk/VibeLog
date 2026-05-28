@@ -101,10 +101,13 @@ The current `package.json` stays private until these gates are satisfied.
 
 Agent-specific templates may package VibeLog for Codex, Claude Code, Cursor, AGENTS.md, and other agent environments.
 
+The standard stays stable. The integrations keep evolving. This channel should track mainstream AI coding agent capabilities over time and update templates or guidance when hooks, rules, memories, CLIs, plugins, extensions, or lifecycle events become more reliable.
+
 Required gates:
 
 - adapter docs verified;
 - template smoke tests passed;
+- current compatibility level documented;
 - clear uninstall or disable path;
 - explicit release approval.
 
