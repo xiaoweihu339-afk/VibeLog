@@ -130,6 +130,17 @@ Current template targets:
 
 See [Agent compatibility](docs/guides/agent-compatibility.md) and [Agent compatibility 中文](docs/guides/agent-compatibility.zh.md).
 
+### Automation Expectations
+
+Installing VibeLog does not guarantee automatic recording. The skill and templates define the record format and agent behavior, but automatic capture depends on each agent environment:
+
+- Claude Code CLI can provide strong automation when project-local hooks are enabled.
+- Codex currently relies on `AGENTS.md`, explicit VibeLog calls, and end-of-slice recording unless a wrapper or future lifecycle hook is added.
+- Cursor, Windsurf, Cline, Roo, Gemini CLI, and GitHub Copilot depend on their own rule-loading or instruction mechanisms and must be verified per project.
+- Plain chat environments usually need manual summaries and explicit recorder/export commands.
+
+Future optimization will add stronger adapters, wrappers, capability checks, and VibeHub-native recording flows as agent platforms expose better lifecycle events.
+
 To verify the template pack from a clean clone into a synthetic consumer project:
 
 ```powershell

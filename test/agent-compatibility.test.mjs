@@ -102,3 +102,19 @@ test("agent compatibility docs and package metadata expose the template pack", a
   assert.ok(agentChannel.verified_gates.includes("template_smoke_tests_passed"));
   assert.ok(agentChannel.verified_gates.includes("clean_clone_template_adoption_verified"));
 });
+
+test("agent compatibility docs explain automation limits and future adapter work", async () => {
+  const englishGuide = await read("docs/guides/agent-compatibility.md");
+  const chineseGuide = await read("docs/guides/agent-compatibility.zh.md");
+  const readme = await read("README.md");
+  const skill = await read("skills/vibelog/SKILL.md");
+  const agentGuide = await read("skills/vibelog/references/agent-usage-guide.md");
+  const combinedDocs = `${englishGuide}\n${chineseGuide}\n${readme}\n${skill}\n${agentGuide}`;
+
+  assert.match(combinedDocs, /does not guarantee automatic recording/iu);
+  assert.match(combinedDocs, /hook|lifecycle|adapter/iu);
+  assert.match(combinedDocs, /Claude Code/iu);
+  assert.match(combinedDocs, /Codex/iu);
+  assert.match(combinedDocs, /Cursor/iu);
+  assert.match(combinedDocs, /future optimization|future work|后续优化|未来/iu);
+});

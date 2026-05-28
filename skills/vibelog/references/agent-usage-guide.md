@@ -26,6 +26,22 @@ Call VibeLog when the user asks to:
 
 Also call it when engineering work is happening and the project already has a `vibe-log.md`.
 
+## Agent Automation Limits
+
+Installing VibeLog does not guarantee automatic recording. The standard is portable, but capture timing depends on the agent environment:
+
+- Claude Code CLI: use project-local hooks for the strongest current automation.
+- Codex / AGENTS-aware agents: use `AGENTS.md`, explicit VibeLog calls, and end-of-slice recording; ordinary idea chat is not automatically captured unless the agent writes it.
+- Gemini CLI: use `GEMINI.md`, then verify Markdown/JSON after meaningful sessions.
+- Cursor: use `.cursor/rules/vibelog.mdc` and verify rule loading.
+- Windsurf: use `.windsurf/rules/vibelog.md` and verify workspace rule behavior.
+- Cline: use `.clinerules/vibelog.md` and verify the task flow updates VibeLog.
+- Roo-compatible environments: verify `.roo/rules/` loading for the local mode/version.
+- GitHub Copilot: use repository custom instructions for guidance, then update VibeLog explicitly.
+- Plain web chat: summarize manually and run recorder/export commands.
+
+Future optimization should add stronger adapters, wrappers, capability checks, and VibeHub-native recording flows. Until then, report the real automation level instead of implying all agents behave like Claude Code hooks.
+
 ## Event Classification
 
 Before writing, classify the event:

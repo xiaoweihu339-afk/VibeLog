@@ -17,6 +17,35 @@ VibeLog should not depend on one agent vendor. The durable core is:
 
 The templates in `agent-templates/` make that core available to common agent instruction systems.
 
+## Automation Limits
+
+Installing VibeLog does not guarantee automatic recording. VibeLog defines what to record and how to export it; automatic capture depends on whether the current agent environment exposes hooks, lifecycle events, plugins, wrappers, or reliable project instruction loading.
+
+Use this rule of thumb:
+
+```txt
+VibeLog Standard -> recording format and rules
+Agent Adapter    -> when the environment can capture prompts/tools/session events
+Human / Agent    -> explicit updates when the environment has no reliable automation
+```
+
+## Common Agent Automation Matrix
+
+| Agent environment | Current automatic recording level | Recommended VibeLog path |
+| --- | --- | --- |
+| Claude Code CLI | Strong when project-local hooks are enabled | Use `CLAUDE.md` plus the Claude Code hook adapter. Prefer stream-first hooks for reviewable JSONL events. |
+| Codex / AGENTS-aware agents | Medium to weak; depends on the agent following project instructions | Use `AGENTS.md`, explicit VibeLog calls, and end-of-slice recording. Treat ordinary idea chat as not automatically captured unless the agent records it. |
+| Gemini CLI | Medium to weak; depends on `GEMINI.md` loading and agent behavior | Use `GEMINI.md`, then verify Markdown/JSON updates after meaningful sessions. |
+| Cursor | Medium to weak; depends on rule loading and model compliance | Use `.cursor/rules/vibelog.mdc`; verify that project rules are active before trusting recording behavior. |
+| Windsurf | Medium to weak; depends on workspace rule behavior | Use `.windsurf/rules/vibelog.md`; verify with a small synthetic project before real work. |
+| Cline | Medium to weak; depends on `.clinerules` loading and task flow | Use `.clinerules/vibelog.md`; verify that the agent updates `vibe-log.md` before relying on it. |
+| Roo-compatible environments | Medium to weak; rule directory behavior varies by mode/version | Use `.roo/rules/` only after checking the local environment loads those rules. |
+| GitHub Copilot | Weak for continuous process recording; better for repository guidance | Use `.github/copilot-instructions.md` for expectations, then update VibeLog explicitly. |
+| Plain web chat / generic chatbots | Weak; no reliable project-local hook or file-write lifecycle | Manually summarize ideas and decisions into VibeLog, then run export/validation. |
+| Future VibeHub native recorder | Target: strong | Future optimization should provide first-class project memory capture, upload, permissions, and reviewable event streams. |
+
+Do not promise users that normal brainstorming will be captured automatically unless the environment has been verified with a live workflow test.
+
 ## Supported Templates
 
 | Agent environment | Template path | Notes |
@@ -87,6 +116,16 @@ Use a synthetic project and ask the selected agent to create or update `vibe-log
 Level 4 - live workflow test:
 
 Run a real coding task with the selected agent and verify that idea changes, human decisions, execution prompts, validation evidence, and handoff state were recorded without leaking private data.
+
+## Future Optimization
+
+Future work should improve adapter coverage without weakening the standard:
+
+- better Codex wrapper or app integration when lifecycle hooks become available
+- stronger template verification for Cursor, Windsurf, Cline, Roo, Gemini CLI, and GitHub Copilot
+- clearer native VibeHub recorder flows for non-programmers
+- reviewable event streams before writing permanent Markdown
+- agent-specific capability detection so users know whether they have automatic, semi-automatic, or manual recording
 
 ## Source References
 
