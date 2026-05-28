@@ -76,3 +76,20 @@ test("clean clone adoption verifier CLI prints a passing JSON result", async () 
     await rm(workspace, { recursive: true, force: true });
   }
 });
+
+test("clean clone adoption verifier CLI prints help", async () => {
+  const { stdout } = await execFileAsync(process.execPath, [
+    "scripts/verify-clean-clone-adoption.mjs",
+    "--help"
+  ], {
+    cwd: process.cwd(),
+    timeout: 30000,
+    maxBuffer: 1024 * 1024
+  });
+
+  assert.match(stdout, /verify-clean-clone-adoption/);
+  assert.match(stdout, /Usage:/);
+  assert.match(stdout, /--repo <repo-root>/);
+  assert.match(stdout, /--workspace <path>/);
+  assert.match(stdout, /--help, -h/);
+});

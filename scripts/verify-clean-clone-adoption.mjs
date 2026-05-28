@@ -314,6 +314,7 @@ function defaultWorkspace() {
 
 function parseArgs(argv) {
   const options = {
+    help: false,
     repoPath: process.cwd(),
     workspace: defaultWorkspace()
   };
@@ -321,7 +322,9 @@ function parseArgs(argv) {
   const args = [...argv];
   while (args.length > 0) {
     const arg = args.shift();
-    if (arg === "--repo") {
+    if (arg === "--help" || arg === "-h") {
+      options.help = true;
+    } else if (arg === "--repo") {
       options.repoPath = args.shift() ?? "";
     } else if (arg === "--workspace") {
       options.workspace = args.shift() ?? "";
@@ -335,8 +338,39 @@ function parseArgs(argv) {
   return options;
 }
 
+function helpText() {
+  return `verify-clean-clone-adoption
+
+Scratch-only VibeLog clean-clone adoption verifier.
+
+Usage:
+  node scripts/verify-clean-clone-adoption.mjs [options]
+
+Options:
+  --repo <repo-root>    Repository path to clone locally. Defaults to the current directory.
+  --workspace <path>   Scratch workspace for the verification run.
+  --help, -h           Show this help.
+
+Checks:
+  - Clones the repository into scratch space without hardlinks.
+  - Runs the clone-local VibeLog project CLI from the clone.
+  - Initializes a consumer project with vibe-log.md and vibe-log.json.
+  - Verifies hook dry-run/write/disable behavior and JSON validity.
+  - Confirms global Claude settings are unchanged.
+
+Safety:
+  - Writes only inside scratch and consumer test directories.
+  - Does not push, publish, upload, or edit global Claude/Codex settings.
+`;
+}
+
 async function main() {
   const options = parseArgs(process.argv.slice(2));
+  if (options.help) {
+    console.log(helpText());
+    return;
+  }
+
   const result = await runCleanCloneAdoptionVerification(options);
   console.log(JSON.stringify(result, null, 2));
   if (!result.passed) process.exitCode = 1;
