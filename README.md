@@ -29,7 +29,7 @@ Do not trust claims, agent reports, or plausible-looking output without evidence
 
 ## Core Doctrine
 
-VibeLog is a vibe coding process memory standard, not a GitHub push tool.
+VibeLog is a vibe coding process memory standard.
 
 The core loop is:
 
